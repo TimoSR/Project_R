@@ -1,0 +1,40 @@
+(globalThis.TURBOPACK = globalThis.TURBOPACK || []).push([
+    "chunks/ssr/[next]_entry_app-renderer_tsx_b1481b._.js",
+    {},
+]);
+(globalThis.TURBOPACK_CHUNK_LISTS = globalThis.TURBOPACK_CHUNK_LISTS || []).push({
+  "path": "chunks/ssr/[next]_entry_app-renderer_tsx_b1481b._.js",
+  "chunks": [
+    "chunks/ssr/_env_b53fce.js",
+    "chunks/ssr/node_modules_next_dist_d8f265._.js",
+    "chunks/ssr/node_modules_@swc_helpers_esm__interop_require_default_301ba9.js",
+    "chunks/ssr/node_modules_@swc_helpers_cjs__interop_require_wildcard_cjs_c5ca4f._.js",
+    "chunks/ssr/node_modules_@swc_helpers_cjs__tagged_template_literal_loose_cjs_5baf20._.js",
+    "chunks/ssr/node_modules_@swc_helpers_esm__interop_require_wildcard_4fde7d.js",
+    "chunks/ssr/node_modules_@swc_helpers_esm__tagged_template_literal_loose_6c4cba.js",
+    "chunks/ssr/node_modules_zod_lib_index_321d7f.js",
+    "chunks/ssr/node_modules_streamsearch_lib_sbmh_969751.js",
+    "chunks/ssr/node_modules_busboy_lib_index_3fe653.js",
+    "chunks/ssr/[turbopack-node]_ipc_index_ts_603a02._.js",
+    "chunks/ssr/[turbopack-node]_compiled_stacktrace-parser_index_cd57ce.js",
+    "chunks/ssr/[next]_internal_operation-stream_ts_5d10d5._.js",
+    "chunks/ssr/[next]_internal_headers_ts_435e61._.js",
+    "chunks/ssr/[next]_internal_http_ts_a662b8._.js",
+    "chunks/ssr/[next]_polyfill_app-polyfills_ts_fa7482._.js",
+    "chunks/ssr/[next]_entry_app-renderer_tsx_911aa9._.js",
+    "chunks/ssr/_4ee399._.js",
+    "chunks/ssr/[next]_entry_app-entry_tsx_4665ed._.js",
+    "chunks/ssr/[next]_entry_app-entry_tsx_c0e7e9._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_0b01bd._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_6467c7._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_cf64a1._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_d85798._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_5ab633._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_8ddc9b._.js",
+    "chunks/ssr/[next]_entry_app_server-to-client-ssr_tsx_09f5a0._.js",
+    "chunks/ssr/[next]_internal_font_google_inter_59dee874_577cc7.js",
+    "chunks/rsc/[next]_internal_font_google_inter_59dee874_module.css",
+    "chunks/rsc/app_globals.css"
+  ],
+  "source": "entry"
+});
