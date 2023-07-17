@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["/turbopack/[project]/postcss.config.js"],"sourcesContent":["module.exports = {\n  plugins: {\n    tailwindcss: {},\n    autoprefixer: {},\n  },\n}\n"],"names":[],"mappings":"AAAA,OAAO,OAAO,GAAG;IACf,SAAS;QACP,aAAa,CAAC;QACd,cAAc,CAAC;IACjB;AACF"}},
-    {"offset": {"line": 10, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
-}
