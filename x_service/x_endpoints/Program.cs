@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Load .env file into configuration
+// Load .env file
 DotNetEnv.Env.Load();
 
 // Add services to the container.
