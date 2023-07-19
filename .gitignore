@@ -69,4 +69,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Rider
+
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,dotnetcore,windows
