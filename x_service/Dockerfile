@@ -2,17 +2,16 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 EXPOSE 8080
 
-# copy .csproj and restore as destinct layers
-COPY "x_service.sln" "x_service.sln"
-COPY "x_endpoints/x_endpoints.csproj" "x_endpoints/x_endpoints.csproj"
-COPY "x_lib/x_lib.csproj" "x_lib/x_lib.csproj"
-COPY "x_BL_tests/x_BL_tests.csproj" "x_BL_tests/x_BL_tests.csproj"
+# Copy the solution file and restore dependencies
+COPY "x_service.sln" .
 
-RUN dotnet restore "x_service.sln"
+# Copy the projects and restore their dependencies
+COPY "x_endpoints/" "x_endpoints/"
+COPY "x_lib/" "x_lib/"
+RUN dotnet restore
 
 # copy everything else build the
 COPY . .
-WORKDIR /app
 RUN dotnet publish -c Release -o out
 
 # build a runtime image
