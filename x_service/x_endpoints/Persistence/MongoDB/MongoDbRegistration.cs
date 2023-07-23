@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using x_endpoints.Services;
 
 namespace x_endpoints.Persistence.MongoDB;
 
@@ -27,11 +26,11 @@ public static class MongoDbRegistration
             try 
             {
                 var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                Console.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
+                Console.WriteLine("\nPinged your deployment. You successfully connected to MongoDB! \n");
             } 
             catch (Exception ex) 
             {
-                Console.WriteLine(ex);
+                Console.WriteLine($"\n{ex}");
             }
 
             return client;
@@ -43,10 +42,10 @@ public static class MongoDbRegistration
             var databases = client.ListDatabaseNames().ToEnumerable().ToDictionary(name => name, name => name);
 
             // Print the database names to the console
-            Console.WriteLine("Connecting to databases:");
+            Console.WriteLine("Connected to databases: \n");
             foreach (var dbName in databases.Keys)
             {
-                Console.WriteLine(dbName);
+                Console.WriteLine($"* {dbName}");
             }
 
             //Console.WriteLine(environment);
@@ -64,7 +63,7 @@ public static class MongoDbRegistration
                         // Drop the entire database
                         client.DropDatabase(dbName);
 
-                        Console.WriteLine($"Database: {dbName} are now cleared!");
+                        Console.WriteLine($"\nDatabase: {dbName} are now cleared!");
                     }
                     
                 }

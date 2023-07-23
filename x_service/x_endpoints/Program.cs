@@ -31,7 +31,7 @@ var app = builder.Build();
 
 // Insert initial data into the "Products" collection
 DataSeeder.SeedData(app.Services);
-Console.WriteLine("Database is now seeded!");
+Console.WriteLine("\nDatabase is now seeded!\n");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
