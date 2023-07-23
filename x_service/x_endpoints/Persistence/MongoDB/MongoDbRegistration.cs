@@ -14,6 +14,7 @@ public static class MongoDbRegistration
         var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
         var default_database = DotNetEnv.Env.GetString("MONGODB_DEVELOPMENT_DB");
+        var selected_database = default_database;
 
         services.AddSingleton<IMongoClient>(sp =>
         {
@@ -58,12 +59,12 @@ public static class MongoDbRegistration
 
                     //Console.WriteLine(dbName);
 
-                    if(dbName.Equals(default_database)) {
+                    if(dbName.Equals(selected_database)) {
 
                         // Drop the entire database
                         client.DropDatabase(dbName);
 
-                        Console.WriteLine($"`Database: {dbName} are now cleared!");
+                        Console.WriteLine($"Database: {dbName} are now cleared!");
                     }
                     
                 }

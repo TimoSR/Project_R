@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using x_endpoints.Models;
 
 namespace x_endpoints.Controllers;
 
