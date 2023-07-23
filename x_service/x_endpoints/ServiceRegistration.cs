@@ -1,7 +1,5 @@
 using x_endpoints.Services;
 
-namespace x_endpoints.Persistence.MongoDB;
-
 public static class ServiceRegistration
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)

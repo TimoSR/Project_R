@@ -1,6 +1,9 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
 using x_endpoints.Persistence.MongoDB;
+using x_endpoints.Models;
+using x_endpoints.Services;
+using x_endpoints.DataSeeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Insert initial data into the "Products" collection
+DataSeeder.SeedData(app.Services);
+Console.WriteLine("Database is now seeded!");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -6,10 +6,12 @@ namespace x_endpoints.Persistence.MongoDB;
 public class MongoDbStartupService : IHostedService
 {
     private readonly IMongoClient _client;
+    private readonly MongoDbService _mongoDbService;
 
-    public MongoDbStartupService(IMongoClient client)
+    public MongoDbStartupService(IMongoClient client, MongoDbService mongoDbService)
     {
         _client = client;
+        _mongoDbService = mongoDbService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

@@ -13,6 +13,7 @@ public static class MongoDbRegistration
 
         var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
+        var default_database = DotNetEnv.Env.GetString("MONGODB_DEVELOPMENT_DB");
 
         services.AddSingleton<IMongoClient>(sp =>
         {
@@ -40,23 +41,35 @@ public static class MongoDbRegistration
             var client = sp.GetRequiredService<IMongoClient>();
             var databases = client.ListDatabaseNames().ToEnumerable().ToDictionary(name => name, name => name);
 
-            // Only drop databases if in Development environment
-            if (environment == "Development")
+            // Print the database names to the console
+            Console.WriteLine("Connecting to databases:");
+            foreach (var dbName in databases.Keys)
+            {
+                Console.WriteLine(dbName);
+            }
+
+            //Console.WriteLine(environment);
+
+            //Only drop databases if in Development environment
+            if (environment.Equals("Development"))
             {
                 foreach (var dbName in databases.Keys)
                 {
-                    var db = client.GetDatabase(dbName);
 
-                    // Drop all collections within the database
-                    var collections = db.ListCollectionNames().ToList();
-                    foreach (var collection in collections)
-                    {
-                        db.DropCollection(collection);
+                    //Console.WriteLine(dbName);
+
+                    if(dbName.Equals(default_database)) {
+
+                        // Drop the entire database
+                        client.DropDatabase(dbName);
+
+                        Console.WriteLine($"`Database: {dbName} are now cleared!");
                     }
+                    
                 }
             }
 
-            return new MongoDbService(client, databases);
+            return new MongoDbService(client, default_database, databases);
         });
 
         services.AddApplicationServices(); // add this line to register all the services.
