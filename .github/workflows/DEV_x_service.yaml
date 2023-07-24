@@ -11,6 +11,9 @@ on:
   #  paths:
   #    - 'x_service/**'
 
+env:
+  SERVICE_NAME: x_service
+
 jobs:
   test_dotnet_core:
     runs-on: ubuntu-latest
@@ -72,4 +75,4 @@ jobs:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/x_service_dev:${{ env.VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ $SERVICE_NAME }}_dev:${{ env.VERSION }}
