@@ -37,6 +37,8 @@ jobs:
     needs: [test_application]
     steps:
 
+      - uses: actions/checkout@v2
+
       - name: Where are we
         run: |
           ls
@@ -54,7 +56,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: x_service  # path to the directory that contains the Dockerfile
-          file: x_service/Dockerfile  # path to the Dockerfile
+          context: ./x_service  # path to the directory that contains the Dockerfile
+          file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
           tags: 00tir2009/x_service:latest
