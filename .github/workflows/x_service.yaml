@@ -3,10 +3,10 @@ name: CI for Project A
 on:
   push:
     paths:
-      - 'project-a/**'
+      - 'x_service/**'
   pull_request:
     paths:
-      - 'project-a/**'
+      - 'x_service/**'
 
 jobs:
   build:
