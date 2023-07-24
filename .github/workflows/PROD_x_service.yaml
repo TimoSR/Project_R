@@ -14,7 +14,7 @@ on:
         - 'v*'
 
 jobs:
-  test_application:
+  test_dotnet_core:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,7 +36,7 @@ jobs:
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
-  docker:
+  build_push_docker:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     needs: [test_application]
@@ -74,4 +74,4 @@ jobs:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: 00tir2009/x_service_PROD:${{ steps.get_version.outputs.VERSION }}
+          tags: 00tir2009/x_service_prod:${{ steps.get_version.outputs.VERSION }}
