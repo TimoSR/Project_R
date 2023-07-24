@@ -10,8 +10,6 @@ on:
     paths:
       - 'x_service/**'
   workflow_dispatch:
-    tags:
-        - 'v*'
 
 jobs:
   test_dotnet_core:
