@@ -89,5 +89,3 @@ jobs:
           file: ./${{ env.SERVICE_NAME }}/Dockerfile  # path to the Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE_NAME }}_prod:${{ env.VERSION }}
-          cache-from: type=registry,ref=user/app:buildcache
-          cache-to: type=registry,ref=user/app:buildcache,mode=max
