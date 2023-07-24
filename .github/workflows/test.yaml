@@ -1,4 +1,4 @@
-name: testing_ubuntu_cli
+name: testing github actions
 # Is only triggered on manual activition within Actions
 on: workflow_dispatch
 jobs:
