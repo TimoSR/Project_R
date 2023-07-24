@@ -2,6 +2,8 @@ name: DEV CI for x_service
 
 on:
   workflow_dispatch:
+    tags:
+      - 'v*'
   #push:
   #  paths:
   #    - 'x_service/**'
@@ -53,10 +55,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
+      - name: Extract version or SHA
+        id: get_version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION=${GITHUB_SHA::7}
+          fi
+          echo ::set-output name=VERSION::$VERSION
+      
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: 00tir2009/x_service_DEV:latest
+          tags: 00tir2009/x_service_DEV:${{ steps.get_version.outputs.VERSION }}
