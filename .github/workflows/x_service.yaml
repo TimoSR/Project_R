@@ -10,20 +10,20 @@ on:
   #    - 'x_service/**'
 
 jobs:
-  build:
+  test_application:
     runs-on: ubuntu-latest
     steps:
     
     - uses: actions/checkout@v2
     
-    - name: Setup .NET 6
+    - name: Setup .NET 7
       run: |
         wget https://packages.microsoft.com/config/ubuntu/23.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
         sudo dpkg -i packages-microsoft-prod.deb
         sudo apt-get update
         sudo apt-get install -y apt-transport-https
         sudo apt-get update
-        sudo apt-get install -y dotnet-sdk-6.0
+        sudo apt-get install -y dotnet-sdk-7.0
         
     - name: Run Tests
       run: |
@@ -33,6 +33,7 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
+    needs: [test_application]
     steps:
       -
         name: Set up Docker Buildx
