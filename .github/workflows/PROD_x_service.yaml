@@ -39,7 +39,7 @@ jobs:
   build_push_docker:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
-    needs: [test_application]
+    needs: [test_dotnet_core]
     steps:
 
       - uses: actions/checkout@v2
