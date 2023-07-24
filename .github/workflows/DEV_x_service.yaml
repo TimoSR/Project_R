@@ -1,5 +1,6 @@
 name: DEV CI for x_service
 
+# Update the Service Name to of the Service Folder
 env:
   SERVICE_NAME: x_service
 
@@ -9,7 +10,8 @@ on:
     branches:
     - develop
     paths:
-    - '${{ env.SERVICE_NAME }}/**'
+    # Path needs to be chanced
+    - 'x_service/**'
 
 jobs:
   test_dotnet_core:
