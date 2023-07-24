@@ -1,5 +1,5 @@
-#Service name and the Folder name should be the same on git!
-# Remeber to update Service name on yaml file aswell.
+# Service name and the Folder name should be the same on git!
+# Remember to update Service name on yaml file aswell.
 
 # Update the marked areas with x_service to eg. leaderboard_service...
 
