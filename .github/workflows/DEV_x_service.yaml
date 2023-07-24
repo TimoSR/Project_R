@@ -1,5 +1,8 @@
 name: DEV CI for x_service
 
+env:
+  SERVICE_NAME: x_service
+
 on:
   workflow_dispatch:
   push:
@@ -69,4 +72,4 @@ jobs:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/x_service_dev:${{ env.VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE_NAME }}_dev:${{ env.VERSION }}
