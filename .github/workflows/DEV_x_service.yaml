@@ -63,7 +63,8 @@ jobs:
           else
             VERSION=${GITHUB_SHA::7}
           fi
-          echo ::set-output name=VERSION::$VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       
       - name: Build and push
         uses: docker/build-push-action@v3
@@ -71,4 +72,4 @@ jobs:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: 00tir2009/x_service_dev:${{ steps.get_version.outputs.VERSION }}
+          tags: 00tir2009/x_service_DEV:${{ env.VERSION }}
