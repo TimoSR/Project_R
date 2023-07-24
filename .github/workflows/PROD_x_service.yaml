@@ -1,8 +1,15 @@
-name: PROD CI for x_service
+#Service name and the Folder name should be the same on git!
 
-# Update the Service Name to of the Service Folder
+# Update the marked areas with x_service to eg. leaderboard_service...
+
+############################
+name: DEV CI for x_service 
+############################
+
+############################
 env:
   SERVICE_NAME: x_service
+############################
 
 on:
   pull_request:
@@ -13,7 +20,9 @@ on:
       - 'v*'
     paths:
     # Path needs to be changed to fit Service Folder (As it does not support env)
-      - 'x_service/**'
+    ############################
+    - 'x_service/**'
+    ############################
   workflow_dispatch:
 
 jobs:
