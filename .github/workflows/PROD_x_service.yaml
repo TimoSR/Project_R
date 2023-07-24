@@ -1,13 +1,16 @@
-name: CI for x_service
+name: PROD CI for x_service
 
 on:
-  workflow_dispatch:
-  #push:
-  #  paths:
-  #    - 'x_service/**'
-  #pull_request:
-  #  paths:
-  #    - 'x_service/**'
+  push:
+    tags:
+        - 'v*'
+    paths:
+      - 'x_service/**'
+  pull_request:
+    tags:
+      - 'v*'
+    paths:
+      - 'x_service/**'
 
 jobs:
   test_application:
@@ -59,4 +62,4 @@ jobs:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: 00tir2009/x_service:latest
+          tags: 00tir2009/x_service_PROD:${{ github.ref }}
