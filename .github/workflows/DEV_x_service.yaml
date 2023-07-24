@@ -10,7 +10,7 @@ on:
     branches:
     - develop
     paths:
-    # Path needs to be chanced
+    # Path needs to be changed to fit Service Folder (As it does not support env)
     - 'x_service/**'
 
 jobs:
