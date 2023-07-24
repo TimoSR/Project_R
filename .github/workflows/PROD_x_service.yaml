@@ -75,4 +75,4 @@ jobs:
           context: ./x_service  # path to the directory that contains the Dockerfile
           file: ./x_service/Dockerfile  # path to the Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/x_service_DEV:${{ env.VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/x_service_prod:${{ env.VERSION }}
