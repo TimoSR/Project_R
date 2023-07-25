@@ -7,6 +7,10 @@ using x_endpoints.DataSeeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
+DotNetEnv.Env.Load();
+
+var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
+
 // Add services to the container.
 builder.Services.AddMongoDBServices(builder.Configuration);
 
@@ -33,9 +37,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Insert initial data into the "Products" collection
-DataSeeder.SeedData(app.Services);
-Console.WriteLine("\nDatabase is now seeded!\n");
+if (enviroment.Equals("Development")) {
+
+    // Insert initial data into the "Products" collection
+    DataSeeder.SeedData(app.Services);
+    Console.WriteLine("\nDatabase is now seeded!\n");
+
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
