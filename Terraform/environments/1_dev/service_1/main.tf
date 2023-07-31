@@ -1,10 +1,11 @@
 provider "google" {
-  project = "project-r-393911"
+  project = var.project
   region = var.region
 }
 
 provider "google-beta" {
-  project = "project-r-393911"
+  project = var.project
+  region = var.region
 }
 
 # Enable the Secret Manager API for the project
@@ -15,6 +16,7 @@ resource "google_project_service" "secret_manager" {
   disable_on_destroy = false
 }
 
+# Getting the references to secrets
 data "google_secret_manager_secret_version" "secrets" {
   for_each = toset(["MONGODB_DEVELOPMENT_DB", "ENVIRONMENT", "MONGODB_CONNECTION_STRING"])
   secret   = each.key
@@ -22,6 +24,7 @@ data "google_secret_manager_secret_version" "secrets" {
   depends_on = [ google_project_service.secret_manager ]
 }
 
+# Creating the Google Cloud Run
 resource "google_cloud_run_service" "service_x" {
   name     = "service-x" # Replace with your desired service name.
   provider = google
@@ -45,6 +48,7 @@ resource "google_cloud_run_service" "service_x" {
           container_port = 8080 # Make sure your application listens on port 8080 inside the container.
         }
 
+        # Dynamicaly adding references to the secrets
         dynamic "env" {
           for_each = data.google_secret_manager_secret_version.secrets
           content {
@@ -58,6 +62,7 @@ resource "google_cloud_run_service" "service_x" {
           }
         }
         
+        # Setting the amount of cpu and memory
         resources {
           limits = {
             cpu    = var.cpu
@@ -66,9 +71,13 @@ resource "google_cloud_run_service" "service_x" {
         }
       }   
     }
+
+    # Settings for cloud run scaling
     metadata {
       annotations = {
+        # Scaling to zero enabled
         "autoscaling.knative.dev/minScale" = "0"
+        # Auto Scaling is max 1 container
         "autoscaling.knative.dev/maxScale" = "1"
       }
     }
@@ -78,6 +87,8 @@ resource "google_cloud_run_service" "service_x" {
       latest_revision = true
   }
 }
+
+# Disabling authentication on microservice for smoke testing 
 resource "google_cloud_run_service_iam_member" "all_users" {
   location = var.region
   service  = google_cloud_run_service.service_x.name
