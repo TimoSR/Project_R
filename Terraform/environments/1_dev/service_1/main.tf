@@ -8,7 +8,8 @@ provider "google-beta" {
   region = var.region
 }
 
-# Enable the Secret Manager API for the project
+# We need to c enable the secret manager
+# Getting reference to the secret manager
 resource "google_project_service" "secret_manager" {
   provider = google-beta
   service = "secretmanager.googleapis.com"
