@@ -25,8 +25,8 @@ data "google_secret_manager_secret_version" "secrets" {
 }
 
 # Creating the Google Cloud Run
-resource "google_cloud_run_service" "service_x" {
-  name     = "service-x" # Replace with your desired service name.
+resource "google_cloud_run_service" "x_service" {
+  name     = "x_service" # Replace with your desired service name.
   provider = google
   location = var.region
 
