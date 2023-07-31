@@ -75,4 +75,7 @@ $RECYCLE.BIN/
 # Enviroment
 *.env
 
+# Terraform
+*.auto.tfvars
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,dotnetcore,windows

@@ -1,9 +1,9 @@
 terraform {
-  cloud {
-    organization = "RiftGate"
+  #   cloud {
+  #   organization = "RiftGate"
 
-    workspaces {
-      name = "1_Project-R-Dev"
-    }
-  }
+  #   workspaces {
+  #     name = "1_Project-R-Dev"
+  #   }
+  # }
 }
