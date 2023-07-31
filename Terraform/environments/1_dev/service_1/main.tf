@@ -26,8 +26,8 @@ data "google_secret_manager_secret_version" "secrets" {
 }
 
 # Creating the Google Cloud Run
-resource "google_cloud_run_service" "x_service" {
-  name     = "x_service" # Replace with your desired service name.
+resource "google_cloud_run_service" "x-service" {
+  name     = "x-service" # Replace with your desired service name.
   provider = google
   location = var.region
 
@@ -78,7 +78,7 @@ resource "google_cloud_run_service" "x_service" {
       annotations = {
         # Scaling to zero enabled
         "autoscaling.knative.dev/minScale" = "0"
-        # Auto Scaling is max 1 container
+        # Auto Scaling is max 1 container out of 300
         "autoscaling.knative.dev/maxScale" = "1"
       }
     }
@@ -92,7 +92,7 @@ resource "google_cloud_run_service" "x_service" {
 # Disabling authentication on microservice for smoke testing 
 resource "google_cloud_run_service_iam_member" "all_users" {
   location = var.region
-  service  = google_cloud_run_service.service_x.name
+  service  = google_cloud_run_service.x-service.name
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
