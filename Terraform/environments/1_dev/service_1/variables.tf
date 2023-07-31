@@ -1,3 +1,7 @@
+variable "project" {
+  default     = "project-r-393911"
+}
+
 variable "region" {
   description = "The region where the Cloud Run service will be deployed."
   default     = "europe-west1" # Replace with your preferred region.
