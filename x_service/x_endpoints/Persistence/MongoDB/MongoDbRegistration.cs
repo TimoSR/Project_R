@@ -6,7 +6,7 @@ namespace x_endpoints.Persistence.MongoDB;
 
 public static class MongoDbRegistration
 {
-    public static IServiceCollection AddMongoDBServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMongoDBServices(this IServiceCollection services)
     {
         DotNetEnv.Env.Load();
 
@@ -71,8 +71,6 @@ public static class MongoDbRegistration
 
             return new MongoDbService(client, default_database, databases);
         });
-
-        services.AddApplicationServices(); // add this line to register all the services.
 
         return services;
     }

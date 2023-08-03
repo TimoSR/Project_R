@@ -20,7 +20,6 @@ public class MongoDbService
         return _client.GetDatabase(_default_database);
     }
 
-
     public IMongoDatabase GetDatabase(string key)
     {
         if (!_databaseNames.TryGetValue(key, out var databaseName))

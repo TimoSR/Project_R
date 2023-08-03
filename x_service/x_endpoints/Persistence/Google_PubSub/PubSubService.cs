@@ -1,9 +1,7 @@
-namespace x_endpoints.Persistence.Google_PubSub;
-
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
-using System;
-using System.Text.Json;
+
+namespace x_endpoints.Persistence.Google_PubSub;
 
 public class PubSubService
 {
@@ -16,17 +14,13 @@ public class PubSubService
         _projectId = projectId;
     }
 
-    public Task<PublishResponse> PublishMessage<T>(string topicName, T message)
+    public async Task PublishMessageAsync(string topicId, string message)
     {
-        var topic = new TopicName(_projectId, topicName);
+        var topicName = TopicName.FromProjectTopic(_projectId, topicId);
         var pubsubMessage = new PubsubMessage
         {
-            // Convert the message to a JSON string, then to bytes, which can be used to create the PubsubMessage
-            Data = ByteString.CopyFromUtf8(JsonSerializer.Serialize(message))
+            Data = ByteString.CopyFromUtf8(message)
         };
-
-        // Publish the message to the topic and return the Task.
-        // The caller can decide whether to await this task or not.
-        return _publisherService.PublishAsync(topic, new[] { pubsubMessage });
+        await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
     }
 }
