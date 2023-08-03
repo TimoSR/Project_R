@@ -21,7 +21,7 @@ builder.Services.AddHostedService<MongoDbStartupService>();
 
 // Testing Google Pub / Sub
 var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
-var topicId = "test-topic1";
+var topicId = "test-topic2";
 var subscriptionId = topicId;
 
 // First create a topic.
@@ -36,8 +36,10 @@ subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig: nu
 
 // Publish a message to the topic using PublisherClient.
 PublisherClient publisher = await PublisherClient.CreateAsync(topicName);
+
 // PublishAsync() has various overloads. Here we're using the string overload.
 string messageId = await publisher.PublishAsync("Hello, Pubsub");
+
 // PublisherClient instance should be shutdown after use.
 // The TimeSpan specifies for how long to attempt to publish locally queued messages.
 await publisher.ShutdownAsync(TimeSpan.FromSeconds(15));
