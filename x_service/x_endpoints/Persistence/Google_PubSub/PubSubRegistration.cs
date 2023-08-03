@@ -20,45 +20,24 @@ public static class PubSubRegistration {
 
         // Use this if the microservice won't be utlizing scaling to zero. 
         // As it scales and perform better and support more advanced features
-        // services.AddSingleton<PublisherClient>(sp =>
+        // services.AddSingleton<PublisherClient>(serviceProvider =>
         // {
         //     Console.WriteLine("\nPublisherClient Created!");
         //     // Here you should initialize your PublisherClient with the settings you need.
         //     return PublisherClient.Create(topicName);
         // });
         
-        services.AddSingleton<PublisherServiceApiClient>(sp => {
+        services.AddSingleton<PublisherServiceApiClient>(serviceProvider => {
             Console.WriteLine("\nPublisherServiceApiClient Created!");
             return PublisherServiceApiClient.Create();
         });
         
-        services.AddSingleton(sp => {
+        services.AddSingleton(serviceProvider => {
             var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
-            var publisherService = sp.GetRequiredService<PublisherServiceApiClient>();
+            var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
             return new PubSubService(publisherService, projectId);
         });
 
         return services;
-    }
-}
-
-public class ProductUpdateService
-{
-    private readonly PublisherClient _publisherClient;
-
-    public ProductUpdateService(PublisherClient publisherClient)
-    {
-        _publisherClient = publisherClient;
-    }
-
-    // Use the _publisherClient to publish messages.
-    public async Task PublishProductUpdateAsync(string message)
-    {
-        var pubsubMessage = new PubsubMessage
-        {
-            Data = ByteString.CopyFromUtf8(message),
-        };
-        string messageId = await _publisherClient.PublishAsync(pubsubMessage);
-        Console.WriteLine($"Published message {messageId}");
     }
 }

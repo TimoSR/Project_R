@@ -5,7 +5,7 @@ namespace x_endpoints.DataSeeder;
 
 public static class DataSeeder
 {
-    public static void SeedData(IServiceProvider serviceProvider)
+    public static async void SeedData(IServiceProvider serviceProvider)
     {
         var productService = serviceProvider.GetRequiredService<ProductService>();
 
@@ -23,7 +23,7 @@ public static class DataSeeder
             Price = 39.99m
         };
 
-        productService.InsertProduct(product1);
-        productService.InsertProduct(product2);
+        await productService.InsertProduct(product1);
+        await productService.InsertProduct(product2);
     }
 }
