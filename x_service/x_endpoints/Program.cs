@@ -20,26 +20,47 @@ builder.Services.AddMongoDBServices(builder.Configuration);
 builder.Services.AddHostedService<MongoDbStartupService>();
 
 // Testing Google Pub / Sub
-var googleProjectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+var topicId = "test-topic1";
+var subscriptionId = topicId;
 
-// Instantiate client
-PublisherServiceApiClient publisherClient = PublisherServiceApiClient.Create();
+// First create a topic.
+PublisherServiceApiClient publisherService = await PublisherServiceApiClient.CreateAsync();
+TopicName topicName = new TopicName(projectId, topicId);
+publisherService.CreateTopic(topicName);
 
-// Format topic
-TopicName topicName = new TopicName(googleProjectId, "test-topic");
+// Subscribe to the topic.
+SubscriberServiceApiClient subscriberService = await SubscriberServiceApiClient.CreateAsync();
+SubscriptionName subscriptionName = new SubscriptionName(projectId, subscriptionId);
+subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
 
-try
+// Publish a message to the topic using PublisherClient.
+PublisherClient publisher = await PublisherClient.CreateAsync(topicName);
+// PublishAsync() has various overloads. Here we're using the string overload.
+string messageId = await publisher.PublishAsync("Hello, Pubsub");
+// PublisherClient instance should be shutdown after use.
+// The TimeSpan specifies for how long to attempt to publish locally queued messages.
+await publisher.ShutdownAsync(TimeSpan.FromSeconds(15));
+
+// Pull messages from the subscription using SubscriberClient.
+SubscriberClient subscriber = await SubscriberClient.CreateAsync(subscriptionName);
+List<PubsubMessage> receivedMessages = new List<PubsubMessage>();
+// Start the subscriber listening for messages.
+await subscriber.StartAsync((msg, cancellationToken) =>
 {
-    // Try to get the topic
-    Topic topic = publisherClient.GetTopic(topicName);
-    Console.WriteLine($"Topic {topicName} already exists.");
-}
-catch (RpcException e) when (e.Status.StatusCode == StatusCode.NotFound)
-{
-    // If not found, create the topic
-    Topic topic = publisherClient.CreateTopic(topicName);
-    Console.WriteLine($"Topic {topicName} created.");
-}
+    receivedMessages.Add(msg);
+    Console.WriteLine($"Received message {msg.MessageId} published at {msg.PublishTime.ToDateTime()}");
+    Console.WriteLine($"Text: '{msg.Data.ToStringUtf8()}'");
+    // Stop this subscriber after one message is received.
+    // This is non-blocking, and the returned Task may be awaited.
+    subscriber.StopAsync(TimeSpan.FromSeconds(15));
+    // Return Reply.Ack to indicate this message has been handled.
+    return Task.FromResult(SubscriberClient.Reply.Ack);
+});
+
+// Tidy up by deleting the subscription and the topic.
+subscriberService.DeleteSubscription(subscriptionName);
+publisherService.DeleteTopic(topicName);
 
 //Adding the Controllers
 builder.Services.AddControllers();
