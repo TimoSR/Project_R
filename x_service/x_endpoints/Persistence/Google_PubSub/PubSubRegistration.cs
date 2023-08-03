@@ -19,12 +19,13 @@ public static class PubSubRegistration {
         TopicName topicName = TopicName.FromProjectTopic(projectId, topicId);
 
         // Use this if the microservice won't be utlizing scaling to zero. 
-        services.AddSingleton<PublisherClient>(sp =>
-        {
-            Console.WriteLine("\nPublisherClient Created!");
-            // Here you should initialize your PublisherClient with the settings you need.
-            return PublisherClient.Create(topicName);
-        });
+        // As it scales and perform better and support more advanced features
+        // services.AddSingleton<PublisherClient>(sp =>
+        // {
+        //     Console.WriteLine("\nPublisherClient Created!");
+        //     // Here you should initialize your PublisherClient with the settings you need.
+        //     return PublisherClient.Create(topicName);
+        // });
         
         services.AddSingleton<PublisherServiceApiClient>(sp => {
             Console.WriteLine("\nPublisherServiceApiClient Created!");
