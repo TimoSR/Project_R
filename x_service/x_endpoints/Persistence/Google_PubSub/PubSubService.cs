@@ -1,4 +1,5 @@
 using System.Collections;
+using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 
@@ -14,6 +15,7 @@ public class PubSubService
         _publisherService = publisherService;
         _projectId = projectId;
         CreateTopics();
+        ListAllTopicNames();
     }
 
     private void CreateTopics()
@@ -22,14 +24,16 @@ public class PubSubService
         var environmentVariables = Environment.GetEnvironmentVariables();
         var topics = new List<string>();
 
+        Console.WriteLine("\nCreating Topics:");
+
         // Filter environment variables starting with "TOPIC_"
         foreach (DictionaryEntry variable in environmentVariables)
         {
             string key = variable.Key.ToString();
             if (key.StartsWith("TOPIC_"))
             {
-                Console.WriteLine(variable.Key);
-                Console.WriteLine(variable.Value);
+                Console.WriteLine($"\n{variable.Key}");
+                Console.WriteLine($"{variable.Value}");
                 topics.Add(variable.Value.ToString());
             }
         }
@@ -48,6 +52,21 @@ public class PubSubService
             }
         }
     }
+
+    public void ListAllTopicNames()
+    {
+        ProjectName projectName = new ProjectName(_projectId);
+
+        var allTopics = _publisherService.ListTopics(projectName);
+
+        Console.WriteLine("\nTopics in PubSub:\n");
+
+        foreach (var topic in allTopics)
+        {
+            Console.WriteLine($"Topic: {topic.TopicName}");
+        }
+    }
+
 
     public async Task PublishMessageAsync(string topicId, string message)
     {

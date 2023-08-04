@@ -1,4 +1,5 @@
 using System.Collections;
+using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Grpc.Core;
@@ -25,8 +26,23 @@ public static class PubSubRegistration {
         // });
         
         services.AddSingleton<PublisherServiceApiClient>(serviceProvider => {
-            Console.WriteLine("\nPublisherServiceApiClient Created!");
-            return PublisherServiceApiClient.Create();
+            //Console.WriteLine("\nPublisherServiceApiClient Created!");     
+
+            var client = PublisherServiceApiClient.Create();
+
+            try {
+                // Try to get a non-existent topic.
+                var topicName = new TopicName(projectId, "non-existent-topic");
+                var response = client.GetTopic(topicName);
+            } catch (RpcException e) when (e.Status.StatusCode == StatusCode.NotFound) {
+                // If we get a "not found" error, it means we were able to connect to the server.
+                Console.WriteLine("\nYou succesfully connected to Google Pub/Sub!");
+            } catch (Exception e) {
+                // If we get any other exception, it might be a connection error.
+                Console.WriteLine($"\nFailed to connect to Pub/Sub server: {e.Message}");
+            }
+
+            return client;
         });
         
         services.AddSingleton(serviceProvider => {
@@ -34,6 +50,16 @@ public static class PubSubRegistration {
             var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
             return new PubSubService(publisherService, projectId);
         });
+        
+        // var serviceProvider = services.BuildServiceProvider();
+        // var client = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
+        // ProjectName projectName = new ProjectName(projectId);
+
+        // var allTopics = client.ListTopics(projectName);
+        // foreach (var topic in allTopics)
+        // {
+        //     Console.WriteLine($"Topic: {topic.TopicName}");
+        // }
 
         return services;
     }

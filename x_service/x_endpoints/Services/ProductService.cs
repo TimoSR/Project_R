@@ -1,3 +1,4 @@
+using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using MongoDB.Driver;
 using x_endpoints.Models;
@@ -33,7 +34,6 @@ public class ProductService
 
         Console.WriteLine("Inserted Something");
     }
-
 
     public List<Product> Get() => _products.Find(product => true).ToList();
 

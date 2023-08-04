@@ -26,7 +26,7 @@ public static class MongoDbRegistration
             try 
             {
                 var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                Console.WriteLine("\nPinged your deployment. You successfully connected to MongoDB! \n");
+                Console.WriteLine("\nYou successfully connected to MongoDB! \n");
             } 
             catch (Exception ex) 
             {
