@@ -11,11 +11,13 @@ using x_endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Console.WriteLine("\nGameServer_Service");
+DotNetEnv.Env.Load();
+
+var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+
+Console.WriteLine($"\n{serviceName}");
 
 Console.WriteLine("###################################");
-
-DotNetEnv.Env.Load();
 
 var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
 
