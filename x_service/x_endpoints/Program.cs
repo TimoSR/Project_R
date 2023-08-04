@@ -13,9 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 DotNetEnv.Env.Load();
 
+DotNetEnv.Env.Load();
+
+var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+
+Console.WriteLine($"\n{serviceName}");
+
+Console.WriteLine("###################################");
+
 var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
-
-
 
 // Add services to the container.
 builder.Services.AddMongoDBServices();
