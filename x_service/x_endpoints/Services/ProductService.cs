@@ -27,10 +27,10 @@ public class ProductService
     {
         await _products.InsertOneAsync(product);
 
-        var topic = Environment.GetEnvironmentVariable("TOPIC_PRODUCT_UPDATES");
+        var topicID = _pubSubService.GenerateTopicID("SERVICE_NAME", "TOPIC_PRODUCT_UPDATES");
 
         // Publish a message after inserting a product.
-        await _pubSubService.PublishMessageAsync(topic, $"New product: {product.Name}");
+        await _pubSubService.PublishMessageAsync(topicID, $"New product: {product.Name}");
 
         Console.WriteLine("A Product was inserted into MongoDB!\n");
     }

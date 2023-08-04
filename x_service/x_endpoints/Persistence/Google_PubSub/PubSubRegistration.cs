@@ -50,16 +50,6 @@ public static class PubSubRegistration {
             var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
             return new PubSubService(publisherService, projectId);
         });
-        
-        // var serviceProvider = services.BuildServiceProvider();
-        // var client = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
-        // ProjectName projectName = new ProjectName(projectId);
-
-        // var allTopics = client.ListTopics(projectName);
-        // foreach (var topic in allTopics)
-        // {
-        //     Console.WriteLine($"Topic: {topic.TopicName}");
-        // }
 
         return services;
     }

@@ -41,6 +41,7 @@ public class PubSubService
     {
         // Get all environment variables
         var environmentVariables = Environment.GetEnvironmentVariables();
+        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
         var topics = new List<string>();
 
         Console.WriteLine("\nCreating Topics:");
@@ -53,7 +54,7 @@ public class PubSubService
             {
                 Console.WriteLine($"\n{variable.Key}");
                 Console.WriteLine($"{variable.Value}");
-                topics.Add(variable.Value.ToString());
+                topics.Add($"{serviceName}-{variable.Value.ToString()}");
             }
         }
 
@@ -86,6 +87,11 @@ public class PubSubService
         }
     }
 
+    public string GenerateTopicID(string serviceName, string topic){
+        var _serviceName = DotNetEnv.Env.GetString(serviceName);
+        var _topic = DotNetEnv.Env.GetString(topic);
+        return $"{_serviceName}-{_topic}";
+    }
 
     public async Task PublishMessageAsync(string topicId, string message)
     {
