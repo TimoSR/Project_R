@@ -48,7 +48,7 @@ public static class PubSubRegistration {
         services.AddSingleton(serviceProvider => {
             var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
             var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
-            return new PubSubService(publisherService, projectId);
+            return new PubServices(publisherService, projectId);
         });
 
         return services;
@@ -60,6 +60,10 @@ public static class PubSubRegistration {
         DotNetEnv.Env.Load();
         
         var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+
+        // Use this if the microservice won't be utlizing scaling to zero. 
+        // As it scales and perform better and support more advanced features
+        //services.AddSingleton<SubscriberClient>();
         
         services.AddSingleton<SubscriberServiceApiClient>(serviceProvider => {
             Console.WriteLine("\nSubscriberServiceApiClient Created!");     

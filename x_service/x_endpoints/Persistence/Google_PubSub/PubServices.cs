@@ -5,12 +5,12 @@ using Google.Protobuf;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
-public class PubSubService
+public class PubServices
 {
     private readonly PublisherServiceApiClient _publisherService;
     private readonly string _projectId;
 
-    public PubSubService(PublisherServiceApiClient publisherService, string projectId)
+    public PubServices(PublisherServiceApiClient publisherService, string projectId)
     {
         _publisherService = publisherService;
         _projectId = projectId;

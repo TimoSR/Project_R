@@ -6,12 +6,12 @@ public class PubSubStartupService : IHostedService
 {
     
     private readonly PublisherServiceApiClient _client;
-    private readonly PubSubService _pubSubService;
+    private readonly PubServices _pubServices;
 
-    public PubSubStartupService(PublisherServiceApiClient client, PubSubService pubSubService)
+    public PubSubStartupService(PublisherServiceApiClient client, PubServices pubServices)
     {
         _client = client;
-        _pubSubService = pubSubService;
+        _pubServices = pubServices;
     }
     
     public Task StartAsync(CancellationToken cancellationToken)

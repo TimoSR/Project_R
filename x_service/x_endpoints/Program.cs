@@ -1,10 +1,4 @@
-using Google.Cloud.PubSub.V1;
-using Grpc.Core;
-using MongoDB.Driver;
-using MongoDB.Bson;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Models;
-using x_endpoints.Services;
 using x_endpoints.DataSeeder;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints;
@@ -23,14 +17,15 @@ Console.WriteLine("###################################");
 
 var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
 
-// Add MongoDB to the container.
+// Add / Disable MongoDB
 builder.Services.AddMongoDBServices();
-// Hosting MangoDB to make sure it connects on Program startup
-builder.Services.AddHostedService<MongoDbStartupService>();
-
-// Add services to the container.
+// Add / Disable Publisher
 builder.Services.AddPublisherServices();
-// Hosting PubSub to make sure it connects on Program startup
+// Add / Disable Subscriber 
+//builder.Services.AddSubscriberServices();
+
+// Hosting to make sure it dependencies connect on Program startup
+builder.Services.AddHostedService<MongoDbStartupService>();
 builder.Services.AddHostedService<PubSubStartupService>();
 
 // Add this after all project dependencies to register all the services.
