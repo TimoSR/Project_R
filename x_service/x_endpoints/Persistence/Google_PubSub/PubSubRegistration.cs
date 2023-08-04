@@ -14,9 +14,6 @@ public static class PubSubRegistration {
         DotNetEnv.Env.Load();
         
         var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
-        var topicId = DotNetEnv.Env.GetString("TOPIC_PRODUCT_UPDATES_V1");
-        
-        TopicName topicName = TopicName.FromProjectTopic(projectId, topicId);
 
         // Use this if the microservice won't be utlizing scaling to zero. 
         // As it scales and perform better and support more advanced features

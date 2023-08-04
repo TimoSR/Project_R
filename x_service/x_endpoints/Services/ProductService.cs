@@ -29,7 +29,7 @@ public class ProductService
         await _products.InsertOneAsync(product);
 
         // Publish a message after inserting a product.
-        await _pubSubService.PublishMessageAsync("TOPIC_PRODUCT_UPDATES_V1", $"New product: {product.Name}");
+        await _pubSubService.PublishMessageAsync("product-updates", $"New product: {product.Name}");
 
         Console.WriteLine("Inserted Something");
     }

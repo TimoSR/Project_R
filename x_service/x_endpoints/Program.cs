@@ -24,7 +24,7 @@ builder.Services.AddHostedService<MongoDbStartupService>();
 
 builder.Services.AddPubSubServices();
 // Hosting PubSub to make sure it connects on Program startup
-//builder.Services.AddHostedService<PubSubStartupService>();
+builder.Services.AddHostedService<PubSubStartupService>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices(); 

@@ -1,5 +1,4 @@
 using Google.Cloud.PubSub.V1;
-using x_endpoints.Persistence.MongoDB;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
@@ -17,11 +16,13 @@ public class PubSubStartupService : IHostedService
     
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        // Since the work is done, return a completed Task
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        // Since the work is done, return a completed Task
+        return Task.CompletedTask;
     }
 }
