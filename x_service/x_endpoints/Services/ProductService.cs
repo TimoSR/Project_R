@@ -11,8 +11,6 @@ public class ProductService
 {
     
     private readonly IMongoCollection<Product> _products;
-    // private readonly PublisherClient _publisherClient;
-    private readonly PublisherServiceApiClient _publisherApiClient;
     private readonly PubSubService _pubSubService;
 
     // The Created as it will react based on the settings in the project.
@@ -29,7 +27,7 @@ public class ProductService
     {
         await _products.InsertOneAsync(product);
 
-        var topic = Environment.GetEnvironmentVariable("TOPIC_PRODUCT_UPDATES_V1");
+        var topic = Environment.GetEnvironmentVariable("TOPIC_PRODUCT_UPDATES");
 
         // Publish a message after inserting a product.
         await _pubSubService.PublishMessageAsync(topic, $"New product: {product.Name}");

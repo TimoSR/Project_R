@@ -21,10 +21,10 @@ public class PubSubService
 
     private void IfDevelopment() {
 
-        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
         {
-            
-            Console.WriteLine("\nDeleting Topics...");
+
+            Console.WriteLine("\nDeleting Topics due to ENV: Development...");
 
             // Delete all existing topics in development environment
             var projectName = new ProjectName(_projectId);

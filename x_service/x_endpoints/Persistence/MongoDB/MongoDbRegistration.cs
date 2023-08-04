@@ -63,7 +63,7 @@ public static class MongoDbRegistration
                         // Drop the entire database
                         client.DropDatabase(dbName);
 
-                        Console.WriteLine($"\nDatabase: {dbName} are now cleared!");
+                        Console.WriteLine($"\nDatabase: {dbName} are now cleared due to ENV: Development...");
                     }
                     
                 }
