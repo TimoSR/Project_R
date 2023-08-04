@@ -16,10 +16,10 @@ public class ProductService
 
     // The Created as it will react based on the settings in the project.
     // If there is/not a dependency, it will be injected automatically added/removed.
-    public ProductService(MongoDbService dbService, PublisherServiceApiClient publisherApiClient, PubSubService pubSubService)
+    public ProductService(MongoDbService dbService, PubSubService pubSubService)
     {
         _products = dbService.GetDefaultDatabase().GetCollection<Product>("Products");
-        _publisherApiClient = publisherApiClient;
+        //_publisherApiClient = publisherApiClient;
         _pubSubService = pubSubService;
         //_publisherClient = publisherClient;
     }
