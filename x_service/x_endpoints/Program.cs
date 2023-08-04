@@ -98,7 +98,8 @@ if (enviroment.Equals("Development")) {
 
     // Insert initial data into the "Products" collection
     DataSeeder.SeedData(app.Services);
-    Console.WriteLine("\nDatabase is now seeded!\n");
+    Console.WriteLine("\nDevelopment Env:");
+    Console.WriteLine("\nSeeding Database...\n");
 
 }
 

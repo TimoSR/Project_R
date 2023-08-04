@@ -14,8 +14,27 @@ public class PubSubService
     {
         _publisherService = publisherService;
         _projectId = projectId;
+        IfDevelopment();
         CreateTopics();
         ListAllTopicNames();
+    }
+
+    private void IfDevelopment() {
+
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        {
+            
+            Console.WriteLine("\nDeleting Topics...");
+
+            // Delete all existing topics in development environment
+            var projectName = new ProjectName(_projectId);
+            var existingTopics = _publisherService.ListTopics(projectName);
+            foreach (var existingTopic in existingTopics)
+            {
+                _publisherService.DeleteTopic(existingTopic.TopicName);
+            }
+        }
+        
     }
 
     private void CreateTopics()
@@ -53,7 +72,7 @@ public class PubSubService
         }
     }
 
-    public void ListAllTopicNames()
+    private void ListAllTopicNames()
     {
         ProjectName projectName = new ProjectName(_projectId);
 

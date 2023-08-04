@@ -29,10 +29,12 @@ public class ProductService
     {
         await _products.InsertOneAsync(product);
 
-        // Publish a message after inserting a product.
-        await _pubSubService.PublishMessageAsync("product-updates", $"New product: {product.Name}");
+        var topic = Environment.GetEnvironmentVariable("TOPIC_PRODUCT_UPDATES_V1");
 
-        Console.WriteLine("Inserted Something");
+        // Publish a message after inserting a product.
+        await _pubSubService.PublishMessageAsync(topic, $"New product: {product.Name}");
+
+        Console.WriteLine("A Product was inserted into MongoDB!\n");
     }
 
     public List<Product> Get() => _products.Find(product => true).ToList();
