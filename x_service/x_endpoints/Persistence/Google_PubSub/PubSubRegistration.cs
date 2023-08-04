@@ -9,7 +9,7 @@ namespace x_endpoints.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
 
-    public static IServiceCollection AddPubSubServices(this IServiceCollection services)
+    public static IServiceCollection AddPublisherServices(this IServiceCollection services)
     {
 
         DotNetEnv.Env.Load();
@@ -53,4 +53,23 @@ public static class PubSubRegistration {
 
         return services;
     }
+     
+    public static IServiceCollection AddSubscriberServices(this IServiceCollection services)
+    {
+        
+        DotNetEnv.Env.Load();
+        
+        var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+        
+        services.AddSingleton<SubscriberServiceApiClient>(serviceProvider => {
+            Console.WriteLine("\nSubscriberServiceApiClient Created!");     
+
+            var client = SubscriberServiceApiClient.Create();
+
+            return client;
+        });
+        
+        return services;
+    }
+
 }

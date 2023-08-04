@@ -23,12 +23,13 @@ Console.WriteLine("###################################");
 
 var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
 
-// Add services to the container.
+// Add MongoDB to the container.
 builder.Services.AddMongoDBServices();
 // Hosting MangoDB to make sure it connects on Program startup
 builder.Services.AddHostedService<MongoDbStartupService>();
 
-builder.Services.AddPubSubServices();
+// Add services to the container.
+builder.Services.AddPublisherServices();
 // Hosting PubSub to make sure it connects on Program startup
 builder.Services.AddHostedService<PubSubStartupService>();
 
