@@ -34,7 +34,7 @@ public class SubServices
         }
     }
 
-    private async void RegisterSubscriptions()
+    private void RegisterSubscriptions()
     {
         // Get all environment variables
         var environmentVariables = Environment.GetEnvironmentVariables();
@@ -52,12 +52,12 @@ public class SubServices
                 Console.WriteLine($"{variable.Value}");
                 var topicValue = variable.Value.ToString();
                 var subscriptionId = $"{topicValue}-{serviceName}";
-                await RegisterSubscription(subscriptionId, topicValue);
+                RegisterSubscription(subscriptionId, topicValue);
             }
         }
-    }
+    }   
 
-    private async Task RegisterSubscription(string subscriptionId, string topicValue)
+    private void RegisterSubscription(string subscriptionId, string topicValue)
     {
         SubscriptionName subscriptionName = new SubscriptionName(_projectID, subscriptionId);
         TopicName topicName = new TopicName(_projectID, topicValue);
@@ -65,14 +65,14 @@ public class SubServices
         try
         {
             // Check if the subscription already exists
-            var existingSubscription = await _subscriberService.GetSubscriptionAsync(subscriptionName);
+            var existingSubscription = _subscriberService.GetSubscription(subscriptionName);
             Console.WriteLine($"Subscription {subscriptionId} already exists.");
         }
         catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
         {
             // If the subscription does not exist, create a new one
-            await _subscriberService.CreateSubscriptionAsync(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
-            Console.WriteLine($"Subscription {subscriptionId} has been created for topic {topicValue}.");
+            _subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+            //Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
         }
     }
 
@@ -87,6 +87,47 @@ public class SubServices
         foreach (var subscription in allSubscriptions)
         {
             Console.WriteLine($"Subscription: {subscription.SubscriptionName}");
+        }
+    }
+    private async void RegisterSubscriptionsAsync()
+    {
+        // Get all environment variables
+        var environmentVariables = Environment.GetEnvironmentVariables();
+        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+
+        Console.WriteLine("\nRegistering Subscriptions:");
+
+        // Filter environment variables starting with "SUBSCRIBE_"
+        foreach (DictionaryEntry variable in environmentVariables)
+        {
+            string key = variable.Key.ToString();
+            if (key.StartsWith("SUBSCRIBE_"))
+            {
+                Console.WriteLine($"\n{variable.Key}");
+                Console.WriteLine($"{variable.Value}");
+                var topicValue = variable.Value.ToString();
+                var subscriptionId = $"{topicValue}-{serviceName}";
+                await RegisterSubscriptionAsync(subscriptionId, topicValue);
+            }
+        }
+    }
+
+    private async Task RegisterSubscriptionAsync(string subscriptionId, string topicValue)
+    {
+        SubscriptionName subscriptionName = new SubscriptionName(_projectID, subscriptionId);
+        TopicName topicName = new TopicName(_projectID, topicValue);
+
+        try
+        {
+            // Check if the subscription already exists
+            var existingSubscription = await _subscriberService.GetSubscriptionAsync(subscriptionName);
+            Console.WriteLine($"Subscription {subscriptionId} already exists.");
+        }
+        catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
+        {
+            // If the subscription does not exist, create a new one
+            await _subscriberService.CreateSubscriptionAsync(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+            Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
         }
     }
 }

@@ -36,7 +36,8 @@ public static class PubSubRegistration {
                 var response = client.GetTopic(topicName);
             } catch (RpcException e) when (e.Status.StatusCode == StatusCode.NotFound) {
                 // If we get a "not found" error, it means we were able to connect to the server.
-                Console.WriteLine("\nYou succesfully connected to Google Pub/Sub!");
+                Console.WriteLine("\n###################################");
+                Console.WriteLine("\nYou successfully connected to PubSub with PublisherApiClient!");
             } catch (Exception e) {
                 // If we get any other exception, it might be a connection error.
                 Console.WriteLine($"\nFailed to connect to Pub/Sub server: {e.Message}");
@@ -62,9 +63,12 @@ public static class PubSubRegistration {
 
         services.AddSingleton<SubscriberServiceApiClient>(serviceProvider =>
         {
-            Console.WriteLine("\nSubscriberServiceApiClient Created!");
+            //Console.WriteLine("\nSubscriberServiceApiClient Created!");
 
             var client = SubscriberServiceApiClient.Create();
+
+            Console.WriteLine("\n###################################");
+            Console.WriteLine("\nYou successfully connected to PubSub with SubscriberApiClient!");
 
             return client;
         });
