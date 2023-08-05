@@ -54,7 +54,8 @@ public class PubServices
             {
                 Console.WriteLine($"\n{variable.Key}");
                 Console.WriteLine($"{variable.Value}");
-                topics.Add($"{serviceName}-{variable.Value.ToString()}");
+                var topicID = $"{serviceName}-{variable.Value.ToString()}";
+                topics.Add(topicID);
             }
         }
 
@@ -71,6 +72,45 @@ public class PubServices
                 _publisherService.CreateTopic(topicName);
             }
         }
+    }
+
+    private async Task CreateTopicsAsync()
+    {
+        // Get all environment variables
+        var environmentVariables = Environment.GetEnvironmentVariables();
+        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+        var topics = new List<string>();
+
+        Console.WriteLine("\nCreating Topics:");
+
+        // Filter environment variables starting with "TOPIC_"
+        foreach (DictionaryEntry variable in environmentVariables)
+        {
+            string key = variable.Key.ToString();
+            if (key.StartsWith("TOPIC_"))
+            {
+                Console.WriteLine($"\n{variable.Key}");
+                Console.WriteLine($"{variable.Value}");
+                var topicID = $"{serviceName}-{variable.Value.ToString()}";
+                topics.Add(topicID);
+            }
+        }
+
+        // Create topics if they don't exist
+        var tasks = topics.Select(async topicId =>
+        {
+            var topicName = TopicName.FromProjectTopic(_projectId, topicId);
+            try 
+            {
+                await _publisherService.GetTopicAsync(topicName);
+            } 
+            catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
+            {
+                await _publisherService.CreateTopicAsync(topicName);
+            }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
     private void ListAllTopicNames()
