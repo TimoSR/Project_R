@@ -22,7 +22,7 @@ builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
 builder.Services.AddPublisherServices();
 // Add / Disable Subscriber 
-//builder.Services.AddSubscriberServices();
+builder.Services.AddSubscriberServices();
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<MongoDbStartupService>();

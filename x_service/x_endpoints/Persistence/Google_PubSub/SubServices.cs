@@ -1,3 +1,5 @@
+using System.Collections;
+using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 
 namespace x_endpoints.Persistence.Google_PubSub;
@@ -11,6 +13,9 @@ public class SubServices
     {
         _subscriberService = subscriberService;
         _projectID = projectID;
+        IfDevelopment();
+        RegisterSubscriptions();
+        ListAllSubscriptions();        
     }
 
     private void IfDevelopment()
@@ -20,7 +25,7 @@ public class SubServices
             Console.WriteLine("\nDeleting Subscriptions due to ENV: Development...");
 
             // Delete all existing subscriptions in development environment
-            var projectName = new ProjectName(_projectId);
+            var projectName = new ProjectName(_projectID);
             var existingSubscriptions = _subscriberService.ListSubscriptions(projectName);
             foreach (var existingSubscription in existingSubscriptions)
             {
@@ -45,30 +50,35 @@ public class SubServices
             {
                 Console.WriteLine($"\n{variable.Key}");
                 Console.WriteLine($"{variable.Value}");
-                var subscriptionId = $"{variable.Value.ToString()}-{serviceName}";
-                await RegisterSubscription(subscriptionId);
+                var topicValue = variable.Value.ToString();
+                var subscriptionId = $"{topicValue}-{serviceName}";
+                await RegisterSubscription(subscriptionId, topicValue);
             }
         }
     }
 
-    private async Task RegisterSubscription(string subscriptionId)
+    private async Task RegisterSubscription(string subscriptionId, string topicValue)
     {
-        var subscriptionName = SubscriptionName.FromProjectSubscription(_projectId, subscriptionId);
-        try 
+        SubscriptionName subscriptionName = new SubscriptionName(_projectID, subscriptionId);
+        TopicName topicName = new TopicName(_projectID, topicValue);
+
+        try
         {
-            await _subscriberService.GetSubscriptionAsync(subscriptionName);
-        } 
+            // Check if the subscription already exists
+            var existingSubscription = await _subscriberService.GetSubscriptionAsync(subscriptionName);
+            Console.WriteLine($"Subscription {subscriptionId} already exists.");
+        }
         catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
         {
-            // Assuming a topic with the same ID exists.
-            var topicName = TopicName.FromProjectTopic(_projectId, subscriptionId);
+            // If the subscription does not exist, create a new one
             await _subscriberService.CreateSubscriptionAsync(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+            Console.WriteLine($"Subscription {subscriptionId} has been created for topic {topicValue}.");
         }
     }
 
     private void ListAllSubscriptions()
     {
-        ProjectName projectName = new ProjectName(_projectId);
+        ProjectName projectName = new ProjectName(_projectID);
 
         var allSubscriptions = _subscriberService.ListSubscriptions(projectName);
 

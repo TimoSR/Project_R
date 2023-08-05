@@ -12,14 +12,16 @@ public class ProductService
     
     private readonly IMongoCollection<Product> _products;
     private readonly PubServices _pubServices;
+    private readonly SubServices _subServices;
 
     // The Created as it will react based on the settings in the project.
     // If there is/not a dependency, it will be injected automatically added/removed.
-    public ProductService(MongoDbService dbService, PubServices pubServices)
+    public ProductService(MongoDbService dbService, PubServices pubServices, SubServices subServices)
     {
         _products = dbService.GetDefaultDatabase().GetCollection<Product>("Products");
         //_publisherApiClient = publisherApiClient;
         _pubServices = pubServices;
+        _subServices = subServices;
         //_publisherClient = publisherClient;
     }
 
