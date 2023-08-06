@@ -11,17 +11,15 @@ public class ProductService
 {
     
     private readonly IMongoCollection<Product> _products;
-    private readonly PubServices _pubServices;
-    private readonly SubServices _subServices;
+    //private readonly PubSubService _pubSubService;
 
     // The Created as it will react based on the settings in the project.
     // If there is/not a dependency, it will be injected automatically added/removed.
-    public ProductService(MongoDbService dbService, PubServices pubServices, SubServices subServices)
+    public ProductService(MongoDbService dbService)
     {
         _products = dbService.GetDefaultDatabase().GetCollection<Product>("Products");
         //_publisherApiClient = publisherApiClient;
-        _pubServices = pubServices;
-        _subServices = subServices;
+        //_pubSubService = pubSubService;
         //_publisherClient = publisherClient;
     }
 
@@ -29,11 +27,12 @@ public class ProductService
     {
         await _products.InsertOneAsync(product);
 
-        var topicID = _pubServices.GenerateTopicID("SERVICE_NAME", "TOPIC_PRODUCT_UPDATES");
-        //Console.WriteLine(topicID);
+        //var topic = Environment.GetEnvironmentVariable("TOPIC_PRODUCT_UPDATES");
 
         // Publish a message after inserting a product.
-        await _pubServices.PublishMessageAsync(topicID, $"New product: {product.Name}");
+        // await _pubSubService.PublishMessageAsync(topic, $"New product: {product.Name}");
+
+        Console.WriteLine("A Product was inserted into MongoDB!\n");
     }
 
     public List<Product> Get() => _products.Find(product => true).ToList();

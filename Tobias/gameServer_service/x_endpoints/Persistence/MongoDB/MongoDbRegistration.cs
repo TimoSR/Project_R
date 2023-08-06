@@ -12,9 +12,8 @@ public static class MongoDbRegistration
 
         var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-        var database = DotNetEnv.Env.GetString("MONGODB_DB");
-        var databaseName = $"{serviceName}_{database}";
+        var default_database = DotNetEnv.Env.GetString("MONGODB_DEVELOPMENT_DB");
+        var selected_database = default_database;
 
         services.AddSingleton<IMongoClient>(sp =>
         {
@@ -59,7 +58,7 @@ public static class MongoDbRegistration
 
                     //Console.WriteLine(dbName);
 
-                    if(dbName.Equals(databaseName)) {
+                    if(dbName.Equals(selected_database)) {
 
                         // Drop the entire database
                         client.DropDatabase(dbName);
@@ -70,7 +69,7 @@ public static class MongoDbRegistration
                 }
             }
 
-            return new MongoDbService(client, databaseName, databases);
+            return new MongoDbService(client, default_database, databases);
         });
 
         return services;

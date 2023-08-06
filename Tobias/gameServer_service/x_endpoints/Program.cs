@@ -1,7 +1,10 @@
 using Google.Cloud.PubSub.V1;
-using Google.Protobuf;
 using Grpc.Core;
+using MongoDB.Driver;
+using MongoDB.Bson;
 using x_endpoints.Persistence.MongoDB;
+using x_endpoints.Models;
+using x_endpoints.Services;
 using x_endpoints.DataSeeder;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints;
@@ -18,16 +21,15 @@ Console.WriteLine("###################################");
 
 var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
 
-// Add / Disable MongoDB
+// Add services to the container.
+// Hosting MangoDB to make sure it connects on Program startup
 builder.Services.AddMongoDBServices();
-// Add / Disable Publisher
-builder.Services.AddPublisherServices();
-// Add / Disable Subscriber 
-builder.Services.AddSubscriberServices();
-
-// Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<MongoDbStartupService>();
-builder.Services.AddHostedService<PubSubStartupService>();
+
+// Add services to the container.
+// Hosting PubSub to make sure it connects on Program startup
+//builder.Services.AddPubSubServices();
+//builder.Services.AddHostedService<PubSubStartupService>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();
@@ -56,8 +58,8 @@ if (enviroment.Equals("Development")) {
 
     // Insert initial data into the "Products" collection
     DataSeeder.SeedData(app.Services);
-    Console.WriteLine("\n###################################");
     Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
+
 }
 
 // Configure the HTTP request pipeline.

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using x_endpoints.Models;
-using x_endpoints.Services;
 
 namespace x_endpoints.Controllers;
 
@@ -14,27 +13,15 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
-    
-    private readonly ProductService _productService;
 
-    public WeatherForecastController(ProductService productService, ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger)
     {
-        _productService = productService;
         _logger = logger;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public async Task<WeatherForecast[]> Get()
+    public IEnumerable<WeatherForecast> Get()
     {
-        var product1 = new Product
-        {
-            Name = "Product 1",
-            Description = "This is product 1",
-            Price = 29.99m
-        };
-
-        await _productService.InsertProduct(product1);
-        
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
