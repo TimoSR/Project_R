@@ -2,7 +2,6 @@ using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 
-
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public class SubServices
@@ -83,7 +82,7 @@ public class SubServices
         catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
         {
             // If the subscription does not exist, create a new one
-            _subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig, ackDeadlineSeconds: 600);
+            _subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig, ackDeadlineSeconds: 60);
             //Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
         }
     }
