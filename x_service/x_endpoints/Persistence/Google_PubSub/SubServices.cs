@@ -2,6 +2,7 @@ using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 
+
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public class SubServices
@@ -48,19 +49,30 @@ public class SubServices
             string key = variable.Key.ToString();
             if (key.StartsWith("SUBSCRIBE_"))
             {
-                Console.WriteLine($"\n{variable.Key}");
-                Console.WriteLine($"{variable.Value}");
-                var topicValue = variable.Value.ToString();
-                var subscriptionId = $"{topicValue}-{serviceName}";
-                RegisterSubscription(subscriptionId, topicValue);
+                if (key.StartsWith("SUBSCRIBE_"))
+                {
+                    Console.WriteLine($"\n{variable.Key}");
+                    Console.WriteLine($"{variable.Value}");
+
+                    var keyValue = variable.Key.ToString();
+                    var topicValue = variable.Value.ToString();
+                    var subscriptionId = $"{topicValue}-{serviceName}";
+                    var endpoint = $"{keyValue.ToUpper().Replace("SUBSCRIBE_", "ENDPOINT_")}";
+
+                    // If the topic name is order-updates, the corresponding endpoint environment variable would be ENDPOINT_ORDER_UPDATES.
+                    var pushEndpoint = DotNetEnv.Env.GetString(endpoint);
+
+                    RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
+                }
             }
         }
     }   
 
-    private void RegisterSubscription(string subscriptionId, string topicValue)
+    private void RegisterPushSubscription(string subscriptionId, string topicValue, string pushEndpoint)
     {
         SubscriptionName subscriptionName = new SubscriptionName(_projectID, subscriptionId);
         TopicName topicName = new TopicName(_projectID, topicValue);
+        PushConfig pushConfig = new PushConfig() { PushEndpoint = pushEndpoint };
 
         try
         {
@@ -71,7 +83,7 @@ public class SubServices
         catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
         {
             // If the subscription does not exist, create a new one
-            _subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+            _subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig, ackDeadlineSeconds: 600);
             //Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
         }
     }

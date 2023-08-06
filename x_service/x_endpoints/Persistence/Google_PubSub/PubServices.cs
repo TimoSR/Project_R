@@ -136,10 +136,19 @@ public class PubServices
     public async Task PublishMessageAsync(string topicId, string message)
     {
         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
-        var pubsubMessage = new PubsubMessage
+
+        PubsubMessage pubsubMessage = new PubsubMessage
         {
-            Data = ByteString.CopyFromUtf8(message)
+            // The data is any arbitrary ByteString. Here, we're using text.
+            Data = ByteString.CopyFromUtf8("Hello, Pubsub"),
+            // The attributes provide metadata in a string-to-string dictionary.
+            Attributes =
+            {
+                { "description", "Simple text message" }
+            }
         };
+
+        // Publish a message to the topic using PublisherClient.
         await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
     }
 }

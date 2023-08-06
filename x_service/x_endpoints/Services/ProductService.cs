@@ -30,6 +30,7 @@ public class ProductService
         await _products.InsertOneAsync(product);
 
         var topicID = _pubServices.GenerateTopicID("SERVICE_NAME", "TOPIC_PRODUCT_UPDATES");
+        //Console.WriteLine(topicID);
 
         // Publish a message after inserting a product.
         await _pubServices.PublishMessageAsync(topicID, $"New product: {product.Name}");
