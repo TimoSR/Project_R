@@ -25,6 +25,7 @@ public class PubSubController : ControllerBase
             {
                 var body = await reader.ReadToEndAsync();
                 // Log or do something with the message here
+                Console.WriteLine("\nA Product was inserted into MongoDB:");
                 Console.WriteLine($"{body}");
             }
 

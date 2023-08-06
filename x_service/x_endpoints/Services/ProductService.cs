@@ -34,8 +34,6 @@ public class ProductService
 
         // Publish a message after inserting a product.
         await _pubServices.PublishMessageAsync(topicID, $"New product: {product.Name}");
-
-        Console.WriteLine("A Product was inserted into MongoDB!\n");
     }
 
     public List<Product> Get() => _products.Find(product => true).ToList();
