@@ -4,11 +4,12 @@ variable "env_vars" {
   default = {
 
     "SERVICE_NAME"                = "x-service"
-    "ENVIRONMENT"                 = "Production"
+    "ENVIRONMENT"                 = "Development"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"
     ########################################################################################
     "TOPIC_PRODUCT_UPDATES"       = "product-updates-v1"
     "TOPIC_ORDER_UPDATES"         = "order-updates-v1"
+
     # Your subscriptions and endpoints need to go 1:1
     ########################################################################################
     "SUBSCRIBE_PRODUCT_UPDATES"   = "x-service-product-updates-v1"
