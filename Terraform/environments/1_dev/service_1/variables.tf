@@ -4,14 +4,17 @@ variable "env_vars" {
   default = {
     "SERVICE_NAME"                = "x-service"
     "ENVIRONMENT"                 = "Production"
-    "TOPIC_PRODUCT_UPDATES"       = "product-updates-v1"
-    "TOPIC_ORDER_UPDATES"         = "order-updates-v1"
-    "SUBSCRIBE_PRODUCT_UPDATES"   = "x-service-product-updates-v1"
-    "SUBSCRIBE_ORDER_UPDATES"     = "x-service-order-updates-v1"
-    "ENDPOINT_PRODUCT_UPDATES"    = "https://riftgate.ngrok.io/api/PubSub/Subscription1"
-    "ENDPOINT_ORDER_UPDATES"      = "https://riftgate.ngrok.io/api/PubSub/Subscription2"
     "MONGODB_DB"                  = "Production"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"
+    ########################################################################################
+    "TOPIC_PRODUCT_UPDATES"       = "product-updates-v1"
+    "TOPIC_ORDER_UPDATES"         = "order-updates-v1"
+    ########################################################################################
+    "SUBSCRIBE_PRODUCT_UPDATES"   = "x-service-product-updates-v1"
+    "SUBSCRIBE_ORDER_UPDATES"     = "x-service-order-updates-v1"
+    ########################################################################################
+    "ENDPOINT_PRODUCT_UPDATES"    = "https://riftgate.ngrok.io/api/PubSub/Subscription1"
+    "ENDPOINT_ORDER_UPDATES"      = "https://riftgate.ngrok.io/api/PubSub/Subscription2"
   }
 }
 
