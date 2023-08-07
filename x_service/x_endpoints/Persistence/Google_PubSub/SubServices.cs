@@ -18,18 +18,32 @@ public class SubServices
         ListAllSubscriptions();        
     }
 
-    private void IfDevelopment()
+    private void IfDevelopment() 
     {
+        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+
         if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
         {
             Console.WriteLine("\nDeleting Subscriptions due to ENV: Development...");
 
-            // Delete all existing subscriptions in development environment
-            var projectName = new ProjectName(_projectID);
-            var existingSubscriptions = _subscriberService.ListSubscriptions(projectName);
-            foreach (var existingSubscription in existingSubscriptions)
+            // Get all environment variables
+            var envVars = Environment.GetEnvironmentVariables();
+
+            foreach (var key in envVars.Keys)
             {
-                _subscriberService.DeleteSubscription(existingSubscription.SubscriptionName);
+                // Check if the environment variable starts with 'SUBSCRIBE_'
+                if (key.ToString().StartsWith("SUBSCRIBE_"))
+                {
+                    // Get the subscription name
+                    var subscriptionName = $"{envVars[key].ToString()}-{serviceName}";
+                
+                    // Delete the subscription
+                    var existingSubscription = _subscriberService.GetSubscription(new SubscriptionName(_projectID, subscriptionName));
+                    if (existingSubscription != null)
+                    {
+                        _subscriberService.DeleteSubscription(existingSubscription.SubscriptionName);
+                    }
+                }
             }
         }
     }

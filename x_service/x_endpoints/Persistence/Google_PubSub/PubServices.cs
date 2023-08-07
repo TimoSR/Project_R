@@ -21,20 +21,32 @@ public class PubServices
 
     private void IfDevelopment() {
 
+        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+
         if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
         {
-
             Console.WriteLine("\nDeleting Topics due to ENV: Development...");
 
-            // Delete all existing topics in development environment
-            var projectName = new ProjectName(_projectId);
-            var existingTopics = _publisherService.ListTopics(projectName);
-            foreach (var existingTopic in existingTopics)
+            // Get all environment variables
+            var envVars = Environment.GetEnvironmentVariables();
+
+            foreach (var key in envVars.Keys)
             {
-                _publisherService.DeleteTopic(existingTopic.TopicName);
+                // Check if the environment variable starts with 'TOPIC_'
+                if (key.ToString().StartsWith("TOPIC_"))
+                {
+                    // Get the topic name
+                    var topicName = $"{serviceName}-{envVars[key].ToString()}";
+                
+                    // Delete the topic
+                    var existingTopic = _publisherService.GetTopic(new TopicName(_projectId, topicName));
+                    if (existingTopic != null)
+                    {
+                        _publisherService.DeleteTopic(existingTopic.TopicName);
+                    }
+                }
             }
         }
-        
     }
 
     private void CreateTopics()
