@@ -19,7 +19,7 @@ resource "google_project_service" "secret_manager" {
 
 # Getting the references to secrets
 data "google_secret_manager_secret_version" "secrets" {
-  for_each = toset(["MONGODB_DEVELOPMENT_DB", "ENVIRONMENT", "MONGODB_CONNECTION_STRING"])
+  for_each = toset(["MONGODB_CONNECTION_STRING"])
   secret   = each.key
   version  = "latest"
   depends_on = [ google_project_service.secret_manager ]
@@ -47,6 +47,15 @@ resource "google_cloud_run_service" "x-service" {
 
         ports {
           container_port = 8080 # Make sure your application listens on port 8080 inside the container.
+        }
+
+        # Adding environment variables dynamically
+        dynamic "env" {
+          for_each = var.env_vars
+          content {
+            name  = env.key
+            value = env.value
+          }
         }
 
         # Dynamicaly adding references to the secrets
@@ -89,10 +98,46 @@ resource "google_cloud_run_service" "x-service" {
   }
 }
 
-# Disabling authentication on microservice for smoke testing 
-resource "google_cloud_run_service_iam_member" "all_users" {
-  location = var.region
+# # Disabling authentication on microservice for smoke testing 
+# resource "google_cloud_run_service_iam_member" "all_users" {
+#   location = var.region
+#   service  = google_cloud_run_service.x-service.name
+#   role     = "roles/run.invoker"
+#   member   = "allUsers"
+# }
+
+data "google_project" "project" {
+  project_id = var.project
+}
+
+#Enabling Pub/Sub
+
+resource "google_service_account" "sa" {
+  account_id   = "cloud-run-pubsub-invoker"
+  display_name = "Cloud Run Pub/Sub Invoker"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "google_cloud_run_service_iam_binding" "binding" {
+  location = google_cloud_run_service.x-service.location
   service  = google_cloud_run_service.x-service.name
   role     = "roles/run.invoker"
-  member   = "allUsers"
+  members  = [
+    "allUsers",
+    "serviceAccount:${google_service_account.sa.email}"
+  ]
+}
+
+resource "google_project_service_identity" "pubsub_agent" {
+  provider = google-beta
+  project  = data.google_project.project.project_id
+  service  = "pubsub.googleapis.com"
+}
+resource "google_project_iam_binding" "project_token_creator" {
+  project = data.google_project.project.project_id
+  role    = "roles/iam.serviceAccountTokenCreator"
+  members = ["serviceAccount:${google_project_service_identity.pubsub_agent.email}"]
 }
