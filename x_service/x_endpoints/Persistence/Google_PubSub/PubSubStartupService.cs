@@ -7,11 +7,13 @@ public class PubSubStartupService : IHostedService
     
     private readonly PublisherServiceApiClient _client;
     private readonly PubServices _pubServices;
+    private readonly SubServices _subServices;
 
-    public PubSubStartupService(PublisherServiceApiClient client, PubServices pubServices)
+    public PubSubStartupService(PublisherServiceApiClient client, PubServices pubServices, SubServices subServices)
     {
         _client = client;
         _pubServices = pubServices;
+        _subServices = subServices;
     }
     
     public Task StartAsync(CancellationToken cancellationToken)

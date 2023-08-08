@@ -13,8 +13,7 @@ public static class MongoDbRegistration
         var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
         var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-        var database = DotNetEnv.Env.GetString("MONGODB_DB");
-        var databaseName = $"{serviceName}_{database}";
+        var databaseName = $"{serviceName}_{environment}";
 
         services.AddSingleton<IMongoClient>(sp =>
         {
