@@ -14,11 +14,11 @@ public class ProductService
     private readonly IMongoCollection<Product> _products;
     private readonly PubServices _pubServices;
     private readonly SubServices _subServices;
-    private readonly RedisService _redisService;
+    //private readonly RedisService _redisService;
 
     // The Created as it will react based on the settings in the project.
     // If there is/not a dependency, it will be injected automatically added/removed.
-    public ProductService(MongoDbService dbService, PubServices pubServices, SubServices subServices, RedisService redisService)
+    public ProductService(MongoDbService dbService, PubServices pubServices, SubServices subServices)
     {
         _products = dbService.GetDefaultDatabase().GetCollection<Product>("Products");
         //_publisherApiClient = publisherApiClient;
@@ -38,7 +38,7 @@ public class ProductService
         // Publish a message after inserting a product.
         await _pubServices.PublishMessageAsync(topicID, $"New product: {product.Name}");
 
-        await _redisService.SetValue("1", "test");
+        //await _redisService.SetValue("1", "test");
     }
 
     public List<Product> Get() => _products.Find(product => true).ToList();

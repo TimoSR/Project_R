@@ -27,12 +27,12 @@ builder.Services.AddPublisherServices();
 // Add / Disable Subscriber 
 builder.Services.AddSubscriberServices();
 // Add / Disable Redis
-builder.Services.AddRedisServices();
+//builder.Services.AddRedisServices();
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<MongoDbStartupService>();
 builder.Services.AddHostedService<PubSubStartupService>();
-builder.Services.AddHostedService<RedisStartupService>();
+//builder.Services.AddHostedService<RedisStartupService>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();
