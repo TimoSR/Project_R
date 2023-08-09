@@ -25,7 +25,7 @@ public class ProductService
         _pubServices = pubServices;
         _subServices = subServices;
         //_publisherClient = publisherClient;
-        _redisService = redisService;
+        //_redisService = redisService;
     }
 
      public async Task InsertProduct(Product product)
