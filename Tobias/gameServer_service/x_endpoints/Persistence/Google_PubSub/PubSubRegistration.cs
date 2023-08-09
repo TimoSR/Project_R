@@ -9,7 +9,7 @@ namespace x_endpoints.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
 
-    public static IServiceCollection AddPubSubServices(this IServiceCollection services)
+    public static IServiceCollection AddPublisherServices(this IServiceCollection services)
     {
 
         DotNetEnv.Env.Load();
@@ -36,7 +36,8 @@ public static class PubSubRegistration {
                 var response = client.GetTopic(topicName);
             } catch (RpcException e) when (e.Status.StatusCode == StatusCode.NotFound) {
                 // If we get a "not found" error, it means we were able to connect to the server.
-                Console.WriteLine("\nYou succesfully connected to Google Pub/Sub!");
+                Console.WriteLine("\n###################################");
+                Console.WriteLine("\nYou successfully connected to PubSub with PublisherApiClient!");
             } catch (Exception e) {
                 // If we get any other exception, it might be a connection error.
                 Console.WriteLine($"\nFailed to connect to Pub/Sub server: {e.Message}");
@@ -48,19 +49,38 @@ public static class PubSubRegistration {
         services.AddSingleton(serviceProvider => {
             var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
             var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
-            return new PubSubService(publisherService, projectId);
+            return new PubServices(publisherService, projectId);
         });
-        
-        // var serviceProvider = services.BuildServiceProvider();
-        // var client = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
-        // ProjectName projectName = new ProjectName(projectId);
-
-        // var allTopics = client.ListTopics(projectName);
-        // foreach (var topic in allTopics)
-        // {
-        //     Console.WriteLine($"Topic: {topic.TopicName}");
-        // }
 
         return services;
     }
+     
+    public static IServiceCollection AddSubscriberServices(this IServiceCollection services)
+    {
+
+        DotNetEnv.Env.Load();
+        var projectID = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+
+        services.AddSingleton<SubscriberServiceApiClient>(serviceProvider =>
+        {
+            //Console.WriteLine("\nSubscriberServiceApiClient Created!");
+
+            var client = SubscriberServiceApiClient.Create();
+
+            Console.WriteLine("\n###################################");
+            Console.WriteLine("\nYou successfully connected to PubSub with SubscriberApiClient!");
+
+            return client;
+        });
+
+        services.AddSingleton(serviceProvider =>
+        {
+            var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+            var subscriberService = serviceProvider.GetRequiredService<SubscriberServiceApiClient>();
+            return new SubServices(subscriberService, projectId);
+        });
+
+        return services;
+    }
+
 }

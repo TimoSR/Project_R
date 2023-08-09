@@ -1,15 +1,12 @@
-using MongoDB.Bson;
-using MongoDB.Driver;
+namespace x_endpoints.Persistence.Redis;
 
-namespace x_endpoints.Persistence.MongoDB;
-
-public class MongoDbStartupService : IHostedService
+public class RedisStartupService : IHostedService
 {
-    private readonly MongoDbService _mongoDbService;
-
-    public MongoDbStartupService(MongoDbService mongoDbService)
+    private readonly RedisService _redisService;
+    
+    public RedisStartupService(RedisService redisService)
     {
-        _mongoDbService = mongoDbService;
+        _redisService = redisService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
