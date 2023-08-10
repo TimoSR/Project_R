@@ -7,6 +7,7 @@ using x_endpoints.DataSeeder;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints;
 using x_endpoints.GraphQL;
+using x_endpoints.Persistence.GraphQL_Server;
 using x_endpoints.Persistence.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
