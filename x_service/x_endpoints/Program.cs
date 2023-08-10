@@ -1,10 +1,14 @@
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Grpc.Core;
+using StackExchange.Redis;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.DataSeeder;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints;
+using x_endpoints.Persistence.GraphQL_Server;
+using x_endpoints.Persistence.Redis;
+using x_endpoints.Persistence.ServiceRegistration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +28,16 @@ builder.Services.AddMongoDBServices();
 builder.Services.AddPublisherServices();
 // Add / Disable Subscriber 
 builder.Services.AddSubscriberServices();
+// Add / Disable Redis
+//builder.Services.AddRedisServices();
+// Add / Disable GraphQL (MapGraphQL should be out-commented too)
+builder.Services.AddGraphQLServices(); 
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<MongoDbStartupService>();
 builder.Services.AddHostedService<PubSubStartupService>();
+//builder.Services.AddHostedService<RedisStartupService>();
+
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();
@@ -74,5 +84,10 @@ app.UseCors("MyCorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Websockets is required to enable subscriptions with GraphQL
+app.UseWebSockets();
+
+app.MapGraphQL();
 
 app.Run();

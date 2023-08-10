@@ -2,8 +2,8 @@ using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
+using x_endpoints.ControllerServices;
 using x_endpoints.Models;
-using x_endpoints.Services;
 
 namespace x_endpoints.Controllers;
 

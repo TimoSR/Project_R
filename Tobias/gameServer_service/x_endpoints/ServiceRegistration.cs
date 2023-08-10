@@ -8,6 +8,7 @@ public static class ServiceRegistration
     {
         // Add your MongoDB services here.
         services.AddTransient<ProductService>();
+        services.AddTransient<OreService>();
 
         // Add more services as needed.
 
