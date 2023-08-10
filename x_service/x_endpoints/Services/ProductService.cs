@@ -5,10 +5,11 @@ using x_endpoints.Models;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Redis;
+using x_endpoints.Persistence.ServiceRegistration;
 
 namespace x_endpoints.Services;
 
-public class ProductService
+public class ProductService : BaseService
 {
     
     private readonly IMongoCollection<Product> _products;

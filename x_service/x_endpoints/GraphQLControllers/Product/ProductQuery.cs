@@ -1,7 +1,7 @@
 using x_endpoints.Persistence.GraphQL_Server.Queries;
 using x_endpoints.Services;
 
-namespace x_endpoints.GraphQL.Product;
+namespace x_endpoints.GraphQLControllers.Product;
 
 public class ProductQuery : BaseQuery
 {
