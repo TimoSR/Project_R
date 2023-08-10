@@ -1,8 +1,8 @@
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.DataSeeder;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.GraphQL_Server;
 using x_endpoints.Persistence.ServiceRegistration;
+using x_endpoints.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
