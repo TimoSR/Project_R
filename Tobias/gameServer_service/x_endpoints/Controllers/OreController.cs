@@ -24,13 +24,12 @@ namespace x_endpoints.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] Ore ore)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _oreService.InsertProduct(ore);
-                return CreatedAtAction(nameof(GetOreById), new { id = ore.Id }, ore); // Return 201 Created
+                return BadRequest(ModelState);
             }
-            
-            return BadRequest(ModelState); // Return 400 Bad Request
+            await _oreService.InsertProduct(ore);
+            return CreatedAtAction(nameof(GetOreById), new { id = ore.Id }, ore); // Return 201 Created
         }
 
         [HttpGet("/Ores")]
@@ -66,64 +65,13 @@ namespace x_endpoints.Controllers
         {
             var deleted = await _oreService.DeleteOreAsync(id);
             
-            if (deleted)
+            if (!deleted)
             {
-                return NoContent(); // Successfully deleted
+                return NotFound(); // Successfully deleted
             }
-            else
-            {
-                return NotFound(); // ID not found
-            }
+            return NotFound(); // ID not found
+            
         }
-        // public OreController(OreService oreService)
-        // {
-        //     _oreService = oreService;
-        // }
-
-        // [HttpGet]
-        // public ActionResult<IEnumerable<Ore>> Get()
-        // {
-        //     var ores = _oreService.GetOres();
-        //     return Ok(ores);
-        // }
-
-        // [HttpGet("{id:length(24)}", Name = "GetOre")]
-        // public ActionResult<Ore> Get(string id)
-        // {
-        //     var ore = _oreService.GetOreById(id);
-        //     if (ore == null)
-        //     {
-        //         return NotFound("Ore not found.");
-        //     }
-        //     return Ok(ore);
-        // }
-
        
-
-        // [HttpPut("Update/{id:length(24)}")]
-        // public Task<IActionResult> Update(string id,[FromBody] Ore updatedOre)
-        // {
-        //     var ore = _oreService.GetOreById(id);
-        //     if (ore == null)
-        //     {
-        //          return NotFound("Ore not found.");
-        //     }
-        //
-        //     _oreService.UpdateOre(id, updatedOre);
-        //     return NoContent();
-        //  }
-
-        // [HttpDelete("{id:length(24)}")]
-        // public IActionResult Delete(string id)
-        // {
-        //     var ore = _oreService.GetOreById(id);
-        //     if (ore == null)
-        //     {
-        //         return NotFound("Ore not found.");
-        //     }
-
-        //     _oreService.DeleteOre(id);
-        //     return NoContent();
-        // }
     }
 }
