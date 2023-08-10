@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using x_endpoints.Models;
 using x_endpoints.Services;
 
@@ -52,8 +53,11 @@ public static class DataSeeder
             Description = "This is product 2",
             Price = 39.99m
         };
-
+        
         await productService.InsertProduct(product1);
         await productService.InsertProduct(product2);
+        await oreService.InsertProduct(ore1);
+        await oreService.InsertProduct(ore2);
+        await oreService.InsertProduct(ore3);
     }
 }
