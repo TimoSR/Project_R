@@ -5,13 +5,13 @@ using x_endpoints.Persistence.MongoDB;
 
 namespace x_endpoints.Services
 {
-    public class _oreservice
+    public class OreService
     {
         private readonly IMongoCollection<Ore> _ores;
 
 
         
-        public _oreservice(MongoDbService dbService)
+        public OreService(MongoDbService dbService)
         {
             _ores = dbService.GetDefaultDatabase().GetCollection<Ore>("Ores");
         }
@@ -27,27 +27,36 @@ namespace x_endpoints.Services
             // Publish a message after inserting a product.
             //await _pubServices.PublishMessageAsync(topicID, $"New product: {product.Name}");
         }
-        public List<Ore> Get() => _ores.Find(ore => true).ToList();
-        // public List<Ore> Get_ores()
-        // {
-        //     return _oreCollection.Find(ore => true).ToList();
-        // }
+        public async Task<List<Ore>> GetAsync()
+        {
+            var ores = await _ores.Find(ore => true).ToListAsync();
+            return ores;
+        }
+       
 
-        // public Ore GetOreById(string id)
-        // {
-        //     return _oreCollection.Find(ore => ore.Id == id).FirstOrDefault();
-        // }
+        public async Task<Ore> GetOreByIdAsync(string id)
+        {
+            var filter = Builders<Ore>.Filter.Eq(ore => ore.Id, id);
+            var ore = await _ores.Find(filter).FirstOrDefaultAsync();
+            return ore;
+        }
 
-        // public Ore CreateOre(Ore ore)
-        // {
-        //     _oreCollection.InsertOne(ore);
-        //     return ore;
-        // }
 
-        // public void UpdateOre(string id, Ore updatedOre)
-        // {
-        //     _oreCollection.ReplaceOne(ore => ore.Id == id, updatedOre);
-        // }
+
+       
+        public async Task UpdateOreAsync(string id, Ore updatedOre)
+        {
+            var filter = Builders<Ore>.Filter.Eq(ore => ore.Id, id);
+
+            var update = Builders<Ore>.Update
+                .Set(ore => ore.Type, updatedOre.Type)
+                .Set(ore => ore.Description, updatedOre.Description)
+                .Set(ore => ore.Hits, updatedOre.Hits)
+                .Set(ore => ore.Requiment, updatedOre.Requiment)
+                .Set(ore => ore.Price, updatedOre.Price);
+
+            await _ores.UpdateOneAsync(filter, update);
+        }
 
         // public void DeleteOre(string id)
         // {

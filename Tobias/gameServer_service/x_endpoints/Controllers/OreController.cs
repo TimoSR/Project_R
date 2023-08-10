@@ -27,6 +27,31 @@ namespace x_endpoints.Controllers
             return Ok(ore);
         }
 
+       [HttpGet("/Ores")]
+      
+        public async Task<ActionResult<IEnumerable<Ore>>> Get()
+        {
+            var oreList = await _oreService.GetAsync();
+            if(oreList == null)
+            {
+                NotFound();
+            }
+            return Ok(oreList);
+        }
+
+        [HttpGet("GetOreByID/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ore))] // Success response
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // Not Found response
+        public async Task<IActionResult> GetOreById(string id)
+        {
+            var oreToFind = await _oreService.GetOreByIdAsync(id);
+            if(oreToFind == null){
+                return NotFound();
+            }
+
+            return Ok(oreToFind);
+
+        }
         // public OreController(OreService oreService)
         // {
         //     _oreService = oreService;
@@ -50,25 +75,20 @@ namespace x_endpoints.Controllers
         //     return Ok(ore);
         // }
 
-        // [HttpPost]
-        // public ActionResult<Ore> Create(Ore ore)
-        // {
-        //     var createdOre = _oreService.CreateOre(ore);
-        //     return CreatedAtRoute("GetOre", new { id = createdOre.Id }, createdOre);
-        // }
+       
 
-        // [HttpPut("{id:length(24)}")]
-        // public IActionResult Update(string id, Ore updatedOre)
+        // [HttpPut("Update/{id:length(24)}")]
+        // public Task<IActionResult> Update(string id,[FromBody] Ore updatedOre)
         // {
         //     var ore = _oreService.GetOreById(id);
         //     if (ore == null)
         //     {
-        //         return NotFound("Ore not found.");
+        //          return NotFound("Ore not found.");
         //     }
-
+        //
         //     _oreService.UpdateOre(id, updatedOre);
         //     return NoContent();
-        // }
+        //  }
 
         // [HttpDelete("{id:length(24)}")]
         // public IActionResult Delete(string id)
