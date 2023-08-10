@@ -57,10 +57,12 @@ namespace x_endpoints.Services
 
             await _ores.UpdateOneAsync(filter, update);
         }
+        public async Task<bool> DeleteOreAsync(string id)
+        {
+            var filter = Builders<Ore>.Filter.Eq(ore => ore.Id, id);
+            var result = await _ores.DeleteOneAsync(filter);
 
-        // public void DeleteOre(string id)
-        // {
-        //     _oreCollection.DeleteOne(ore => ore.Id == id);
-        // }
+            return result.IsAcknowledged && result.DeletedCount > 0;
+        }
     }
 }
