@@ -1,11 +1,8 @@
-using Google.Cloud.PubSub.V1;
-using Google.Protobuf;
-using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
 using x_endpoints.ControllerServices;
 using x_endpoints.Models;
 
-namespace x_endpoints.Controllers;
+namespace x_endpoints.ControllersREST;
 
 [ApiController]
 [Route("api/[controller]")]

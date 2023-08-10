@@ -1,6 +1,6 @@
 using x_endpoints.Persistence.GraphQL_Server.Subscriptions;
 
-namespace x_endpoints.GraphQLControllers.Product;
+namespace x_endpoints.ControllersGraphQL.Product;
 
 public class ProductSubscriptions : BaseSubscription
 {
