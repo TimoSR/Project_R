@@ -3,7 +3,7 @@ using x_endpoints.Services;
 
 namespace x_endpoints.GraphQL.Queries;
 
-public class Query
+public class ProductQuery : BaseQuery
 {
     public async Task<List<Product>> GetProducts([Service] ProductService productService) 
     {

@@ -2,7 +2,7 @@ using x_endpoints.Models;
 
 namespace x_endpoints.GraphQL.Subscriptions;
 
-public class Subscription
+public class ProductSubscriptions : BaseSubscription
 {
     [Subscribe]
     [Topic]
