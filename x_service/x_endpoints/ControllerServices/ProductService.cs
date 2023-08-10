@@ -1,13 +1,10 @@
-using Google.Api.Gax.ResourceNames;
-using Google.Cloud.PubSub.V1;
 using MongoDB.Driver;
 using x_endpoints.Models;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.ServiceRegistration;
 
-namespace x_endpoints.Services;
+namespace x_endpoints.ControllerServices;
 
 public class ProductService : BaseService
 {
