@@ -41,7 +41,10 @@ public class ProductService
         //await _redisService.SetValue("1", "test");
     }
 
-    public List<Product> Get() => _products.Find(product => true).ToList();
+     public async Task<List<Product>> GetAsync()
+     {
+         return await _products.Find(product => true).ToListAsync();
+     }
 
     // Add other CRUD operations here...
 }
