@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="DataTransferObjects\" />
+    <Folder Include="Domain\" />
   </ItemGroup>
 
 </Project>
