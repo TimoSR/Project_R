@@ -1,5 +1,5 @@
 using MongoDB.Driver;
-using x_endpoints.Models;
+using x_endpoints.DomainModels;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.ServiceRegistration;

@@ -1,5 +1,5 @@
 using x_endpoints.ControllerServices;
-using x_endpoints.Models;
+using x_endpoints.DomainModels;
 
 namespace x_endpoints.Seeders;
 
