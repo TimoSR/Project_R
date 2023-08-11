@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace x_endpoints.Models;
+namespace x_endpoints.DomainModels;
 
 public class Product
 {
