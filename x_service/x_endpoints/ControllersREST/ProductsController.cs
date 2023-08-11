@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using x_endpoints.ControllerServices;
 using x_endpoints.DomainModels;
+using x_endpoints.DomainServices;
 
 namespace x_endpoints.ControllersREST;
 
