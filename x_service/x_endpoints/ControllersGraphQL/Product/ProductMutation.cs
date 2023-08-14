@@ -3,7 +3,7 @@ using x_endpoints.Persistence.GraphQL_Server.Mutations;
 
 namespace x_endpoints.ControllersGraphQL.Product;
 
-public class ProductMutation: BaseMutation
+public class ProductMutation : BaseMutation
 {
     public async Task<DomainModels.Product> AddProduct(string name, string description, decimal price, [Service] ProductService productService)
     {
