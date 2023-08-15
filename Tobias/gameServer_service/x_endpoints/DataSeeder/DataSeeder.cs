@@ -56,8 +56,8 @@ public static class DataSeeder
         
         await productService.InsertProduct(product1);
         await productService.InsertProduct(product2);
-        await oreService.InsertProduct(ore1);
-        await oreService.InsertProduct(ore2);
-        await oreService.InsertProduct(ore3);
+        await oreService.InsertData(ore1);
+        await oreService.InsertData(ore2);
+        await oreService.InsertData(ore3);
     }
 }

@@ -18,25 +18,7 @@ public class Player
     [BsonElement("Level")]
     public string Level {get; set;}
     // Methods
-    public void TakeDamage(int damageAmount)
-    {
-        Health -= damageAmount;
-        if (Health <= 0)
-        {
-            Console.WriteLine($"{Name} has been defeated!");
-        }
-    }
-
-    public void Heal(int healAmount)
-    {
-        Health += healAmount;
-    }
-
-    public void LevelUp()
-    {
-        Level++;
-        Console.WriteLine($"{Name} leveled up to level {Level}");
-    }
+    
 
 
     // You can add more properties depending on your needs. Each property represents a field in your Product document.

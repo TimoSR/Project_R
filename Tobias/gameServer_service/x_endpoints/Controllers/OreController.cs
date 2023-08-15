@@ -28,7 +28,7 @@ namespace x_endpoints.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await _oreService.InsertProduct(ore);
+            await _oreService.InsertData(ore);
             return CreatedAtAction(nameof(GetOreById), new { id = ore.Id }, ore); // Return 201 Created
         }
 
@@ -37,7 +37,7 @@ namespace x_endpoints.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)] // Not Found response
         public async Task<ActionResult<IEnumerable<Ore>>> Get()
         {
-            var oreList = await _oreService.GetAsync();
+            var oreList = await _oreService.GetAllAsync();
             if(oreList == null)
             {
                 NotFound();
@@ -50,7 +50,7 @@ namespace x_endpoints.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)] // Not Found response
         public async Task<IActionResult> GetOreById(string id)
         {
-            var oreToFind = await _oreService.GetOreByIdAsync(id);
+            var oreToFind = await _oreService.GetByIdAsync(id);
             if(oreToFind == null){
                 return NotFound();
             }
@@ -63,14 +63,40 @@ namespace x_endpoints.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Ore))] // Success response
         public async Task<IActionResult> Delete(string id)
         {
-            var deleted = await _oreService.DeleteOreAsync(id);
+            var deleted = await _oreService.DeleteAsync(id);
             
             if (!deleted)
             {
-                return NotFound(); // Successfully deleted
+                return NoContent(); // Successfully deleted
             }
             return NotFound(); // ID not found
             
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(Ore))] // Success response
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Ore))] // Success response
+        public async Task<IActionResult> UpdateData(string id, [FromBody] Ore updatedOre) // Change DataModel to your actual model class
+        {
+            var existingData = await _oreService.GetByIdAsync(id);
+
+            if (existingData == null)
+            {
+                return NotFound();
+            }
+
+            // You can implement any necessary validation or business logic here
+            existingData.Type = updatedOre.Type;
+            existingData.Description = updatedOre.Description;
+            existingData.Hits = updatedOre.Hits;
+            existingData.Requiment = updatedOre.Requiment;
+            existingData.Price = updatedOre.Price;
+            // Update the properties of existingData with the properties of updatedData
+            // ...
+
+            await _oreService.UpdateAsync(id, existingData);
+
+            return NoContent();
         }
        
     }
