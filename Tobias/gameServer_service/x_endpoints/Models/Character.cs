@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace x_endpoints.Models;
 
-public class Player
+public class Character
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -17,7 +17,7 @@ public class Player
 
     [BsonElement("Level")]
     public string Level {get; set;}
-    // Methods
+    
     
 
 

@@ -3,11 +3,11 @@ using x_endpoints.Models;
 using System.Collections.Generic;
 using x_endpoints.Persistence.MongoDB; 
 
-public class DataService<T>
-{
+public abstract class BaseService<T> 
+{ 
     private readonly IMongoCollection<T> _collection;
 
-    protected DataService(MongoDbService dbService, string collectionName)
+    protected BaseService(MongoDbService dbService, string collectionName)
     {
         _collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
     }
@@ -66,5 +66,5 @@ public class DataService<T>
         var result = await _collection.DeleteOneAsync(filter);
 
         return result.IsAcknowledged && result.DeletedCount > 0;
-    }
+    } 
 }

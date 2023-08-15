@@ -5,7 +5,7 @@ using x_endpoints.Persistence.MongoDB;
 
 namespace x_endpoints.Services
 {
-    public class OreService : DataService<Ore>
+    public class OreService : BaseService<Ore>
     {
         public OreService(MongoDbService dbService) : base(dbService, "Ores") { }
 
