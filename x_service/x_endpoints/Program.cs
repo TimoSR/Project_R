@@ -1,13 +1,8 @@
-using Google.Cloud.PubSub.V1;
-using Google.Protobuf;
-using Grpc.Core;
-using StackExchange.Redis;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.DataSeeder;
 using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints;
-using x_endpoints.GraphQL;
-using x_endpoints.Persistence.Redis;
+using x_endpoints.Persistence.GraphQL_Server;
+using x_endpoints.Persistence.ServiceRegistration;
+using x_endpoints.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +10,14 @@ DotNetEnv.Env.Load();
 
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
 
+var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
+
 Console.WriteLine($"\n{serviceName}");
 
 Console.WriteLine("###################################");
 
-var enviroment = DotNetEnv.Env.GetString("ENVIRONMENT");
-
+// Add / Disable GraphQL (MapGraphQL should be out-commented too)
+builder.Services.AddGraphQLServices(); 
 // Add / Disable MongoDB
 builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
@@ -34,7 +31,6 @@ builder.Services.AddSubscriberServices();
 builder.Services.AddHostedService<MongoDbStartupService>();
 builder.Services.AddHostedService<PubSubStartupService>();
 //builder.Services.AddHostedService<RedisStartupService>();
-builder.Services.AddGraphQLServices(); 
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();
@@ -59,7 +55,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (enviroment.Equals("Development")) {
+if (environment.Equals("Development")) {
 
     // Insert initial data into the "Products" collection
     DataSeeder.SeedData(app.Services);

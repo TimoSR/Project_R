@@ -1,4 +1,4 @@
-namespace x_endpoints.Models;
+namespace x_endpoints.DomainModels;
 public class WeatherForecast
 {
     public DateOnly Date { get; set; }

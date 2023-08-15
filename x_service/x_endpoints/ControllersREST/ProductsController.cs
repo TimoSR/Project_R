@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using x_endpoints.Models;
-using x_endpoints.Services;
+using x_endpoints.DomainModels;
+using x_endpoints.DomainServices;
 
-namespace x_endpoints.Controllers;
+namespace x_endpoints.ControllersREST;
 
 [Route("api/[controller]")]
 [ApiController]

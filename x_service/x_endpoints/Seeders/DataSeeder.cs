@@ -1,7 +1,7 @@
-using x_endpoints.Models;
-using x_endpoints.Services;
+using x_endpoints.DomainModels;
+using x_endpoints.DomainServices;
 
-namespace x_endpoints.DataSeeder;
+namespace x_endpoints.Seeders;
 
 public static class DataSeeder
 {
