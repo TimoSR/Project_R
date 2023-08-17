@@ -23,7 +23,7 @@ public static class DataSeeder
             Price = 39.99m
         };
 
-        await productService.InsertProduct(product1);
-        await productService.InsertProduct(product2);
+        await productService.InsertAsync(product1);
+        await productService.InsertAsync(product2);
     }
 }

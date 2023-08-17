@@ -41,7 +41,7 @@ public class PubSubController : ControllerBase
             Price = 29.99m
         };
 
-        await _productService.InsertProduct(product1);
+        await _productService.InsertAsync(product1);
 
         return Ok();
     }

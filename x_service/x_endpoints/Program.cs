@@ -23,7 +23,7 @@ builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
 builder.Services.AddPublisherServices();
 // Add / Disable Subscriber 
-builder.Services.AddSubscriberServices();
+//builder.Services.AddSubscriberServices();
 // Add / Disable Redis
 //builder.Services.AddRedisServices();
 

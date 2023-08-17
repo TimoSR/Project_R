@@ -5,15 +5,14 @@ namespace x_endpoints.Persistence.Google_PubSub;
 public class PubSubStartupService : IHostedService
 {
     
-    private readonly PublisherServiceApiClient _client;
+    //private readonly PublisherServiceApiClient _client;
     private readonly PubServices _pubServices;
     private readonly SubServices _subServices;
 
-    public PubSubStartupService(PublisherServiceApiClient client, PubServices pubServices, SubServices subServices)
+    public PubSubStartupService(IServiceProvider serviceProvider)
     {
-        _client = client;
-        _pubServices = pubServices;
-        _subServices = subServices;
+        _pubServices = serviceProvider.GetService<PubServices>();
+        _subServices = serviceProvider.GetService<SubServices>();
     }
     
     public Task StartAsync(CancellationToken cancellationToken)

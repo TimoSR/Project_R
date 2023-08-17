@@ -14,7 +14,6 @@ public class SubServices
         _subscriberService = subscriberService;
         _projectID = projectID;
         IfDevelopment();
-        RegisterSubscriptions();
         ListAllSubscriptions();        
     }
 
@@ -46,6 +45,9 @@ public class SubServices
                 }
             }
         }
+
+        RegisterSubscriptions();
+        
     }
 
     private void RegisterSubscriptions()
