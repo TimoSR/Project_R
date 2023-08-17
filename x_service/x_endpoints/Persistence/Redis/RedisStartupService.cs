@@ -4,9 +4,11 @@ public class RedisStartupService : IHostedService
 {
     private readonly RedisService _redisService;
     
-    public RedisStartupService(RedisService redisService)
+    public RedisStartupService(IServiceProvider serviceProvider)
     {
-        _redisService = redisService;
+
+        // This makes Redis Optional
+        _redisService = serviceProvider.GetService<RedisService>();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

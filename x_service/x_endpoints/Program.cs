@@ -1,6 +1,7 @@
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.GraphQL_Server;
+using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.ServiceRegistration;
 using x_endpoints.Seeders;
 
@@ -30,7 +31,7 @@ builder.Services.AddPublisherServices();
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<MongoDbStartupService>();
 builder.Services.AddHostedService<PubSubStartupService>();
-//builder.Services.AddHostedService<RedisStartupService>();
+builder.Services.AddHostedService<RedisStartupService>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();

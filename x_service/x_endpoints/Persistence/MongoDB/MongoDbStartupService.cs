@@ -7,9 +7,10 @@ public class MongoDbStartupService : IHostedService
 {
     private readonly MongoDbService _mongoDbService;
 
-    public MongoDbStartupService(MongoDbService mongoDbService)
+    public MongoDbStartupService(IServiceProvider serviceProvider)
     {
-        _mongoDbService = mongoDbService;
+        // This makes the MongoDB Optional
+        _mongoDbService = serviceProvider.GetService<MongoDbService>();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

@@ -11,6 +11,7 @@ public class PubSubStartupService : IHostedService
 
     public PubSubStartupService(IServiceProvider serviceProvider)
     {
+        // This makes the Publisher & Subscriber Optional
         _pubServices = serviceProvider.GetService<PubServices>();
         _subServices = serviceProvider.GetService<SubServices>();
     }
