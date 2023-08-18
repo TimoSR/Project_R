@@ -4,14 +4,14 @@ using x_endpoints.Persistence.Redis;
 
 namespace x_endpoints.Persistence.StartUp;
 
-public class AddExternalConnections : IHostedService
+public class StartExternalConnections : IHostedService
 {
     private readonly MongoDbService _mongoDbService;
     private readonly PubServices _pubServices;
     private readonly SubServices _subServices;
     private readonly RedisService _redisService;
 
-    public AddExternalConnections(IServiceProvider serviceProvider)
+    public StartExternalConnections(IServiceProvider serviceProvider)
     {
         // This makes the MongoDB Optional
         _mongoDbService = serviceProvider.GetService<MongoDbService>();
