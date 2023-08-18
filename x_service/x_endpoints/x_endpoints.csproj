@@ -33,8 +33,4 @@
     <ProjectReference Include="..\x_lib\x_lib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\StartUp\" />
-  </ItemGroup>
-
 </Project>
