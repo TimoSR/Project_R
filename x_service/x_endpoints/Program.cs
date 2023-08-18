@@ -30,7 +30,7 @@ builder.Services.AddPublisherServices();
 //builder.Services.AddRedisServices();
 
 // Hosting to make sure it dependencies connect on Program startup
-builder.Services.AddHostedService<AddExternalConnections>();
+builder.Services.AddHostedService<StartExternalConnections>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();

@@ -8,21 +8,21 @@ using Microsoft.Extensions.DependencyInjection;
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
-
-     public static IServiceCollection AddPubSubServices(this IServiceCollection services, IWebHostEnvironment env)
-    {
-        // Load environment variables from .env file
-        DotNetEnv.Env.Load();
-        
-        // Get the current environment (e.g., Development, Production)
-        string environment = DotNetEnv.Env.GetString("ASPNETCORE_ENVIRONMENT");
-
-        // If it's development, set the PUBSUB_EMULATOR_HOST variable
-        if (environment == "Development")
-        {
-
-        }
-    }   
+    
+    // public static IServiceCollection AddPubSubServices(this IServiceCollection services, IWebHostEnvironment env)
+    // {
+    //     // Load environment variables from .env file
+    //     DotNetEnv.Env.Load();
+    //     
+    //     // Get the current environment (e.g., Development, Production)
+    //     string environment = DotNetEnv.Env.GetString("ASPNETCORE_ENVIRONMENT");
+    //
+    //     // If it's development, set the PUBSUB_EMULATOR_HOST variable
+    //     if (environment == "Development")
+    //     {
+    //
+    //     }
+    // }   
 
     public static IServiceCollection AddPublisherServices(this IServiceCollection services)
     {
