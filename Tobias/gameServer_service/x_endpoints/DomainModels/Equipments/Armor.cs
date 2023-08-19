@@ -5,7 +5,6 @@ using x_endpoints.Interfaces;
 namespace x_endpoints.Models
 {
 
-
     public class Armor : IEquipment
     {
         public string Id { get; }

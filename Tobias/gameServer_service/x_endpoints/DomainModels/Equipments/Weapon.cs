@@ -25,6 +25,7 @@ public class Weapon
             get { return _slot; }
             set { _slot = EquipmentSlot.Weapon; } // Always set to Weapon
         }
+        
         [BsonElement]
         public int AttackValue { get; set; }
     }
