@@ -1,9 +1,10 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using x_endpoints.Interfaces;
 
 namespace x_endpoints.Models;
 
-public class Ore
+public class Ore : IItems
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

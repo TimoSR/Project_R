@@ -66,7 +66,7 @@ namespace x_endpoints.Controllers
         {
             var deleted = await _characterService.DeleteAsync(id);
             
-            if (!deleted)
+            if (deleted)
             {
                 return NoContent(); // Successfully deleted
             }

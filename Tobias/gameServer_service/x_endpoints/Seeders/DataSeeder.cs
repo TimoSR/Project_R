@@ -10,7 +10,7 @@ public static class DataSeeder
     {
         var oreService =serviceProvider.GetRequiredService<OreService>();
         var productService = serviceProvider.GetRequiredService<ProductService>();
-
+        
         Ore ore1 = new Ore
         {
             Id = ObjectId.GenerateNewId().ToString(),
@@ -40,9 +40,41 @@ public static class DataSeeder
             Requiment = "Diamond pickaxe",
             Price = 299.99M
         };
+        var characterService = serviceProvider.GetRequiredService<CharacterService>();
+
+        List<Character> characters = new List<Character>
+        {
+            new Character
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Name = "Warrior",
+                Health = "100",
+                Level = "50"
+            },
+            new Character
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Name = "Mage",
+                Health = "75",
+                Level = "40"
+            },
+            new Character
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Name = "Rogue",
+                Health = "80",
+                Level = "45"
+            }
+        };
+        
+        foreach (var character in characters)
+        {
+            await characterService.InsertAsync(character);
+        }
         
         await oreService.InsertAsync(ore1);
         await oreService.InsertAsync(ore2);
         await oreService.InsertAsync(ore3);
+        
     }
 }
