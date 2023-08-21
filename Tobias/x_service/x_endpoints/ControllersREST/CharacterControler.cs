@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using x_endpoints.Models;
 using System.Collections.Generic;
 using System.Net;
+using x_endpoints.DomainModels;
 using x_endpoints.DomainServices;
 using x_endpoints.Persistence.ServiceRegistration;
 
@@ -9,11 +9,11 @@ namespace x_endpoints.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayerController : ControllerBase
+    public class CharacterController : ControllerBase
     {
         private readonly CharacterService _characterService;
 
-        public PlayerController(CharacterService characterService)
+        public CharacterController(CharacterService characterService)
         {
             _characterService = characterService;
         }
@@ -30,10 +30,10 @@ namespace x_endpoints.Controllers
             }
 
             await _characterService.InsertAsync(character);
-            return CreatedAtAction(nameof(GetPlayerById), new { id = character.Id }, character); // Return 201 Created
+            return CreatedAtAction(nameof(GetCharacterById), new { id = character.Id }, character); // Return 201 Created
         }
 
-        [HttpGet("/Players")]
+        [HttpGet("/Character")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Character))] // Success response
         [ProducesResponseType(StatusCodes.Status404NotFound)] // Not Found response
         public async Task<ActionResult<IEnumerable<Character>>> Get()
@@ -46,10 +46,10 @@ namespace x_endpoints.Controllers
             return Ok(characterList);
         }
 
-        [HttpGet("GetPlayerByID/{id}")]
+        [HttpGet("GetCharacterByID/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Character))] // Success response
         [ProducesResponseType(StatusCodes.Status404NotFound)] // Not Found response
-        public async Task<IActionResult> GetPlayerById(string id)
+        public async Task<IActionResult> GetCharacterById(string id)
         {
             var characterToFind = await _characterService.GetByIdAsync(id);
             if(characterToFind == null){
@@ -77,7 +77,7 @@ namespace x_endpoints.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(Character))] // Success response
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Character))] // Success response
-        public async Task<IActionResult> UpdateData(string id, [FromBody] Character updatedPlayer) // Change DataModel to your actual model class
+        public async Task<IActionResult> UpdateData(string id, [FromBody] Character updatedCharacter) // Change DataModel to your actual model class
         {
             var existingData = await _characterService.GetByIdAsync(id);
 

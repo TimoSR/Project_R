@@ -64,6 +64,12 @@ if (environment.Equals("Development")) {
     await Sword.SeedData(app.Services);
     await Bars.SeedData(app.Services);
     await Ores.SeedData(app.Services);
+    await Chest.SeedData(app.Services);
+    await Head.SeedData(app.Services);
+    await Leg.SeedData(app.Services);
+    await Hides.SeedData(app.Services);
+    await Leathers.SeedData(app.Services);
+    await Woods.SeedData(app.Services);
     Console.WriteLine("\n###################################");
     Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
 }
