@@ -16,11 +16,10 @@ namespace x_endpoints.GameObjectLibrary.Item
                 {
                     Name = "Gold",
                     Description = "A precious metal",
-<<<<<<< HEAD
+
                     Time = 100,
-=======
-                    Hits = "100",
->>>>>>> develop
+
+
                     Requirement = "Mining pick",
                     Price = 500,
                     Rarity = ItemRarity.Rare // Assign the rarity using the enum
@@ -29,11 +28,7 @@ namespace x_endpoints.GameObjectLibrary.Item
                 {
                     Name = "Iron",
                     Description = "A common metal",
-<<<<<<< HEAD
                     Time = 75,
-=======
-                    Hits = "75",
->>>>>>> develop
                     Requirement = "Mining pick",
                     Price = 100,
                     Rarity = ItemRarity.Common // Assign the rarity using the enum
@@ -42,11 +37,7 @@ namespace x_endpoints.GameObjectLibrary.Item
                 {
                     Name = "Diamond",
                     Description = "A valuable gem",
-<<<<<<< HEAD
                     Time = 150,
-=======
-                    Hits = "150",
->>>>>>> develop
                     Requirement = "Diamond pickaxe",
                     Price = 1000,
                     Rarity = ItemRarity.Epic // Assign the rarity using the enum
