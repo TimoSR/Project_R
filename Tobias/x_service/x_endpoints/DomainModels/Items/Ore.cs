@@ -19,7 +19,7 @@ public class Ore : IItems
     public string Description { get; set; }
 
     [BsonElement]
-    public string Hits {get; set;}
+    public int Time {get; set;}
 
     [BsonElement]
     public string Requirement {get; set;}
