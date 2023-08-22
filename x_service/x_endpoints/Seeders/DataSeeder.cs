@@ -1,29 +1,36 @@
 using x_endpoints.DomainModels;
 using x_endpoints.DomainServices;
+using x_endpoints.Persistence.DataSeeder;
+using x_endpoints.Persistence.ServiceRegistration;
 
 namespace x_endpoints.Seeders;
 
-public static class DataSeeder
+public class DataSeeder : IDataSeeder
 {
-    public static async void SeedData(IServiceProvider serviceProvider)
+    public async Task SeedData(IServiceProvider serviceProvider)
     {
         var productService = serviceProvider.GetRequiredService<ProductService>();
 
-        var product1 = new Product
+        var products = new List<Product>
         {
-            Name = "Product 1",
-            Description = "This is product 1",
-            Price = 29.99m
-        };
-
-        var product2 = new Product
-        {
+            new Product
+            {
+                Name = "Product 1",
+                Description = "This is product 1",
+                Price = 29.99m
+            },
+            new Product
+            {
             Name = "Product 2",
             Description = "This is product 2",
             Price = 39.99m
+            }
         };
 
-        await productService.InsertAsync(product1);
-        await productService.InsertAsync(product2);
+        foreach (var product in products)
+        {
+            await productService.InsertAsync(product);
+        }
+        
     }
 }
