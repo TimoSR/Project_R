@@ -7,7 +7,6 @@ using x_endpoints.Persistence.GraphQL_Server;
 using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.ServiceRegistration;
 using x_endpoints.Persistence.StartUp;
-using x_endpoints.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,7 @@ Console.WriteLine($"\n{serviceName}");
 Console.WriteLine("###################################");
 
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
-builder.Services.AddGraphQLServices(); 
+//builder.Services.AddGraphQLServices(); 
 // Add / Disable MongoDB
 builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
@@ -93,9 +92,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Websockets is required to enable subscriptions with GraphQL
-app.UseWebSockets();
-
-app.MapGraphQL();
+// // Websockets is required to enable subscriptions with GraphQL
+// app.UseWebSockets();
+//
+// app.MapGraphQL();
 
 app.Run();
