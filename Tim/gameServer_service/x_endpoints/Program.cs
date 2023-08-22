@@ -1,12 +1,10 @@
-using x_endpoints.GameObjectLibrary.Equipment;
-using x_endpoints.GameObjectLibrary.Item;
+using x_endpoints.Persistence.DataSeeder;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.GraphQL_Server;
 using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.ServiceRegistration;
 using x_endpoints.Persistence.StartUp;
-using x_endpoints.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +19,7 @@ Console.WriteLine($"\n{serviceName}");
 Console.WriteLine("###################################");
 
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
-builder.Services.AddGraphQLServices(); 
+//builder.Services.AddGraphQLServices(); 
 // Add / Disable MongoDB
 builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
@@ -59,11 +57,20 @@ var app = builder.Build();
 
 if (environment.Equals("Development")) {
 
-    // Insert initial data into the "Products" collection
-    DataSeeder.SeedData(app.Services);
-    await Sword.SeedData(app.Services);
-    await Bars.SeedData(app.Services);
-    await Ores.SeedData(app.Services);
+    // Insert initial data into the MongoDB collections
+
+    var seederType = typeof(IDataSeeder);
+    var seeders = AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(s => s.GetTypes())
+        .Where(p => seederType.IsAssignableFrom(p) && !p.IsInterface)
+        .ToList();
+
+    foreach(var seeder in seeders)
+    {
+        var instance = Activator.CreateInstance(seeder) as IDataSeeder;
+        instance?.SeedData(app.Services);
+    }
+    
     Console.WriteLine("\n###################################");
     Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
 }
@@ -83,9 +90,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Websockets is required to enable subscriptions with GraphQL
-app.UseWebSockets();
-
-app.MapGraphQL();
+// // Websockets is required to enable subscriptions with GraphQL
+// app.UseWebSockets();
+//
+// app.MapGraphQL();
 
 app.Run();
