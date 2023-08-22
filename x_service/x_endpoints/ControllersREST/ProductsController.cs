@@ -19,7 +19,7 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Product product)
     {
-        await _productService.InsertProduct(product);
+        await _productService.InsertAsync(product);
 
         return Ok(product);
     }

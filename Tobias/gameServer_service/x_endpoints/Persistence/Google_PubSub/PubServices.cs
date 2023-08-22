@@ -15,7 +15,6 @@ public class PubServices
         _publisherService = publisherService;
         _projectId = projectId;
         IfDevelopment();
-        CreateTopics();
         ListAllTopicNames();
     }
 
@@ -46,7 +45,10 @@ public class PubServices
                     }
                 }
             }
+            
         }
+
+        CreateTopics();
     }
 
     private void CreateTopics()

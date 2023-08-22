@@ -7,7 +7,7 @@ public class ProductQuery : BaseQuery
 {
     public async Task<List<DomainModels.Product>> GetProducts([Service] ProductService productService) 
     {
-        return await productService.GetAsync();
+        return await productService.GetAllAsync();
     }
 
     // Add more consolidated query methods...

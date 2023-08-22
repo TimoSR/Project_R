@@ -1,7 +1,10 @@
+using x_endpoints.Persistence.DataSeeder;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.GraphQL_Server;
+using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.ServiceRegistration;
+using x_endpoints.Persistence.StartUp;
 using x_endpoints.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,14 +26,12 @@ builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
 builder.Services.AddPublisherServices();
 // Add / Disable Subscriber 
-builder.Services.AddSubscriberServices();
+//builder.Services.AddSubscriberServices();
 // Add / Disable Redis
 //builder.Services.AddRedisServices();
 
 // Hosting to make sure it dependencies connect on Program startup
-builder.Services.AddHostedService<MongoDbStartupService>();
-builder.Services.AddHostedService<PubSubStartupService>();
-//builder.Services.AddHostedService<RedisStartupService>();
+builder.Services.AddHostedService<StartExternalConnections>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();
@@ -57,8 +58,20 @@ var app = builder.Build();
 
 if (environment.Equals("Development")) {
 
-    // Insert initial data into the "Products" collection
-    DataSeeder.SeedData(app.Services);
+    // Insert initial data into the MongoDB collections
+
+    var seederType = typeof(IDataSeeder);
+    var seeders = AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(s => s.GetTypes())
+        .Where(p => seederType.IsAssignableFrom(p) && !p.IsInterface)
+        .ToList();
+
+    foreach(var seeder in seeders)
+    {
+        var instance = Activator.CreateInstance(seeder) as IDataSeeder;
+        instance?.SeedData(app.Services);
+    }
+    
     Console.WriteLine("\n###################################");
     Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
 }

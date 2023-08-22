@@ -33,7 +33,7 @@ public class WeatherForecastController : ControllerBase
             Price = 29.99m
         };
 
-        await _productService.InsertProduct(product1);
+        await _productService.InsertAsync(product1);
         
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
