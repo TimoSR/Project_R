@@ -12,6 +12,8 @@ namespace x_endpoints.DomainModels.Equipments
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         
+        [BsonRepresentation(BsonType.Int32)]
+        public ItemRarity Rarity { get; set; }
         [BsonElement]
         public string Name { get; set; }
         
@@ -23,6 +25,9 @@ namespace x_endpoints.DomainModels.Equipments
 
         [BsonElement]
         public int LevelRequirement { get; set; }
+        
+        [BsonElement]
+        public int ArmorValue { get; set; }
         
         [BsonRepresentation(BsonType.Int32)]
         public EquipmentSlot Slot { get; set; }
