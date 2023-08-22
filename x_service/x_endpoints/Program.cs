@@ -58,7 +58,7 @@ var app = builder.Build();
 
 if (environment.Equals("Development")) {
 
-    // Insert initial data into the "Products" collection
+    // Insert initial data into the MongoDB collections
 
     var seederType = typeof(IDataSeeder);
     var seeders = AppDomain.CurrentDomain.GetAssemblies()

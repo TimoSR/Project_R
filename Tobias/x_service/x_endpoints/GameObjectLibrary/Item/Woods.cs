@@ -1,12 +1,13 @@
 using x_endpoints.DomainModels.Items;
 using x_endpoints.DomainServices;
 using x_endpoints.Enums;
+using x_endpoints.Persistence.DataSeeder;
 
 namespace x_endpoints.GameObjectLibrary.Item
 {
-    public static class Woods
+    public class Woods : IDataSeeder
     {
-        public static async Task SeedData(IServiceProvider serviceProvider)
+        public async Task SeedData(IServiceProvider serviceProvider)
         {
             var itemService = serviceProvider.GetRequiredService<WoodService>();
 

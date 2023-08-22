@@ -1,5 +1,6 @@
 using x_endpoints.GameObjectLibrary.Equipment;
 using x_endpoints.GameObjectLibrary.Item;
+using x_endpoints.Persistence.DataSeeder;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.GraphQL_Server;
@@ -59,17 +60,20 @@ var app = builder.Build();
 
 if (environment.Equals("Development")) {
 
-    // Insert initial data into the "Products" collection
-    DataSeeder.SeedData(app.Services);
-    await Sword.SeedData(app.Services);
-    await Bars.SeedData(app.Services);
-    await Ores.SeedData(app.Services);
-    await Chest.SeedData(app.Services);
-    await Head.SeedData(app.Services);
-    await Leg.SeedData(app.Services);
-    await Hides.SeedData(app.Services);
-    await Leathers.SeedData(app.Services);
-    await Woods.SeedData(app.Services);
+    // Insert initial data into the MongoDB collections
+
+    var seederType = typeof(IDataSeeder);
+    var seeders = AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(s => s.GetTypes())
+        .Where(p => seederType.IsAssignableFrom(p) && !p.IsInterface)
+        .ToList();
+
+    foreach(var seeder in seeders)
+    {
+        var instance = Activator.CreateInstance(seeder) as IDataSeeder;
+        instance?.SeedData(app.Services);
+    }
+    
     Console.WriteLine("\n###################################");
     Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
 }

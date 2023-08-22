@@ -1,12 +1,13 @@
 using x_endpoints.DomainModels.Equipments;
 using x_endpoints.DomainServices;
 using x_endpoints.Enums;
+using x_endpoints.Persistence.DataSeeder;
 
 namespace x_endpoints.GameObjectLibrary.Equipment
 {
-        public static class Chest
+        public class Chest : IDataSeeder
         {
-            public static async Task SeedData(IServiceProvider serviceProvider)
+            public async Task SeedData(IServiceProvider serviceProvider)
             {
                 var armorService = serviceProvider.GetRequiredService<ArmorService>();
 
