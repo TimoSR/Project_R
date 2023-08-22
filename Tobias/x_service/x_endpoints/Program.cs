@@ -1,5 +1,3 @@
-using x_endpoints.GameObjectLibrary.Equipment;
-using x_endpoints.GameObjectLibrary.Item;
 using x_endpoints.Persistence.DataSeeder;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
