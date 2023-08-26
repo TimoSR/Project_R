@@ -33,7 +33,6 @@ public class PubSubController : ControllerBase
     [HttpPost("InsertProduct")]
     public async Task<IActionResult> ExampleInsertProduct()
     {
-        
         var product1 = new Product
         {
             Name = "Product 1",

@@ -27,10 +27,12 @@
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="9.1.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.Protobuf" Version="9.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="protobuf-net" Version="3.2.26" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\x_lib\x_lib.csproj" />
   </ItemGroup>
+
 
 </Project>
