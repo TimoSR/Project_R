@@ -35,4 +35,10 @@
   </ItemGroup>
 
 
+
+  <ItemGroup>
+    <Folder Include="EventMessages\" />
+    <Folder Include="EventModels\Interfaces\" />
+  </ItemGroup>
+
 </Project>

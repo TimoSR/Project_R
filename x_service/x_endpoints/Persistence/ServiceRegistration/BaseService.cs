@@ -1,4 +1,6 @@
 using MongoDB.Driver;
+using x_endpoints.Persistence.Google_PubSub;
+using x_endpoints.Persistence.Google_PubSub.PubEvents;
 using x_endpoints.Persistence.MongoDB;
 
 namespace x_endpoints.Persistence.ServiceRegistration;
@@ -6,10 +8,20 @@ namespace x_endpoints.Persistence.ServiceRegistration;
 public abstract class BaseService<T>
 {
         protected readonly IMongoCollection<T> _collection;
+        private readonly PubServices _pubServices;
+        private readonly JsonEventMessageService _eventMessageService;
+        private readonly ILogger _logger;
+        private readonly string _serviceName;
 
-        protected BaseService(MongoDbService dbService, string collectionName)
+        protected BaseService(
+            MongoDbService dbService, 
+            string collectionName, 
+            PubServices pubServices = null, 
+            JsonEventMessageService eventMessageService = null, 
+            ILogger logger = null)
         {
             _collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
+            _serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
         }
 
         public virtual async Task InsertAsync(T data)
@@ -64,5 +76,15 @@ public abstract class BaseService<T>
             var result = await _collection.DeleteOneAsync(filter);
 
             return result.IsAcknowledged && result.DeletedCount > 0;
+        }
+        
+        public async Task PublishEventAsync(string topicName, object payload)
+        {
+            var topicID = _pubServices.GenerateTopicID(_serviceName, topicName);
+            var message = _eventMessageService.CreateMessage(payload);
+            if (!string.IsNullOrEmpty(message))
+            {
+                await _pubServices.PublishMessageAsync(topicID, message);
+            }
         }
 }
