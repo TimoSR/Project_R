@@ -11,7 +11,7 @@ public static class ToolRegistration
         
         // Using reflection to get all types which are classes, not abstract, and implement ITool
         var toolTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && typeof(ITool).IsAssignableFrom(t));
+            .Where(t => t.IsClass && !t.IsAbstract && typeof(IApplicationTool).IsAssignableFrom(t));
 
         foreach (var type in toolTypes)
         {

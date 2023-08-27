@@ -3,25 +3,31 @@ using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Tools.EventMessageBuilders;
 using x_endpoints.Tools.EventMessageBuilders.Types;
+using x_endpoints.Tools.MessageBuilders;
 
 namespace x_endpoints.Registration.Services;
 
 public abstract class BaseService<T>
 {
-        protected readonly IMongoCollection<T> _collection;
+        private readonly IMongoCollection<T> _collection;
         private readonly PubServices _pubServices;
-        private readonly IEventBuilder<JsonMessage> _eventService;
-        private readonly ILogger _logger;
+        private readonly IMessageBuilder<T> _messageBuilder;
         private readonly string _serviceName;
+        private readonly string _topicName;
 
         protected BaseService(
             MongoDbService dbService, 
             string collectionName, 
-            PubServices pubServices = null
+            PubServices pubServices = null,
+            string topicName = null,
+            IMessageBuilder<T> messageBuilder = null
             )
         {
             _collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
             _serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+            _pubServices = pubServices;
+            _topicName = topicName;
+            _messageBuilder = messageBuilder;
         }
 
         public virtual async Task InsertAsync(T data)
@@ -78,17 +84,18 @@ public abstract class BaseService<T>
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
         
-        public async Task PublishEventAsync(string topicName, object payload)
+        public async Task PublishEventAsync(object payload)
         {
 
-            if(_pubServices == null || _eventService == null)
+            if(_pubServices == null || _messageBuilder == null)
             {
                 Console.WriteLine("/n PublishEventAsync called without required dependencies. Operation skipped.");
                 return;
             }
 
-            var topicID = _pubServices.GenerateTopicID(_serviceName, topicName);
-            var message = _eventService.BuildMessage(payload);
+            var topicID = _pubServices.GenerateTopicID(_serviceName, _topicName);
+            var message = _messageBuilder.BuildMessage(payload);
+            
             if (!string.IsNullOrEmpty(message))
             {
                 await _pubServices.PublishMessageAsync(topicID, message);

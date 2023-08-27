@@ -1,8 +1,8 @@
 using x_endpoints.Tools.EventMessageBuilders.Types;
 
-namespace x_endpoints.Tools.EventMessageBuilders;
+namespace x_endpoints.Tools.MessageBuilders;
 
-public class ProtobufEventBuilder : IEventBuilder<ProtobufMessage>, ITool
+public class ProtobufMessageBuilder : IMessageBuilder<ProtobufMessage>, IApplicationTool
 {
     public ProtobufMessage BuildMessage(string content)
     {

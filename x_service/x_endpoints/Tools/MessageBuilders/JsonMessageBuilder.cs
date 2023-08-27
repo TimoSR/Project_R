@@ -1,9 +1,8 @@
-using Newtonsoft.Json;
 using x_endpoints.Tools.EventMessageBuilders.Types;
 
-namespace x_endpoints.Tools.EventMessageBuilders;
+namespace x_endpoints.Tools.MessageBuilders;
 
-public class JsonEventBuilder : IEventBuilder<JsonMessage>, ITool
+public class JsonMessageBuilder : IMessageBuilder<JsonMessage>, IApplicationTool
 {
     public JsonMessage BuildMessage(string content)
     {
