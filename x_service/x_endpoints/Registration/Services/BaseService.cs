@@ -1,49 +1,48 @@
 using MongoDB.Driver;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Tools.EventMessageBuilders;
-using x_endpoints.Tools.EventMessageBuilders.Types;
-using x_endpoints.Tools.MessageBuilders;
+using x_endpoints.Tools.EventBuilders;
+using x_endpoints.Tools.EventBuilders.Types;
 
 namespace x_endpoints.Registration.Services;
 
 public abstract class BaseService<T>
 {
-        private readonly IMongoCollection<T> _collection;
-        private readonly PubServices _pubServices;
-        private readonly IMessageBuilder<T> _messageBuilder;
-        private readonly string _serviceName;
-        private readonly string _topicName;
+        protected readonly IMongoCollection<T> Collection;
+        protected readonly PubServices PubServices;
+        protected readonly IEventBuilder<IEvent> EventBuilder;
+        protected readonly string ServiceName;
+        protected readonly string TopicName;
 
         protected BaseService(
             MongoDbService dbService, 
             string collectionName, 
             PubServices pubServices = null,
             string topicName = null,
-            IMessageBuilder<T> messageBuilder = null
+            IEventBuilder<IEvent> eventBuilder = null
             )
         {
-            _collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
-            _serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-            _pubServices = pubServices;
-            _topicName = topicName;
-            _messageBuilder = messageBuilder;
+            Collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
+            ServiceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+            PubServices = pubServices;
+            TopicName = topicName;
+            EventBuilder = eventBuilder;
         }
 
         public virtual async Task InsertAsync(T data)
         {
-            await _collection.InsertOneAsync(data);
+            await Collection.InsertOneAsync(data);
         }
 
         public virtual async Task<List<T>> GetAllAsync()
         {
-            return await _collection.Find(_ => true).ToListAsync();
+            return await Collection.Find(_ => true).ToListAsync();
         }
 
         public virtual async Task<T> GetByIdAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq("Id", id);
-            return await _collection.Find(filter).FirstOrDefaultAsync();
+            return await Collection.Find(filter).FirstOrDefaultAsync();
         }
 
         public virtual async Task UpdateAsync(string id, T updatedData)
@@ -53,7 +52,7 @@ public abstract class BaseService<T>
             
             if (updateDefinition != null)
             {
-                await _collection.UpdateOneAsync(filter, updateDefinition);
+                await Collection.UpdateOneAsync(filter, updateDefinition);
             }
         }
 
@@ -79,26 +78,28 @@ public abstract class BaseService<T>
         public virtual async Task<bool> DeleteAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq("Id", id);
-            var result = await _collection.DeleteOneAsync(filter);
+            var result = await Collection.DeleteOneAsync(filter);
 
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
         
-        public async Task PublishEventAsync(object payload)
+        public async Task PublishEventAsync(object payload, string eventType)
         {
 
-            if(_pubServices == null || _messageBuilder == null)
+            if(PubServices == null || EventBuilder == null)
             {
                 Console.WriteLine("/n PublishEventAsync called without required dependencies. Operation skipped.");
                 return;
             }
-
-            var topicID = _pubServices.GenerateTopicID(_serviceName, _topicName);
-            var message = _messageBuilder.BuildMessage(payload);
             
-            if (!string.IsNullOrEmpty(message))
+            var eventMessage = EventBuilder.BuildMessage(eventType, payload);
+            var formattedMessage = EventBuilder.ConvertToFormat(eventMessage);
+
+            var topicID = PubServices.GenerateTopicID(ServiceName, TopicName);
+            
+            if (!string.IsNullOrEmpty(formattedMessage))
             {
-                await _pubServices.PublishMessageAsync(topicID, message);
+                await PubServices.PublishMessageAsync(topicID, eventType, formattedMessage);
             }
         }
 }

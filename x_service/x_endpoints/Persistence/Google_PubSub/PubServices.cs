@@ -147,18 +147,19 @@ public class PubServices
         return $"{_serviceName}-{_topic}";
     }
 
-    public async Task PublishMessageAsync(string topicId, string message)
+    public async Task PublishMessageAsync(string topicId, string eventType, string formattedMessage)
     {
         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
 
         PubsubMessage pubsubMessage = new PubsubMessage
         {
-            // The data is any arbitrary ByteString. Here, we're using text.
-            Data = ByteString.CopyFromUtf8("Hello, Pubsub"),
+            // Using the formatted message as data
+            Data = ByteString.CopyFromUtf8(formattedMessage),
             // The attributes provide metadata in a string-to-string dictionary.
             Attributes =
             {
-                { "description", "Simple text message" }
+                { "description", $"Message for event type: {eventType}" },
+                { "eventType", eventType }
             }
         };
 

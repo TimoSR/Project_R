@@ -24,13 +24,13 @@ public class ProductService : BaseService<Product>
     public override async Task InsertAsync(Product data)
     {
 
-        await _collection.InsertOneAsync(data);        
+        await Collection.InsertOneAsync(data);        
     
         var topicID = _pubServices.GenerateTopicID("SERVICE_NAME", "TOPIC_PRODUCT_UPDATES");
         //Console.WriteLine(topicID);
     
         // Publish a message after inserting a product.
-        await _pubServices.PublishMessageAsync(topicID, $"New product: {data.Name}");
+        await _pubServices.PublishMessageAsync(topicID, "New Product", $"{data.Name}");
     
         //await _redisService.SetValue("1", "test");
     }
