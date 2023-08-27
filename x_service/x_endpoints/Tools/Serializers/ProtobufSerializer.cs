@@ -3,7 +3,7 @@ using x_endpoints.Tools.Serializers.Types;
 
 namespace x_endpoints.Tools.Serializers;
 
-public class ProtobufSerializer<TPayload> : ISerializer<ProtobufMessage<TPayload>, TPayload>, IApplicationTool
+public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
 {
     public string Serialize(TPayload content)
     {
@@ -12,7 +12,7 @@ public class ProtobufSerializer<TPayload> : ISerializer<ProtobufMessage<TPayload
             var message = BuildMessage(content);
             return ConvertToFormat(message);
         }
-        catch (ProtoBuf.ProtoException ex)
+        catch (ProtoException ex)
         {
             // Handle protobuf-specific errors.
             throw new InvalidOperationException($"Failed to serialize content of type {typeof(TPayload).Name} due to protobuf error.", ex);

@@ -1,9 +1,11 @@
+
+
 using Newtonsoft.Json;
 using x_endpoints.Tools.Serializers.Types;
 
 namespace x_endpoints.Tools.Serializers;
 
-public class JsonSerializer<TPayload> : ISerializer<JsonMessage<TPayload>, TPayload>, IApplicationTool
+public class JsonSerializer<TPayload> : ISerializer<TPayload>
 {
     public string Serialize(TPayload content)
     {

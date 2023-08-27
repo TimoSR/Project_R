@@ -1,8 +1,6 @@
-using x_endpoints.Tools.Serializers.Types;
-
 namespace x_endpoints.Tools.Serializers;
 
-public interface ISerializer<TMessage, TPayload> where TMessage : IMessage<TPayload>
+public interface ISerializer<TPayload> : IApplicationTool
 {
     string Serialize(TPayload content);
 }

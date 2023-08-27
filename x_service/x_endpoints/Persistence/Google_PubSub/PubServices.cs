@@ -1,7 +1,10 @@
+
+
 using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
+using x_endpoints.Tools.Serializers;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
@@ -153,9 +156,7 @@ public class PubServices
 
         PubsubMessage pubsubMessage = new PubsubMessage
         {
-            // Using the formatted message as data
             Data = ByteString.CopyFromUtf8(formattedMessage),
-            // The attributes provide metadata in a string-to-string dictionary.
             Attributes =
             {
                 { "description", $"Message for event type: {eventType}" },
@@ -163,7 +164,6 @@ public class PubServices
             }
         };
 
-        // Publish a message to the topic using PublisherClient.
         await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
     }
 }

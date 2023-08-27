@@ -1,6 +1,3 @@
 namespace x_endpoints.Tools;
 
-public interface IApplicationTool
-{
-    
-}
+public interface IApplicationTool {}
