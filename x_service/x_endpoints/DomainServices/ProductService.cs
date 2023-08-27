@@ -2,7 +2,7 @@ using MongoDB.Driver;
 using x_endpoints.DomainModels;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Persistence.ServiceRegistration;
+using x_endpoints.Registration.Services;
 
 namespace x_endpoints.DomainServices;
 

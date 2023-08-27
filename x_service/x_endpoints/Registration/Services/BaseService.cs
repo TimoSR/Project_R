@@ -1,24 +1,23 @@
 using MongoDB.Driver;
 using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints.Persistence.Google_PubSub.PubEvents;
 using x_endpoints.Persistence.MongoDB;
+using x_endpoints.Tools.EventMessageBuilders;
 
-namespace x_endpoints.Persistence.ServiceRegistration;
+namespace x_endpoints.Registration.Services;
 
 public abstract class BaseService<T>
 {
         protected readonly IMongoCollection<T> _collection;
         private readonly PubServices _pubServices;
-        private readonly JsonEventMessageService _eventMessageService;
+        private readonly JsonEventBuilder _eventService;
         private readonly ILogger _logger;
         private readonly string _serviceName;
 
         protected BaseService(
             MongoDbService dbService, 
             string collectionName, 
-            PubServices pubServices = null, 
-            JsonEventMessageService eventMessageService = null, 
-            ILogger logger = null)
+            PubServices pubServices = null
+            )
         {
             _collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
             _serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
@@ -80,8 +79,15 @@ public abstract class BaseService<T>
         
         public async Task PublishEventAsync(string topicName, object payload)
         {
+
+            if(_pubServices == null || _eventService == null)
+            {
+                Console.WriteLine("/n PublishEventAsync called without required dependencies. Operation skipped.");
+                return;
+            }
+
             var topicID = _pubServices.GenerateTopicID(_serviceName, topicName);
-            var message = _eventMessageService.CreateMessage(payload);
+            var message = _eventService.CreateMessage(payload);
             if (!string.IsNullOrEmpty(message))
             {
                 await _pubServices.PublishMessageAsync(topicID, message);

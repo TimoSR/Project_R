@@ -1,4 +1,4 @@
-namespace x_endpoints.Persistence.DataSeeder;
+namespace x_endpoints.Registration.DataSeeder;
 
 public interface IDataSeeder
 {

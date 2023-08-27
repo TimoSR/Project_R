@@ -1,11 +1,10 @@
-using x_endpoints.Persistence.DataSeeder;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints.Persistence.GraphQL_Server;
 using x_endpoints.Persistence.Redis;
-using x_endpoints.Persistence.ServiceRegistration;
 using x_endpoints.Persistence.StartUp;
-using x_endpoints.Seeders;
+using x_endpoints.Registration.DataSeeder;
+using x_endpoints.Registration.GraphQL;
+using x_endpoints.Registration.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +25,9 @@ builder.Services.AddMongoDBServices();
 // Add / Disable Publisher
 builder.Services.AddPublisherServices();
 // Add / Disable Subscriber 
-//builder.Services.AddSubscriberServices();
+builder.Services.AddSubscriberServices();
 // Add / Disable Redis
-//builder.Services.AddRedisServices();
+builder.Services.AddRedisServices();
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<StartExternalConnections>();

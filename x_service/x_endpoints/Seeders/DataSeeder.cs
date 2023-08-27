@@ -1,7 +1,6 @@
 using x_endpoints.DomainModels;
 using x_endpoints.DomainServices;
-using x_endpoints.Persistence.DataSeeder;
-using x_endpoints.Persistence.ServiceRegistration;
+using x_endpoints.Registration.DataSeeder;
 
 namespace x_endpoints.Seeders;
 
