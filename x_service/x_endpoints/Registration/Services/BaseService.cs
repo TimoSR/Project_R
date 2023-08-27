@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Tools.EventMessageBuilders;
+using x_endpoints.Tools.EventMessageBuilders.Types;
 
 namespace x_endpoints.Registration.Services;
 
@@ -9,7 +10,7 @@ public abstract class BaseService<T>
 {
         protected readonly IMongoCollection<T> _collection;
         private readonly PubServices _pubServices;
-        private readonly JsonEventBuilder _eventService;
+        private readonly IEventBuilder<JsonMessage> _eventService;
         private readonly ILogger _logger;
         private readonly string _serviceName;
 
@@ -87,7 +88,7 @@ public abstract class BaseService<T>
             }
 
             var topicID = _pubServices.GenerateTopicID(_serviceName, topicName);
-            var message = _eventService.CreateMessage(payload);
+            var message = _eventService.BuildMessage(payload);
             if (!string.IsNullOrEmpty(message))
             {
                 await _pubServices.PublishMessageAsync(topicID, message);
