@@ -18,13 +18,14 @@ public class PubServices
         _publisherService = publisherService;
         _projectId = projectId;
         IfDevelopment();
+        CreateTopics();
         ListAllTopicNames();
     }
 
     private void IfDevelopment() {
 
         var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-
+        
         if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
         {
             Console.WriteLine("\nDeleting Topics due to ENV: Development...");
@@ -50,8 +51,6 @@ public class PubServices
             }
             
         }
-
-        CreateTopics();
     }
 
     private void CreateTopics()

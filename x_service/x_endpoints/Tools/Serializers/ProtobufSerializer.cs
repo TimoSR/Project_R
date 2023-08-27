@@ -1,16 +1,28 @@
 using ProtoBuf;
+using System;
 using x_endpoints.Tools.Serializers.Types;
 
 namespace x_endpoints.Tools.Serializers;
 
 public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
 {
+    
+    // It only works with models that uses Protobuf-Net Attributes!!!!
+    
     public string Serialize(TPayload content)
     {
         try
         {
             var message = BuildMessage(content);
-            return ConvertToFormat(message);
+            Console.WriteLine("\nCreated Protobuf Message!");
+            Console.WriteLine($"\n{message}");
+        
+            string encodedString = ConvertToFormat(message);
+        
+            Console.WriteLine("Encoded Protobuf Message (Base64):");
+            Console.WriteLine(encodedString); // This will print the Base64 string to the console
+        
+            return encodedString;
         }
         catch (ProtoException ex)
         {
@@ -24,7 +36,6 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
         }
     }
 
-
     private ProtobufMessage<TPayload> BuildMessage(TPayload content)
     {
         return new ProtobufMessage<TPayload> { Content = content };
@@ -34,6 +45,7 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
     {
         using var ms = new MemoryStream();
         Serializer.Serialize(ms, message);
-        return Convert.ToBase64String(ms.ToArray());
+        byte[] byteArray = ms.ToArray();
+        return Convert.ToBase64String(byteArray);
     }
 }  

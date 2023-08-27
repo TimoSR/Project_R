@@ -39,6 +39,7 @@
   <ItemGroup>
     <Folder Include="EventMessages\" />
     <Folder Include="EventModels\Interfaces\" />
+    <Folder Include="Tools\DeSerializers\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,3 @@
-
-
 using Newtonsoft.Json;
 using x_endpoints.Tools.Serializers.Types;
 
@@ -12,6 +10,12 @@ public class JsonSerializer<TPayload> : ISerializer<TPayload>
         try
         {
             var message = BuildMessage(content);
+            
+            Console.WriteLine("\nCreated Json Message!");
+            
+            string encodedString = ConvertToFormat(message);
+            Console.WriteLine(encodedString);
+            
             return ConvertToFormat(message);
         }
         catch (JsonException ex)
