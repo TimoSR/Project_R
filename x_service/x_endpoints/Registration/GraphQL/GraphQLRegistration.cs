@@ -1,10 +1,10 @@
-using x_endpoints.Persistence.GraphQL_Server.Mutations;
-using x_endpoints.Persistence.GraphQL_Server.Queries;
-using x_endpoints.Persistence.GraphQL_Server.Subscriptions;
+using x_endpoints.Registration.GraphQL.Mutations;
+using x_endpoints.Registration.GraphQL.Queries;
+using x_endpoints.Registration.GraphQL.Subscriptions;
 
-namespace x_endpoints.Persistence.GraphQL_Server;
+namespace x_endpoints.Registration.GraphQL;
 
-public static class GraphQlRegistration
+public static class GraphQLRegistration
 {
     public static IServiceCollection AddGraphQLServices(this IServiceCollection services)
     {

@@ -6,7 +6,6 @@ public static class RedisRegistration
 {
     public static IServiceCollection AddRedisServices(this IServiceCollection services)
     {
-        DotNetEnv.Env.Load();
 
         var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
 

@@ -1,7 +1,10 @@
+
+
 using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
+using x_endpoints.Tools.Serializers;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
@@ -15,13 +18,14 @@ public class PubServices
         _publisherService = publisherService;
         _projectId = projectId;
         IfDevelopment();
+        CreateTopics();
         ListAllTopicNames();
     }
 
     private void IfDevelopment() {
 
         var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-
+        
         if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
         {
             Console.WriteLine("\nDeleting Topics due to ENV: Development...");
@@ -47,8 +51,6 @@ public class PubServices
             }
             
         }
-
-        CreateTopics();
     }
 
     private void CreateTopics()
@@ -147,22 +149,20 @@ public class PubServices
         return $"{_serviceName}-{_topic}";
     }
 
-    public async Task PublishMessageAsync(string topicId, string message)
+    public async Task PublishMessageAsync(string topicId, string eventType, string formattedMessage)
     {
         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
 
         PubsubMessage pubsubMessage = new PubsubMessage
         {
-            // The data is any arbitrary ByteString. Here, we're using text.
-            Data = ByteString.CopyFromUtf8("Hello, Pubsub"),
-            // The attributes provide metadata in a string-to-string dictionary.
+            Data = ByteString.CopyFromUtf8(formattedMessage),
             Attributes =
             {
-                { "description", "Simple text message" }
+                { "description", $"Message for event type: {eventType}" },
+                { "eventType", eventType }
             }
         };
 
-        // Publish a message to the topic using PublisherClient.
         await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
     }
 }

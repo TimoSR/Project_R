@@ -11,8 +11,6 @@ public static class PubSubRegistration {
     
     // public static IServiceCollection AddPubSubServices(this IServiceCollection services, IWebHostEnvironment env)
     // {
-    //     // Load environment variables from .env file
-    //     DotNetEnv.Env.Load();
     //     
     //     // Get the current environment (e.g., Development, Production)
     //     string environment = DotNetEnv.Env.GetString("ASPNETCORE_ENVIRONMENT");
@@ -26,8 +24,6 @@ public static class PubSubRegistration {
 
     public static IServiceCollection AddPublisherServices(this IServiceCollection services)
     {
-
-        DotNetEnv.Env.Load();
         
         var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 
@@ -73,7 +69,6 @@ public static class PubSubRegistration {
     public static IServiceCollection AddSubscriberServices(this IServiceCollection services)
     {
 
-        DotNetEnv.Env.Load();
         var projectID = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 
         services.AddSingleton<SubscriberServiceApiClient>(serviceProvider =>

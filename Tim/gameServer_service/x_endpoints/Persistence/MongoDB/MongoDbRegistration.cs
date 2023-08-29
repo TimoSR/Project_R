@@ -8,7 +8,6 @@ public static class MongoDbRegistration
 {
     public static IServiceCollection AddMongoDBServices(this IServiceCollection services)
     {
-        DotNetEnv.Env.Load();
 
         var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var environment = DotNetEnv.Env.GetString("ENVIRONMENT");

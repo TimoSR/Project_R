@@ -1,5 +1,5 @@
 using x_endpoints.DomainServices;
-using x_endpoints.Persistence.GraphQL_Server.Mutations;
+using x_endpoints.Registration.GraphQL.Mutations;
 
 namespace x_endpoints.ControllersGraphQL.Product;
 

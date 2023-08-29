@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace x_endpoints.Persistence.ServiceRegistration;
+namespace x_endpoints.Registration.Services;
 
 public static class ServiceRegistration
 {
