@@ -14,7 +14,7 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
         {
             Console.WriteLine("\nCreated Protobuf Message:");
         
-            string encodedString = ConvertToFormat(content);
+            string encodedString = ConvertToProtobuf(content);
  
             Console.WriteLine(encodedString); // This will print the Base64 string to the console
         
@@ -31,12 +31,43 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
             throw new InvalidOperationException($"An unexpected error occurred while serializing content of type {typeof(TPayload).Name}.", ex);
         }
     }
+    
+    public TPayload Deserialize(string content)
+    {
+        try
+        {
+            Console.WriteLine("\nDeserializing Protobuf Message:");
+                
+            TPayload payload = ConvertFromProtobuf(content);
+                
+            Console.WriteLine($"Deserialized object of type {typeof(TPayload).Name} successfully!");
+                
+            return payload;
+        }
+        catch (ProtoException ex)
+        {
+            // Handle protobuf-specific errors.
+            throw new InvalidOperationException($"Failed to deserialize content to type {typeof(TPayload).Name} due to protobuf error.", ex);
+        }
+        catch (Exception ex) // This will catch any other exception
+        {
+            // Handle generic errors.
+            throw new InvalidOperationException($"An unexpected error occurred while deserializing content to type {typeof(TPayload).Name}.", ex);
+        }
+    }
 
-    private string ConvertToFormat(TPayload message)
+    private string ConvertToProtobuf(TPayload message)
     {
         using var ms = new MemoryStream();
         Serializer.Serialize(ms, message);
         byte[] byteArray = ms.ToArray();
         return Convert.ToBase64String(byteArray);
+    }
+    
+    private TPayload ConvertFromProtobuf(string content)
+    {
+        byte[] byteArray = Convert.FromBase64String(content);
+        using var ms = new MemoryStream(byteArray);
+        return Serializer.Deserialize<TPayload>(ms);
     }
 }  
