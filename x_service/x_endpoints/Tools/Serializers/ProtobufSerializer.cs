@@ -1,6 +1,5 @@
 using ProtoBuf;
 using System;
-using x_endpoints.Tools.Serializers.Types;
 
 namespace x_endpoints.Tools.Serializers;
 
@@ -13,13 +12,10 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
     {
         try
         {
-            var message = BuildMessage(content);
-            Console.WriteLine("\nCreated Protobuf Message!");
-            Console.WriteLine($"\n{message}");
+            Console.WriteLine("\nCreated Protobuf Message:");
         
-            string encodedString = ConvertToFormat(message);
-        
-            Console.WriteLine("Encoded Protobuf Message (Base64):");
+            string encodedString = ConvertToFormat(content);
+ 
             Console.WriteLine(encodedString); // This will print the Base64 string to the console
         
             return encodedString;
@@ -36,12 +32,7 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
         }
     }
 
-    private ProtobufMessage<TPayload> BuildMessage(TPayload content)
-    {
-        return new ProtobufMessage<TPayload> { Content = content };
-    }
-
-    private string ConvertToFormat(ProtobufMessage<TPayload> message)
+    private string ConvertToFormat(TPayload message)
     {
         using var ms = new MemoryStream();
         Serializer.Serialize(ms, message);
