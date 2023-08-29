@@ -1,4 +1,4 @@
-namespace x_endpoints.Tools.DeSerializers;
+namespace x_endpoints.Tools.Deserializers;
 
 public class ProtobufDeserializer
 {
