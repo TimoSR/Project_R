@@ -2,9 +2,9 @@ using Newtonsoft.Json;
 
 namespace x_endpoints.Tools.Serializers;
 
-public class JsonSerializer<TPayload> : ISerializer<TPayload>
+public class JsonSerializer : IApplicationTool
 {
-    public string Serialize(TPayload content)
+    public string Serialize<TData>(TData content)
     {
         try
         {
@@ -17,44 +17,44 @@ public class JsonSerializer<TPayload> : ISerializer<TPayload>
         {
             // Handle JSON-specific errors.
             // For example, log the error or provide a specific message for JSON errors.
-            throw new InvalidOperationException($"Failed to serialize content of type {typeof(TPayload).Name} due to JSON error.", ex);
+            throw new InvalidOperationException($"Failed to serialize content of type {typeof(TData).Name} due to JSON error.", ex);
         }
         catch (Exception ex) // This will catch any other exception
         {
             // Handle generic errors.
             // You might want to log the error or take some other action.
-            throw new InvalidOperationException($"An unexpected error occurred while serializing content of type {typeof(TPayload).Name}.", ex);
+            throw new InvalidOperationException($"An unexpected error occurred while serializing content of type {typeof(TData).Name}.", ex);
         }
     }
     
-    public TPayload Deserialize(string content)
+    public TModel Deserialize<TModel>(string content)
     {
         try
         {
             Console.WriteLine("\nDeserializing Json Message!");
-            TPayload payload = ConvertFromFormat(content);
-            Console.WriteLine($"Deserialized object of type {typeof(TPayload).Name} successfully!");
+            var payload = ConvertToModel<TModel>(content);
+            Console.WriteLine($"Deserialized object of type {typeof(TModel).Name} successfully!");
             return payload;
         }
         catch (JsonException ex)
         {
             // Handle JSON-specific errors.
-            throw new InvalidOperationException($"Failed to deserialize content to type {typeof(TPayload).Name} due to JSON error.", ex);
+            throw new InvalidOperationException($"Failed to deserialize content to type {typeof(TModel).Name} due to JSON error.", ex);
         }
         catch (Exception ex) // This will catch any other exception
         {
             // Handle generic errors.
-            throw new InvalidOperationException($"An unexpected error occurred while deserializing content to type {typeof(TPayload).Name}.", ex);
+            throw new InvalidOperationException($"An unexpected error occurred while deserializing content to type {typeof(TModel).Name}.", ex);
         }
     }
 
-    private string ConvertToJson(TPayload message)
+    private string ConvertToJson<TData>(TData message)
     {
         return JsonConvert.SerializeObject(message);
     }
 
-    private TPayload ConvertFromFormat(string content)
+    private TModel ConvertToModel<TModel>(string content)
     {
-        return JsonConvert.DeserializeObject<TPayload>(content);
+        return JsonConvert.DeserializeObject<TModel>(content);
     }
 } 

@@ -60,9 +60,11 @@ public static class PubSubRegistration {
         services.AddSingleton(serviceProvider => {
             var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
             var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
-            return new PubServices(publisherService, projectId);
+            return new PubTopicsManager(publisherService, projectId);
         });
-
+        
+        services.AddSingleton<PubSubEventPublisher>();
+            
         return services;
     }
      
@@ -87,7 +89,7 @@ public static class PubSubRegistration {
         {
             var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
             var subscriberService = serviceProvider.GetRequiredService<SubscriberServiceApiClient>();
-            return new SubServices(subscriberService, projectId);
+            return new SubTopicsManager(subscriberService, projectId);
         });
 
         return services;

@@ -8,27 +8,13 @@ namespace x_endpoints.Registration.Services;
 public abstract class BaseService<T>
 {
         protected readonly IMongoCollection<T> Collection;
-        protected readonly PubServices PubServices;
-        protected readonly string ServiceName;
-        protected readonly string TopicName;
-        protected readonly ISerializer<object> JsonSerializer;
-        protected readonly ISerializer<object> ProtobufSerializer;
 
         protected BaseService(
             MongoDbService dbService, 
-            string collectionName, 
-            PubServices pubServices = null,
-            string topicName = null,
-            ISerializer<object> jsonSerializer = null,
-            ISerializer<object> protobufSerializer = null
+            string collectionName
             )
         {
             Collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
-            ServiceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-            PubServices = pubServices;
-            TopicName = topicName;
-            JsonSerializer = jsonSerializer;
-            ProtobufSerializer = protobufSerializer;
         }
 
         public virtual async Task InsertAsync(T data)
@@ -83,23 +69,5 @@ public abstract class BaseService<T>
             var result = await Collection.DeleteOneAsync(filter);
 
             return result.IsAcknowledged && result.DeletedCount > 0;
-        }
-        
-        public async Task PublishEventAsync(object payload, string eventType)
-        {
-            if(PubServices == null )
-            {
-                Console.WriteLine("/n PublishEventAsync called without required dependencies. Operation skipped.");
-                return;
-            }
-
-            var eventMessage = ProtobufSerializer.Serialize(payload);
-
-            var topicID = PubServices.GenerateTopicID(ServiceName, TopicName);
-            
-            if (!string.IsNullOrEmpty(eventMessage))
-            {
-                await PubServices.PublishMessageAsync(topicID, eventType, eventMessage);
-            }
         }
 }

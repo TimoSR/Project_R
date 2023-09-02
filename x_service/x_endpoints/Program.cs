@@ -12,12 +12,24 @@ var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
 
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-
+var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
+
+var config = new Configuration()
+{
+    ProjectId = projectId,
+    ServiceName = serviceName,
+    Environment = environment
+};
+
+builder.Services.AddSingleton(config);
 
 Console.WriteLine($"\n{serviceName}");
 
 Console.WriteLine("###################################");
+
+// Custom Tools written tools to simplify development
+builder.Services.AddApplicationTools();
 
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
 builder.Services.AddGraphQLServices(); 
@@ -32,9 +44,6 @@ builder.Services.AddPublisherServices();
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<StartExternalConnections>();
-
-// Custom Tools written tools to simplify development
-builder.Services.AddApplicationTools();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();

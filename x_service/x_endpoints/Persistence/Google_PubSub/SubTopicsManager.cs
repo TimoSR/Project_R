@@ -4,12 +4,12 @@ using Google.Cloud.PubSub.V1;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
-public class SubServices
+public class SubTopicsManager
 {
     private SubscriberServiceApiClient _subscriberService;
     private string _projectID;
 
-    public SubServices(SubscriberServiceApiClient subscriberService, string projectID)
+    public SubTopicsManager(SubscriberServiceApiClient subscriberService, string projectID)
     {
         _subscriberService = subscriberService;
         _projectID = projectID;

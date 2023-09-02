@@ -8,16 +8,16 @@ using x_endpoints.Tools.Serializers;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
-public class PubServices
+public class PubTopicsManager
 {
     private readonly PublisherServiceApiClient _publisherService;
     private readonly string _projectId;
 
-    public PubServices(PublisherServiceApiClient publisherService, string projectId)
+    public PubTopicsManager(PublisherServiceApiClient publisherService, string projectId)
     {
         _publisherService = publisherService;
         _projectId = projectId;
-        IfDevelopment();
+        //IfDevelopment();
         CreateTopics();
         ListAllTopicNames();
     }
@@ -141,28 +141,5 @@ public class PubServices
         {
             Console.WriteLine($"Topic: {topic.TopicName}");
         }
-    }
-
-    public string GenerateTopicID(string serviceName, string topic){
-        var _serviceName = DotNetEnv.Env.GetString(serviceName);
-        var _topic = DotNetEnv.Env.GetString(topic);
-        return $"{_serviceName}-{_topic}";
-    }
-
-    public async Task PublishMessageAsync(string topicId, string eventType, string formattedMessage)
-    {
-        var topicName = TopicName.FromProjectTopic(_projectId, topicId);
-
-        PubsubMessage pubsubMessage = new PubsubMessage
-        {
-            Data = ByteString.CopyFromUtf8(formattedMessage),
-            Attributes =
-            {
-                { "description", $"Message for event type: {eventType}" },
-                { "eventType", eventType }
-            }
-        };
-
-        await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
     }
 }

@@ -3,12 +3,12 @@ using System;
 
 namespace x_endpoints.Tools.Serializers;
 
-public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
+public class ProtobufSerializer : IApplicationTool
 {
     
     // It only works with models that uses Protobuf-Net Attributes!!!!
     
-    public string Serialize(TPayload content)
+    public string Serialize<TData>(TData content)
     {
         try
         {
@@ -23,40 +23,40 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
         catch (ProtoException ex)
         {
             // Handle protobuf-specific errors.
-            throw new InvalidOperationException($"Failed to serialize content of type {typeof(TPayload).Name} due to protobuf error.", ex);
+            throw new InvalidOperationException($"Failed to serialize content of type {typeof(TData).Name} due to protobuf error.", ex);
         }
         catch (Exception ex) // This will catch any other exception
         {
             // Handle generic errors.
-            throw new InvalidOperationException($"An unexpected error occurred while serializing content of type {typeof(TPayload).Name}.", ex);
+            throw new InvalidOperationException($"An unexpected error occurred while serializing content of type {typeof(TData).Name}.", ex);
         }
     }
     
-    public TPayload Deserialize(string content)
+    public TModel Deserialize<TModel>(string content)
     {
         try
         {
             Console.WriteLine("\nDeserializing Protobuf Message:");
                 
-            TPayload payload = ConvertFromProtobuf(content);
+            var payload = ConvertToModel<TModel>(content);
                 
-            Console.WriteLine($"Deserialized object of type {typeof(TPayload).Name} successfully!");
+            Console.WriteLine($"Deserialized object of type {typeof(TModel).Name} successfully!");
                 
             return payload;
         }
         catch (ProtoException ex)
         {
             // Handle protobuf-specific errors.
-            throw new InvalidOperationException($"Failed to deserialize content to type {typeof(TPayload).Name} due to protobuf error.", ex);
+            throw new InvalidOperationException($"Failed to deserialize content to type {typeof(TModel).Name} due to protobuf error.", ex);
         }
         catch (Exception ex) // This will catch any other exception
         {
             // Handle generic errors.
-            throw new InvalidOperationException($"An unexpected error occurred while deserializing content to type {typeof(TPayload).Name}.", ex);
+            throw new InvalidOperationException($"An unexpected error occurred while deserializing content to type {typeof(TModel).Name}.", ex);
         }
     }
 
-    private string ConvertToProtobuf(TPayload message)
+    private string ConvertToProtobuf<TData>(TData message)
     {
         using var ms = new MemoryStream();
         Serializer.Serialize(ms, message);
@@ -64,10 +64,10 @@ public class ProtobufSerializer<TPayload> : ISerializer<TPayload>
         return Convert.ToBase64String(byteArray);
     }
     
-    private TPayload ConvertFromProtobuf(string content)
+    private TModel ConvertToModel<TModel>(string content)
     {
         byte[] byteArray = Convert.FromBase64String(content);
         using var ms = new MemoryStream(byteArray);
-        return Serializer.Deserialize<TPayload>(ms);
+        return Serializer.Deserialize<TModel>(ms);
     }
 }  
