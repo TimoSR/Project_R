@@ -39,7 +39,6 @@
   <ItemGroup>
     <Folder Include="EventMessages\" />
     <Folder Include="EventModels\" />
-    <Folder Include="Tools\EventPublisher\" />
   </ItemGroup>
 
 </Project>

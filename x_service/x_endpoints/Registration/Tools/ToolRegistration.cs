@@ -9,13 +9,27 @@ public static class ToolRegistration
     public static IServiceCollection AddApplicationTools(this IServiceCollection services)
     {   
         
-        // Using reflection to get all types which are classes, not abstract, and implement ITool
+        // Using reflection to get all types which are classes, not abstract, and implement IApplicationTool
         var toolTypes = Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && typeof(IApplicationTool).IsAssignableFrom(t));
 
         foreach (var type in toolTypes)
         {
-            services.AddTransient(type);
+            var interfaceTypes = type.GetInterfaces().Where(i => typeof(IApplicationTool).IsAssignableFrom(i) && i != typeof(IApplicationTool)).ToList();
+
+            if (interfaceTypes.Count == 0)
+            {
+                // If the type does not have any interface apart from IApplicationTool
+                services.AddTransient(type);
+            }
+            else
+            {
+                // If the type implements a specific interface derived from IApplicationTool
+                foreach (var interfaceType in interfaceTypes)
+                {
+                    services.AddTransient(interfaceType, type);
+                }
+            }
         }
 
         return services;

@@ -5,6 +5,7 @@ using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using x_endpoints.Persistence.StartUp;
+using x_endpoints.Tools.Environment;
 using x_endpoints.Tools.Serializers;
 
 namespace x_endpoints.Persistence.Google_PubSub;
@@ -101,7 +102,7 @@ public class PubTopicsManager
     private async Task CreateTopicsAsync()
     {
         // Get all environment variables
-        var environmentVariables = Environment.GetEnvironmentVariables();
+        var environmentVariables = _environmentVariables;
         var serviceName = _serviceName;
         var topics = new List<string>();
 

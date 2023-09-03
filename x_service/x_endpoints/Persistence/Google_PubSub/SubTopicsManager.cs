@@ -2,6 +2,7 @@ using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using x_endpoints.Persistence.StartUp;
+using x_endpoints.Tools.Environment;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
@@ -11,13 +12,16 @@ public class SubTopicsManager
     private readonly string _projectID;
     private readonly string _serviceName;
     private readonly string _environment;
+    private readonly IDictionary _environmentVariables;
+    private readonly IEnvironmentService _environmentService;
 
-    public SubTopicsManager(Configuration config, SubscriberServiceApiClient subscriberService)
+    public SubTopicsManager(IEnvironmentService environmentService, Configuration config, SubscriberServiceApiClient subscriberService)
     {
-        
+        _environmentService = environmentService;
         _projectID = config.ProjectId;
         _serviceName = config.ServiceName;
         _environment = config.Environment;
+        _environmentVariables = config.EnvironmentVariables;
         _subscriberService = subscriberService;
         //IfDevelopment();
         RegisterSubscriptions();
@@ -31,7 +35,7 @@ public class SubTopicsManager
             Console.WriteLine("\nDeleting Subscriptions due to ENV: Development...");
 
             // Get all environment variables
-            var envVars = Environment.GetEnvironmentVariables();
+            var envVars = _environmentVariables;
 
             foreach (var key in envVars.Keys)
             {
@@ -55,12 +59,12 @@ public class SubTopicsManager
     private void RegisterSubscriptions()
     {
         // Get all environment variables
-        var environmentVariables = Environment.GetEnvironmentVariables();
+        var envVars = _environmentVariables;
 
         Console.WriteLine("\nRegistering Subscriptions:");
 
         // Filter environment variables starting with "SUBSCRIBE_"
-        foreach (DictionaryEntry variable in environmentVariables)
+        foreach (DictionaryEntry variable in envVars)
         {
             string key = variable.Key.ToString();
             if (key.StartsWith("SUBSCRIBE_"))
@@ -76,7 +80,7 @@ public class SubTopicsManager
                     var endpoint = $"{keyValue.ToUpper().Replace("SUBSCRIBE_", "ENDPOINT_")}";
 
                     // If the topic name is order-updates, the corresponding endpoint environment variable would be ENDPOINT_ORDER_UPDATES.
-                    var pushEndpoint = DotNetEnv.Env.GetString(endpoint);
+                    var pushEndpoint = _environmentService.GetString(endpoint);
 
                     RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
                 }
@@ -120,8 +124,8 @@ public class SubTopicsManager
     private async void RegisterSubscriptionsAsync()
     {
         // Get all environment variables
-        var environmentVariables = Environment.GetEnvironmentVariables();
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+        var environmentVariables = _environmentVariables;
+        var serviceName = _serviceName;
 
         Console.WriteLine("\nRegistering Subscriptions:");
 
