@@ -4,28 +4,16 @@ using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.Extensions.DependencyInjection;
+using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
-    
-    // public static IServiceCollection AddPubSubServices(this IServiceCollection services, IWebHostEnvironment env)
-    // {
-    //     
-    //     // Get the current environment (e.g., Development, Production)
-    //     string environment = DotNetEnv.Env.GetString("ASPNETCORE_ENVIRONMENT");
-    //
-    //     // If it's development, set the PUBSUB_EMULATOR_HOST variable
-    //     if (environment == "Development")
-    //     {
-    //
-    //     }
-    // }   
 
-    public static IServiceCollection AddPublisherServices(this IServiceCollection services)
+    public static IServiceCollection AddPublisherServices(this IServiceCollection services, Configuration config)
     {
-        
-        var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
+
+        var projectId = config.ProjectId;
 
         // Use this if the microservice won't be utlizing scaling to zero. 
         // As it scales and perform better and support more advanced features
@@ -57,11 +45,7 @@ public static class PubSubRegistration {
             return client;
         });
         
-        services.AddSingleton(serviceProvider => {
-            var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
-            var publisherService = serviceProvider.GetRequiredService<PublisherServiceApiClient>();
-            return new PubTopicsManager(publisherService, projectId);
-        });
+        services.AddSingleton<PubTopicsManager>();
         
         services.AddSingleton<PubSubEventPublisher>();
             
@@ -70,9 +54,6 @@ public static class PubSubRegistration {
      
     public static IServiceCollection AddSubscriberServices(this IServiceCollection services)
     {
-
-        var projectID = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
-
         services.AddSingleton<SubscriberServiceApiClient>(serviceProvider =>
         {
             //Console.WriteLine("\nSubscriberServiceApiClient Created!");
@@ -85,12 +66,7 @@ public static class PubSubRegistration {
             return client;
         });
 
-        services.AddSingleton(serviceProvider =>
-        {
-            var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
-            var subscriberService = serviceProvider.GetRequiredService<SubscriberServiceApiClient>();
-            return new SubTopicsManager(subscriberService, projectId);
-        });
+        services.AddSingleton<SubTopicsManager>();
 
         return services;
     }

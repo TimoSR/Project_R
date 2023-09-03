@@ -14,19 +14,21 @@ DotNetEnv.Env.Load();
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
 var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
+var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
+var envVars = Environment.GetEnvironmentVariables();
 
 var config = new Configuration()
 {
     ProjectId = projectId,
     ServiceName = serviceName,
-    Environment = environment
+    Environment = environment,
+    ConnectionString = connectionString,
+    EnvironmentVariables = envVars
 };
 
 builder.Services.AddSingleton(config);
 
 Console.WriteLine($"\n{serviceName}");
-
-Console.WriteLine("###################################");
 
 // Custom Tools written tools to simplify development
 builder.Services.AddApplicationTools();
@@ -34,11 +36,11 @@ builder.Services.AddApplicationTools();
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
 builder.Services.AddGraphQLServices(); 
 // Add / Disable MongoDB
-builder.Services.AddMongoDBServices();
+builder.Services.AddMongoDBServices(config);
 // Add / Disable Publisher
-builder.Services.AddPublisherServices();
+builder.Services.AddPublisherServices(config);
 // Add / Disable Subscriber 
-//builder.Services.AddSubscriberServices();
+builder.Services.AddSubscriberServices();
 // Add / Disable Redis
 //builder.Services.AddRedisServices();
 
@@ -85,7 +87,7 @@ if (environment.Equals("Development")) {
     }
     
     Console.WriteLine("\n###################################");
-    Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
+    Console.WriteLine("\nSeeding Database due to ENV: Development...");
 }
 
 // Configure the HTTP request pipeline.

@@ -10,11 +10,11 @@ public abstract class BaseService<T>
         protected readonly IMongoCollection<T> Collection;
 
         protected BaseService(
-            MongoDbService dbService, 
+            MongoDbManager dbManager, 
             string collectionName
             )
         {
-            Collection = dbService.GetDefaultDatabase().GetCollection<T>(collectionName);
+            Collection = dbManager.GetDefaultDatabase().GetCollection<T>(collectionName);
         }
 
         public virtual async Task InsertAsync(T data)

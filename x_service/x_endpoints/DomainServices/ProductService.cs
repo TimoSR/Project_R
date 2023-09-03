@@ -12,12 +12,10 @@ public class ProductService : BaseService<Product>
 
     private readonly PubSubEventPublisher _eventPublisher;
     //private readonly RedisService _redisService;
-
-    // The Created as it will react based on the settings in the project.
-    // If there is/not a dependency, it will be injected automatically added/removed.
+    
     public ProductService(
-        MongoDbService dbService,
-        PubSubEventPublisher eventPublisher) : base(dbService, "Products")
+        MongoDbManager dbManager,
+        PubSubEventPublisher eventPublisher) : base(dbManager, "Products")
     {
         _eventPublisher = eventPublisher;
         //_redisService = redisService;
@@ -25,12 +23,8 @@ public class ProductService : BaseService<Product>
 
     public override async Task InsertAsync(Product data)
     {
-
         await Collection.InsertOneAsync(data);
-
         await _eventPublisher.PublishJsonEventAsync(data);
         await _eventPublisher.PublishProtobufEventAsync(data);
     }
-
-    // Add other CRUD operations here...
 }

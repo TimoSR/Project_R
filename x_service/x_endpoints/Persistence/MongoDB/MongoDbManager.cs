@@ -2,14 +2,14 @@ using MongoDB.Driver;
 
 namespace x_endpoints.Persistence.MongoDB;
 
-public class MongoDbService
+public class MongoDbManager
 {
     private readonly IMongoClient _client;
 
     private readonly string _default_database;
     private readonly IDictionary<string, string> _databaseNames;
 
-    public MongoDbService(IMongoClient client, string default_database, IDictionary<string, string> databaseNames)
+    public MongoDbManager(IMongoClient client, string default_database, IDictionary<string, string> databaseNames)
     {
         _client = client;
         _default_database = default_database; 

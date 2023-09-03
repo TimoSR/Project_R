@@ -26,6 +26,9 @@ public class PubSubEventPublisher
         _protobufSerializer = protobufSerializer;
     }
 
+    /*
+     * This Design Enables the method to react on the Input Type.
+     */
     public async Task PublishJsonEventAsync<TEvent>(TEvent eventMessage)
     {
         var eventName = typeof(TEvent).Name;

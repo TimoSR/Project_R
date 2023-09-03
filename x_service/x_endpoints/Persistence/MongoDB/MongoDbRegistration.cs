@@ -1,17 +1,18 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.MongoDB;
 
 public static class MongoDbRegistration
 {
-    public static IServiceCollection AddMongoDBServices(this IServiceCollection services)
+    public static IServiceCollection AddMongoDBServices(this IServiceCollection services, Configuration config)
     {
-        
-        var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
-        var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+
+        var connectionString = config.ConnectionString;
+        var environment = config.Environment;
+        var serviceName = config.ServiceName;
         var databaseName = $"{serviceName}_{environment}";
 
         services.AddSingleton<IMongoClient>(sp =>
@@ -25,6 +26,7 @@ public static class MongoDbRegistration
             try 
             {
                 var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
+                Console.WriteLine("\n###################################");
                 Console.WriteLine("\nYou successfully connected to MongoDB! \n");
             } 
             catch (Exception ex) 
@@ -35,7 +37,7 @@ public static class MongoDbRegistration
             return client;
         });
 
-        services.AddSingleton<MongoDbService>(sp =>
+        services.AddSingleton<MongoDbManager>(sp =>
         {
             var client = sp.GetRequiredService<IMongoClient>();
             var databases = client.ListDatabaseNames().ToEnumerable().ToDictionary(name => name, name => name);
@@ -68,7 +70,7 @@ public static class MongoDbRegistration
                 }
             }
 
-            return new MongoDbService(client, databaseName, databases);
+            return new MongoDbManager(client, databaseName, databases);
         });
 
         return services;

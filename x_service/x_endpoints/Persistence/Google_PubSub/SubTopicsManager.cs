@@ -1,28 +1,32 @@
 using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
+using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public class SubTopicsManager
 {
     private SubscriberServiceApiClient _subscriberService;
-    private string _projectID;
+    private readonly string _projectID;
+    private readonly string _serviceName;
+    private readonly string _environment;
 
-    public SubTopicsManager(SubscriberServiceApiClient subscriberService, string projectID)
+    public SubTopicsManager(Configuration config, SubscriberServiceApiClient subscriberService)
     {
+        
+        _projectID = config.ProjectId;
+        _serviceName = config.ServiceName;
+        _environment = config.Environment;
         _subscriberService = subscriberService;
-        _projectID = projectID;
-        IfDevelopment();
+        //IfDevelopment();
         RegisterSubscriptions();
         ListAllSubscriptions();        
     }
 
-    private void IfDevelopment() 
+    private void IfDevelopment()
     {
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-
-        if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
+        if (_environment == "Development")
         {
             Console.WriteLine("\nDeleting Subscriptions due to ENV: Development...");
 
@@ -35,7 +39,7 @@ public class SubTopicsManager
                 if (key.ToString().StartsWith("SUBSCRIBE_"))
                 {
                     // Get the subscription name
-                    var subscriptionName = $"{envVars[key].ToString()}-{serviceName}";
+                    var subscriptionName = $"{envVars[key].ToString()}-{_serviceName}";
                 
                     // Delete the subscription
                     var existingSubscription = _subscriberService.GetSubscription(new SubscriptionName(_projectID, subscriptionName));
@@ -52,7 +56,6 @@ public class SubTopicsManager
     {
         // Get all environment variables
         var environmentVariables = Environment.GetEnvironmentVariables();
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
 
         Console.WriteLine("\nRegistering Subscriptions:");
 
@@ -69,7 +72,7 @@ public class SubTopicsManager
 
                     var keyValue = variable.Key.ToString();
                     var topicValue = variable.Value.ToString();
-                    var subscriptionId = $"{topicValue}-{serviceName}";
+                    var subscriptionId = $"{topicValue}-{_serviceName}";
                     var endpoint = $"{keyValue.ToUpper().Replace("SUBSCRIBE_", "ENDPOINT_")}";
 
                     // If the topic name is order-updates, the corresponding endpoint environment variable would be ENDPOINT_ORDER_UPDATES.

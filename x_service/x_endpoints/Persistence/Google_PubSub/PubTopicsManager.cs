@@ -4,48 +4,56 @@ using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
+using x_endpoints.Persistence.StartUp;
 using x_endpoints.Tools.Serializers;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public class PubTopicsManager
 {
-    private readonly PublisherServiceApiClient _publisherService;
+    private readonly PublisherServiceApiClient _publisherClient;
     private readonly string _projectId;
+    private readonly string _serviceName;
+    private readonly string _environment;
+    private readonly IDictionary _environmentVariables;
 
-    public PubTopicsManager(PublisherServiceApiClient publisherService, string projectId)
+    public PubTopicsManager(Configuration config, PublisherServiceApiClient publisherClient)
     {
-        _publisherService = publisherService;
-        _projectId = projectId;
+        _projectId = config.ProjectId;
+        _serviceName = config.ServiceName;
+        _environment = config.Environment;
+        _environmentVariables = config.EnvironmentVariables;
+        _publisherClient = publisherClient;
         //IfDevelopment();
         CreateTopics();
         ListAllTopicNames();
     }
 
-    private void IfDevelopment() {
+    private void IfDevelopment()
+    {
 
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+        var serviceName = _serviceName;
         
-        if (Environment.GetEnvironmentVariable("ENVIRONMENT") == "Development")
+        if (_environment == "Development")
         {
             Console.WriteLine("\nDeleting Topics due to ENV: Development...");
 
             // Get all environment variables
-            var envVars = Environment.GetEnvironmentVariables();
+            var environmentVariables = _environmentVariables;
 
-            foreach (var key in envVars.Keys)
+            foreach (var key in environmentVariables.Keys)
             {
                 // Check if the environment variable starts with 'TOPIC_'
                 if (key.ToString().StartsWith("TOPIC_"))
                 {
                     // Get the topic name
-                    var topicName = $"{serviceName}-{envVars[key].ToString()}";
+                    var topicName = $"{serviceName}-{environmentVariables[key].ToString()}";
                 
                     // Delete the topic
-                    var existingTopic = _publisherService.GetTopic(new TopicName(_projectId, topicName));
+                    var existingTopic = _publisherClient.GetTopic(new TopicName(_projectId, topicName));
                     if (existingTopic != null)
                     {
-                        _publisherService.DeleteTopic(existingTopic.TopicName);
+                        _publisherClient.DeleteTopic(existingTopic.TopicName);
                     }
                 }
             }
@@ -56,8 +64,8 @@ public class PubTopicsManager
     private void CreateTopics()
     {
         // Get all environment variables
-        var environmentVariables = Environment.GetEnvironmentVariables();
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+        var environmentVariables = _environmentVariables;
+        var serviceName = _serviceName;
         var topics = new List<string>();
 
         Console.WriteLine("\nCreating Topics:");
@@ -81,11 +89,11 @@ public class PubTopicsManager
             var topicName = TopicName.FromProjectTopic(_projectId, topicId);
             try 
             {
-                _publisherService.GetTopic(topicName);
+                _publisherClient.GetTopic(topicName);
             } 
             catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
             {
-                _publisherService.CreateTopic(topicName);
+                _publisherClient.CreateTopic(topicName);
             }
         }
     }
@@ -94,7 +102,7 @@ public class PubTopicsManager
     {
         // Get all environment variables
         var environmentVariables = Environment.GetEnvironmentVariables();
-        var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
+        var serviceName = _serviceName;
         var topics = new List<string>();
 
         Console.WriteLine("\nCreating Topics:");
@@ -118,11 +126,11 @@ public class PubTopicsManager
             var topicName = TopicName.FromProjectTopic(_projectId, topicId);
             try 
             {
-                await _publisherService.GetTopicAsync(topicName);
+                await _publisherClient.GetTopicAsync(topicName);
             } 
             catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
             {
-                await _publisherService.CreateTopicAsync(topicName);
+                await _publisherClient.CreateTopicAsync(topicName);
             }
         });
 
@@ -133,7 +141,7 @@ public class PubTopicsManager
     {
         ProjectName projectName = new ProjectName(_projectId);
 
-        var allTopics = _publisherService.ListTopics(projectName);
+        var allTopics = _publisherClient.ListTopics(projectName);
 
         Console.WriteLine("\nTopics in PubSub:\n");
 

@@ -6,7 +6,7 @@ namespace x_endpoints.Persistence.StartUp;
 
 public class StartExternalConnections : IHostedService
 {
-    private readonly MongoDbService _mongoDbService;
+    private readonly MongoDbManager _mongoDbManager;
     private readonly PubTopicsManager _pubTopicsManager;
     private readonly SubTopicsManager _subTopicsManager;
     private readonly RedisService _redisService;
@@ -14,7 +14,7 @@ public class StartExternalConnections : IHostedService
     public StartExternalConnections(IServiceProvider serviceProvider)
     {
         // This makes the MongoDB Optional
-        _mongoDbService = serviceProvider.GetService<MongoDbService>();
+        _mongoDbManager = serviceProvider.GetService<MongoDbManager>();
         _pubTopicsManager = serviceProvider.GetService<PubTopicsManager>();
         _subTopicsManager = serviceProvider.GetService<SubTopicsManager>();
         _redisService = serviceProvider.GetService<RedisService>();
