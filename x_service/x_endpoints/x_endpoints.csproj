@@ -37,7 +37,6 @@
 
 
   <ItemGroup>
-    <Folder Include="EventMessages\" />
     <Folder Include="EventModels\" />
   </ItemGroup>
 

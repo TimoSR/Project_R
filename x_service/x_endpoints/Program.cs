@@ -14,7 +14,8 @@ DotNetEnv.Env.Load();
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
 var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
-var connectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
+var mongoConnectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
+var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
 var envVars = Environment.GetEnvironmentVariables();
 
 var config = new Configuration()
@@ -22,7 +23,8 @@ var config = new Configuration()
     ProjectId = projectId,
     ServiceName = serviceName,
     Environment = environment,
-    ConnectionString = connectionString,
+    MongoConnectionString = mongoConnectionString,
+    RedisConnectionString = redisConnectionString,
     EnvironmentVariables = envVars
 };
 

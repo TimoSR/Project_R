@@ -10,7 +10,7 @@ public static class MongoDbRegistration
     public static IServiceCollection AddMongoDBServices(this IServiceCollection services, Configuration config)
     {
 
-        var connectionString = config.ConnectionString;
+        var connectionString = config.MongoConnectionString;
         var environment = config.Environment;
         var serviceName = config.ServiceName;
         var databaseName = $"{serviceName}_{environment}";

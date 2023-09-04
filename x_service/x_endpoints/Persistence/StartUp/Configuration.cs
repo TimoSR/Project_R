@@ -8,5 +8,6 @@ public class Configuration
     public string ServiceName { get; set; }
     public string Environment { get; set; }
     public IDictionary EnvironmentVariables { get; set; }
-    public string ConnectionString { get; set; }
+    public string MongoConnectionString { get; set; }
+    public string RedisConnectionString { get; set; }
 }

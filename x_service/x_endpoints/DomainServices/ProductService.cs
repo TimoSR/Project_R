@@ -1,9 +1,7 @@
-using MongoDB.Driver;
 using x_endpoints.DomainModels;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Registration.Services;
-using x_endpoints.Tools.Serializers;
+using x_endpoints.Persistence.Redis;
 
 namespace x_endpoints.DomainServices;
 
@@ -11,7 +9,7 @@ public class ProductService : BaseService<Product>
 {
 
     private readonly PubSubEventPublisher _eventPublisher;
-    //private readonly RedisService _redisService;
+    private readonly RedisService _redisService;
     
     public ProductService(
         MongoDbManager dbManager,

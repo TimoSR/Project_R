@@ -1,4 +1,5 @@
 using System.Reflection;
+using x_endpoints.Persistence.MongoDB;
 
 namespace x_endpoints.Registration.Services;
 

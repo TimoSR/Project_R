@@ -5,19 +5,18 @@ namespace x_endpoints.Persistence.MongoDB;
 public class MongoDbManager
 {
     private readonly IMongoClient _client;
-
-    private readonly string _default_database;
+    private readonly string _defaultDatabase;
     private readonly IDictionary<string, string> _databaseNames;
 
-    public MongoDbManager(IMongoClient client, string default_database, IDictionary<string, string> databaseNames)
+    public MongoDbManager(IMongoClient client, string defaultDatabase, IDictionary<string, string> databaseNames)
     {
         _client = client;
-        _default_database = default_database; 
+        _defaultDatabase = defaultDatabase; 
         _databaseNames = databaseNames;
     } 
 
     public IMongoDatabase GetDefaultDatabase() {
-        return _client.GetDatabase(_default_database);
+        return _client.GetDatabase(_defaultDatabase);
     }
 
     public IMongoDatabase GetDatabase(string key)

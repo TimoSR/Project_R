@@ -1,9 +1,6 @@
 using MongoDB.Driver;
-using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Tools.Serializers;
 
-namespace x_endpoints.Registration.Services;
+namespace x_endpoints.Persistence.MongoDB;
 
 public abstract class BaseService<T>
 {
