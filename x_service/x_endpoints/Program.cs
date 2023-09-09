@@ -1,31 +1,48 @@
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints.Persistence.GraphQL_Server;
 using x_endpoints.Persistence.Redis;
-using x_endpoints.Persistence.ServiceRegistration;
 using x_endpoints.Persistence.StartUp;
-using x_endpoints.Seeders;
+using x_endpoints.Registration.DataSeeder;
+using x_endpoints.Registration.GraphQL;
+using x_endpoints.Registration.Services;
+using x_endpoints.Registration.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
 DotNetEnv.Env.Load();
 
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
-
+var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
+var mongoConnectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
+var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
+var envVars = Environment.GetEnvironmentVariables();
+
+var config = new Configuration()
+{
+    ProjectId = projectId,
+    ServiceName = serviceName,
+    Environment = environment,
+    MongoConnectionString = mongoConnectionString,
+    RedisConnectionString = redisConnectionString,
+    EnvironmentVariables = envVars
+};
+
+builder.Services.AddSingleton(config);
 
 Console.WriteLine($"\n{serviceName}");
 
-Console.WriteLine("###################################");
+// Custom Tools written tools to simplify development
+builder.Services.AddApplicationTools();
 
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
 builder.Services.AddGraphQLServices(); 
 // Add / Disable MongoDB
-builder.Services.AddMongoDBServices();
+builder.Services.AddMongoDBServices(config);
 // Add / Disable Publisher
-builder.Services.AddPublisherServices();
+builder.Services.AddPublisherServices(config);
 // Add / Disable Subscriber 
-//builder.Services.AddSubscriberServices();
+builder.Services.AddSubscriberServices();
 // Add / Disable Redis
 //builder.Services.AddRedisServices();
 
@@ -57,10 +74,22 @@ var app = builder.Build();
 
 if (environment.Equals("Development")) {
 
-    // Insert initial data into the "Products" collection
-    DataSeeder.SeedData(app.Services);
+    // Insert initial data into the MongoDB collections
+
+    var seederType = typeof(IDataSeeder);
+    var seeders = AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(s => s.GetTypes())
+        .Where(p => seederType.IsAssignableFrom(p) && !p.IsInterface)
+        .ToList();
+
+    foreach(var seeder in seeders)
+    {
+        var instance = Activator.CreateInstance(seeder) as IDataSeeder;
+        instance?.SeedData(app.Services);
+    }
+    
     Console.WriteLine("\n###################################");
-    Console.WriteLine("\nSeeding Database due to ENV: Development...\n");
+    Console.WriteLine("\nSeeding Database due to ENV: Development...");
 }
 
 // Configure the HTTP request pipeline.

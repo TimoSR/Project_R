@@ -1,20 +1,36 @@
-
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using x_endpoints.DomainModels._Interfaces;
 using x_endpoints.Enums;
-using x_endpoints.Interfaces;
 
-namespace x_endpoints.Models
+namespace x_endpoints.DomainModels.Equipments
 {
 
-    public class Armor : IEquipment
+    public class Armor : IItems, IEquipment 
     {
-        public string Id { get; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        
+        [BsonRepresentation(BsonType.Int32)]
+        public ItemRarity Rarity { get; set; }
+        [BsonElement]
         public string Name { get; set; }
+        
+        [BsonElement]
+        public string Description { get; set; }
+        
+        [BsonElement]
+        public decimal Price { get; set; }
+
+        [BsonElement]
         public int LevelRequirement { get; set; }
-
-        public EquipmentSlot Slot { get; set; }
-
+        
+        [BsonElement]
         public int ArmorValue { get; set; }
-
+        
+        [BsonRepresentation(BsonType.Int32)]
+        public EquipmentSlot Slot { get; set; }
     }
 }
  

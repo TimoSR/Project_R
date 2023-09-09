@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace x_endpoints.Models;
+namespace x_endpoints.DomainModels;
 
 public class Character
 {
@@ -17,9 +17,6 @@ public class Character
 
     [BsonElement("Level")]
     public string Level {get; set;}
-    
-    
-
 
     // You can add more properties depending on your needs. Each property represents a field in your Product document.
 }

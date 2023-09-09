@@ -33,16 +33,4 @@
     <ProjectReference Include="..\x_lib\x_lib.csproj" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Compile Remove="GameObjectLibrary\Items\Ores\Ores.cs" />
-    <Compile Remove="DomainModels\Equipments\Weapon.cs" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="GameObjectLibrary\Equipment\Weapon\TwoHander\" />
-  </ItemGroup>
-
-
 </Project>

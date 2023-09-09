@@ -1,39 +1,28 @@
-using MongoDB.Driver;
 using x_endpoints.DomainModels;
 using x_endpoints.Persistence.Google_PubSub;
 using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Persistence.ServiceRegistration;
+using x_endpoints.Persistence.Redis;
 
 namespace x_endpoints.DomainServices;
 
 public class ProductService : BaseService<Product>
 {
-    private readonly PubServices _pubServices;
-    //private readonly SubServices _subServices;
-    //private readonly RedisService _redisService;
 
-    // The Created as it will react based on the settings in the project.
-    // If there is/not a dependency, it will be injected automatically added/removed.
-    public ProductService(MongoDbService dbService, PubServices pubServices) : base(dbService, "Products")
+    private readonly PubSubEventPublisher _eventPublisher;
+    private readonly RedisService _redisService;
+    
+    public ProductService(
+        MongoDbManager dbManager,
+        PubSubEventPublisher eventPublisher) : base(dbManager, "Products")
     {
-        _pubServices = pubServices;
-        //_subServices = subServices;
+        _eventPublisher = eventPublisher;
         //_redisService = redisService;
     }
 
     public override async Task InsertAsync(Product data)
     {
-
-        await _collection.InsertOneAsync(data);        
-    
-        var topicID = _pubServices.GenerateTopicID("SERVICE_NAME", "TOPIC_PRODUCT_UPDATES");
-        //Console.WriteLine(topicID);
-    
-        // Publish a message after inserting a product.
-        await _pubServices.PublishMessageAsync(topicID, $"New product: {data.Name}");
-    
-        //await _redisService.SetValue("1", "test");
+        await Collection.InsertOneAsync(data);
+        await _eventPublisher.PublishJsonEventAsync(data);
+        await _eventPublisher.PublishProtobufEventAsync(data);
     }
-
-    // Add other CRUD operations here...
 }

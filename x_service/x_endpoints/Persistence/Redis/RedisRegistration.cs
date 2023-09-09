@@ -1,14 +1,14 @@
 using StackExchange.Redis;
+using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.Redis;
 
 public static class RedisRegistration
 {
-    public static IServiceCollection AddRedisServices(this IServiceCollection services)
+    public static IServiceCollection AddRedisServices(this IServiceCollection services, Configuration config)
     {
-        DotNetEnv.Env.Load();
 
-        var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
+        var redisConnectionString = config.RedisConnectionString;
 
         services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
         {

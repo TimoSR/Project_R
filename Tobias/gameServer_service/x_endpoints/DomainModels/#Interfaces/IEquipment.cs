@@ -1,12 +1,10 @@
 using x_endpoints.Enums;
 
-namespace x_endpoints.Interfaces
+namespace x_endpoints.DomainModels._Interfaces
 {
     public interface IEquipment
         {
-            string Id {get;}
-            string Name { get; }
-            int LevelRequirement { get; }
+            int LevelRequirement { get; set; }
             EquipmentSlot Slot { get; }
         }
 }

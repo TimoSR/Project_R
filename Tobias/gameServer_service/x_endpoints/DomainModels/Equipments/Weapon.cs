@@ -1,32 +1,36 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using x_endpoints.DomainModels._Interfaces;
 using x_endpoints.Enums;
-using x_endpoints.Interfaces;
 
-namespace x_endpoints.Models;
+namespace x_endpoints.DomainModels.Equipments;
 
-public class Weapon
+public class Weapon : IItems, IEquipment
 {
-    public class Weapon : IEquipment
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; init; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
+    
+    [BsonRepresentation(BsonType.Int32)]
+    public ItemRarity Rarity { get; set; }
+    
+    [BsonElement]
+    public string Name { get; set; }
 
-        [BsonElement]
-        public string Name { get; set; }
-        [BsonElement]
-        public int LevelRequirement { get; set; }
-        private EquipmentSlot _slot;
-        
-        [BsonElement]
-        public EquipmentSlot Slot
-        {
-            get { return _slot; }
-            set { _slot = EquipmentSlot.Weapon; } // Always set to Weapon
-        }
-        
-        [BsonElement]
-        public int AttackValue { get; set; }
-    }
-}  
+    [BsonElement]
+    public string Description { get; set; }
+    
+    [BsonElement]
+    public decimal Price { get; set; }
+
+    [BsonElement]
+    public int LevelRequirement { get; set; }
+    
+    [BsonRepresentation(BsonType.Int32)]
+    public EquipmentSlot Slot { get; } = EquipmentSlot.Weapon;
+    
+    [BsonElement]
+    public int AttackValue { get; set; }
+}
+
+
