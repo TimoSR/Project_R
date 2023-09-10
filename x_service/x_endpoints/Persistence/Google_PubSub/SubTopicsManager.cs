@@ -77,7 +77,7 @@ public class SubTopicsManager
                     var endpoint = $"{keyValue.ToUpper().Replace("SUBSCRIBE_", "ENDPOINT_")}";
 
                     // If the topic name is order-updates, the corresponding endpoint environment variable would be ENDPOINT_ORDER_UPDATES.
-                    var pushEndpoint = DotNetEnv.Env.GetString(endpoint);
+                    var pushEndpoint = envVars[endpoint].ToString();
 
                     RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
                 }

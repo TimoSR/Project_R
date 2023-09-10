@@ -1,10 +1,6 @@
-using x_endpoints.DomainModels;
-using x_endpoints.DomainRepositories._Interfaces;
-using x_endpoints.DomainRepositories.MongoDB;
 using x_endpoints.Helpers;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.StartUp;
 using x_endpoints.Registration.DataSeeder;
 using x_endpoints.Registration.GraphQL;
