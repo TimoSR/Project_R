@@ -1,3 +1,6 @@
+using x_endpoints.DomainModels;
+using x_endpoints.DomainRepositories._Interfaces;
+using x_endpoints.DomainRepositories.MongoDB;
 using x_endpoints.Helpers;
 using x_endpoints.Persistence.MongoDB;
 using x_endpoints.Persistence.Google_PubSub;
@@ -45,13 +48,14 @@ builder.Services.AddPublisherServices(config);
 // Add / Disable Subscriber 
 builder.Services.AddSubscriberServices();
 // Add / Disable Redis
-builder.Services.AddRedisServices(config);
+//builder.Services.AddRedisServices(config);
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<StartExternalConnections>();
 
 // Adding Dependencies to Service Dependency Container
 builder.Services.AddSingleton<IServiceDependencies, ServiceDependencies>();
+builder.Services.AddSingleton<IRepository<Product>, ProductRepository>();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();

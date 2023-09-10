@@ -5,7 +5,7 @@ namespace x_endpoints.ControllersGraphQL.Product;
 
 public class ProductQuery : BaseQuery
 {
-    public async Task<List<DomainModels.Product>> GetProducts([Service] ProductService productService) 
+    public async Task<IEnumerable<DomainModels.Product>> GetProducts([Service] ProductService productService) 
     {
         return await productService.GetAllAsync();
     }
