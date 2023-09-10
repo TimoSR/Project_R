@@ -19,15 +19,15 @@ public class PubSubController : ControllerBase
     public async Task<IActionResult> HandleSubscription1()
     {
         using (StreamReader reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                // Log or do something with the message here
-                Console.WriteLine("\nA Product was inserted into MongoDB:");
-                Console.WriteLine($"{body}");
-            }
+        {
+            var body = await reader.ReadToEndAsync();
+            // Log or do something with the message here
+            Console.WriteLine("\nA Product was inserted into MongoDB:");
+            Console.WriteLine($"{body}");
+        }
 
-            // Respond with a 200 to acknowledge receipt of the message
-            return Ok();
+        // Respond with a 200 to acknowledge receipt of the message
+        return Ok();
     }
 
     [HttpPost("InsertProduct")]

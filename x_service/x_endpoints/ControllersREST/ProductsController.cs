@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using x_endpoints.DomainModels;
 using x_endpoints.DomainServices;
@@ -13,6 +14,13 @@ public class ProductsController : ControllerBase
     public ProductsController(ProductService productService)
     {
         _productService = productService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _productService.GetAllAsync();
+        return Ok(result);
     }
 
     // POST api/products

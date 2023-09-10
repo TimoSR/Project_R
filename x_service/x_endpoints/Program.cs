@@ -8,6 +8,7 @@ using x_endpoints.Persistence.Redis;
 using x_endpoints.Persistence.StartUp;
 using x_endpoints.Registration.DataSeeder;
 using x_endpoints.Registration.GraphQL;
+using x_endpoints.Registration.Repositories;
 using x_endpoints.Registration.Services;
 using x_endpoints.Registration.Tools;
 
@@ -55,7 +56,9 @@ builder.Services.AddHostedService<StartExternalConnections>();
 
 // Adding Dependencies to Service Dependency Container
 builder.Services.AddSingleton<IServiceDependencies, ServiceDependencies>();
-builder.Services.AddSingleton<IRepository<Product>, ProductRepository>();
+
+// Adding Database Repositories
+builder.Services.AddApplicationRepositories();
 
 // Add this after all project dependencies to register all the services.
 builder.Services.AddApplicationServices();
