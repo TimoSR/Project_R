@@ -3,10 +3,7 @@
 using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
-using Google.Protobuf;
 using x_endpoints.Persistence.StartUp;
-using x_endpoints.Tools.Environment;
-using x_endpoints.Tools.Serializers;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 

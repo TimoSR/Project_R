@@ -1,8 +1,9 @@
 using MongoDB.Driver;
+using x_endpoints.Persistence._Interfaces;
 
 namespace x_endpoints.Persistence.MongoDB;
 
-public class MongoDbManager
+public class MongoDbManager : IMongoDbManager
 {
     private readonly IMongoClient _client;
     private readonly string _defaultDatabase;
@@ -13,13 +14,23 @@ public class MongoDbManager
         _client = client;
         _defaultDatabase = defaultDatabase; 
         _databaseNames = databaseNames;
-    } 
+    }
 
-    public IMongoDatabase GetDefaultDatabase() {
+    public IMongoClient GetClient()
+    {
+        return _client;
+    }
+    
+    public IMongoDatabase GetDatabase() {
         return _client.GetDatabase(_defaultDatabase);
     }
 
-    public IMongoDatabase GetDatabase(string key)
+    public IMongoCollection<T> GetCollection<T>(string collectionName)
+    {
+        return _client.GetDatabase(_defaultDatabase).GetCollection<T>(collectionName);
+    }
+
+    public IMongoDatabase SelectFromDatabases(string key)
     {
         if (!_databaseNames.TryGetValue(key, out var databaseName))
         {

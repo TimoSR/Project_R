@@ -2,23 +2,20 @@ using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using x_endpoints.Persistence.StartUp;
-using x_endpoints.Tools.Environment;
 
 namespace x_endpoints.Persistence.Google_PubSub;
 
 public class SubTopicsManager
 {
     private SubscriberServiceApiClient _subscriberService;
-    private readonly string _projectID;
+    private readonly string _projectId;
     private readonly string _serviceName;
     private readonly string _environment;
     private readonly IDictionary _environmentVariables;
-    private readonly IEnvironmentService _environmentService;
 
-    public SubTopicsManager(IEnvironmentService environmentService, Configuration config, SubscriberServiceApiClient subscriberService)
+    public SubTopicsManager(Configuration config, SubscriberServiceApiClient subscriberService)
     {
-        _environmentService = environmentService;
-        _projectID = config.ProjectId;
+        _projectId = config.ProjectId;
         _serviceName = config.ServiceName;
         _environment = config.Environment;
         _environmentVariables = config.EnvironmentVariables;
@@ -46,7 +43,7 @@ public class SubTopicsManager
                     var subscriptionName = $"{envVars[key].ToString()}-{_serviceName}";
                 
                     // Delete the subscription
-                    var existingSubscription = _subscriberService.GetSubscription(new SubscriptionName(_projectID, subscriptionName));
+                    var existingSubscription = _subscriberService.GetSubscription(new SubscriptionName(_projectId, subscriptionName));
                     if (existingSubscription != null)
                     {
                         _subscriberService.DeleteSubscription(existingSubscription.SubscriptionName);
@@ -80,7 +77,7 @@ public class SubTopicsManager
                     var endpoint = $"{keyValue.ToUpper().Replace("SUBSCRIBE_", "ENDPOINT_")}";
 
                     // If the topic name is order-updates, the corresponding endpoint environment variable would be ENDPOINT_ORDER_UPDATES.
-                    var pushEndpoint = _environmentService.GetString(endpoint);
+                    var pushEndpoint = DotNetEnv.Env.GetString(endpoint);
 
                     RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
                 }
@@ -90,8 +87,8 @@ public class SubTopicsManager
 
     private void RegisterPushSubscription(string subscriptionId, string topicValue, string pushEndpoint)
     {
-        SubscriptionName subscriptionName = new SubscriptionName(_projectID, subscriptionId);
-        TopicName topicName = new TopicName(_projectID, topicValue);
+        SubscriptionName subscriptionName = new SubscriptionName(_projectId, subscriptionId);
+        TopicName topicName = new TopicName(_projectId, topicValue);
         PushConfig pushConfig = new PushConfig() { PushEndpoint = pushEndpoint };
 
         try
@@ -110,7 +107,7 @@ public class SubTopicsManager
 
     private void ListAllSubscriptions()
     {
-        ProjectName projectName = new ProjectName(_projectID);
+        ProjectName projectName = new ProjectName(_projectId);
 
         var allSubscriptions = _subscriberService.ListSubscriptions(projectName);
 
@@ -146,8 +143,8 @@ public class SubTopicsManager
 
     private async Task RegisterSubscriptionAsync(string subscriptionId, string topicValue)
     {
-        SubscriptionName subscriptionName = new SubscriptionName(_projectID, subscriptionId);
-        TopicName topicName = new TopicName(_projectID, topicValue);
+        SubscriptionName subscriptionName = new SubscriptionName(_projectId, subscriptionId);
+        TopicName topicName = new TopicName(_projectId, topicValue);
 
         try
         {

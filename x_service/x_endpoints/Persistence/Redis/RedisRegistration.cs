@@ -1,4 +1,5 @@
 using StackExchange.Redis;
+using x_endpoints.Persistence._Interfaces;
 using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.Redis;
@@ -38,7 +39,7 @@ public static class RedisRegistration
             return client;
         });
 
-        services.AddSingleton<RedisService>();
+        services.AddSingleton<ICacheManager, RedisManager>();
 
         return services;
     }

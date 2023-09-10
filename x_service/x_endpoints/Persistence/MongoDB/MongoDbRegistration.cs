@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using x_endpoints.Persistence._Interfaces;
 using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.MongoDB;
@@ -37,7 +38,7 @@ public static class MongoDbRegistration
             return client;
         });
 
-        services.AddSingleton<MongoDbManager>(sp =>
+        services.AddSingleton<IMongoDbManager, MongoDbManager>(sp =>
         {
             var client = sp.GetRequiredService<IMongoClient>();
             var databases = client.ListDatabaseNames().ToEnumerable().ToDictionary(name => name, name => name);

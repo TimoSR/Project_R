@@ -1,12 +1,13 @@
 using StackExchange.Redis;
+using x_endpoints.Persistence._Interfaces;
 
 namespace x_endpoints.Persistence.Redis;
 
-public class RedisService
+public class RedisManager : ICacheManager
 {
     private readonly IConnectionMultiplexer _redisConnection;
 
-    public RedisService(IConnectionMultiplexer redisConnection)
+    public RedisManager(IConnectionMultiplexer redisConnection)
     {
         _redisConnection = redisConnection;
     }
@@ -17,10 +18,10 @@ public class RedisService
         await db.StringSetAsync(key, value);
     }
 
-    public string GetValue(string key)
+    public async Task GetValue(string key)
     {
         var db = _redisConnection.GetDatabase();
-        return db.StringGet(key);
+        await db.StringGetAsync(key);
     }
 
 }

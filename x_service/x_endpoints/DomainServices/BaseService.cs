@@ -1,17 +1,18 @@
 using MongoDB.Driver;
+using x_endpoints.Persistence._Interfaces;
 
-namespace x_endpoints.Persistence.MongoDB;
+namespace x_endpoints.DomainServices;
 
 public abstract class BaseService<T>
 {
         protected readonly IMongoCollection<T> Collection;
 
         protected BaseService(
-            MongoDbManager dbManager, 
+            IMongoDbManager mongoDbManager, 
             string collectionName
             )
-        {
-            Collection = dbManager.GetDefaultDatabase().GetCollection<T>(collectionName);
+        { 
+            Collection = mongoDbManager.GetCollection<T>(collectionName);
         }
 
         public virtual async Task InsertAsync(T data)
