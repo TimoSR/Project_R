@@ -3,7 +3,7 @@ using System;
 
 namespace x_endpoints.Tools.Serializers;
 
-public class ProtobufSerializer : IApplicationTool
+public class ProtobufSerializer : ITool
 {
     
     // It only works with models that uses Protobuf-Net Attributes!!!!

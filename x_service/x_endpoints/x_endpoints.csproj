@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="EventModels\" />
+    <Folder Include="Registration\Repositories\" />
   </ItemGroup>
 
 </Project>

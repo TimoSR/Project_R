@@ -11,11 +11,11 @@ public static class ToolRegistration
         
         // Using reflection to get all types which are classes, not abstract, and implement IApplicationTool
         var toolTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && typeof(IApplicationTool).IsAssignableFrom(t));
+            .Where(t => t.IsClass && !t.IsAbstract && typeof(ITool).IsAssignableFrom(t));
 
         foreach (var type in toolTypes)
         {
-            var interfaceTypes = type.GetInterfaces().Where(i => typeof(IApplicationTool).IsAssignableFrom(i) && i != typeof(IApplicationTool)).ToList();
+            var interfaceTypes = type.GetInterfaces().Where(i => typeof(ITool).IsAssignableFrom(i) && i != typeof(ITool)).ToList();
 
             if (interfaceTypes.Count == 0)
             {

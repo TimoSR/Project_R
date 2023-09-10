@@ -28,7 +28,6 @@ public class ProductService : IService
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        var list = await _productRepo.GetAllAsync();
-        return list;
+        return await _productRepo.GetAllAsync();
     }
 }
