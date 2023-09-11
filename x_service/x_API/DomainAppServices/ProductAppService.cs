@@ -1,4 +1,5 @@
 using x_endpoints.DomainRepositories._Interfaces;
+using x_endpoints.EventModels;
 using x_endpoints.Helpers;
 using x_endpoints.Persistence._Interfaces;
 using x_lib.DomainModels;
@@ -21,8 +22,14 @@ public class ProductAppService : IAppService
     public async Task InsertAsync(Product data)
     {
         await _productRepo.InsertAsync(data);
-        await _eventManager.PublishJsonEventAsync(data);
-        await _eventManager.PublishProtobufEventAsync(data);
+        
+        var productCreatedEvent = new ProductCreatedEvent
+        {
+            test = "hello"
+        };
+        
+        await _eventManager.PublishJsonEventAsync(productCreatedEvent);
+        await _eventManager.PublishProtobufEventAsync(productCreatedEvent);
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()

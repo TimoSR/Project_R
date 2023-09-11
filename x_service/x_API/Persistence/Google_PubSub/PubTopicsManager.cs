@@ -3,6 +3,8 @@
 using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
+using x_endpoints.EventModels._Interfaces;
+using x_endpoints.Helpers.Attributes;
 using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.Google_PubSub;
@@ -12,129 +14,58 @@ public class PubTopicsManager
     private readonly PublisherServiceApiClient _publisherClient;
     private readonly string _projectId;
     private readonly string _serviceName;
-    private readonly string _environment;
-    private readonly IDictionary _environmentVariables;
 
+    // If the Attribute is not set at the event, it wont be registered.
+    
     public PubTopicsManager(Configuration config, PublisherServiceApiClient publisherClient)
     {
         _projectId = config.ProjectId;
         _serviceName = config.ServiceName;
-        _environment = config.Environment;
-        _environmentVariables = config.EnvironmentVariables;
         _publisherClient = publisherClient;
-        //IfDevelopment();
-        CreateTopics();
+        RegisterTopics();
         ListAllTopicNames();
     }
 
-    private void IfDevelopment()
+    private void RegisterTopics()
     {
+        // Using reflection to get all types implementing IPubEvent
+        var eventTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(assembly => assembly.GetTypes())
+            .Where(type => type.GetInterfaces().Contains(typeof(IPubEvent)) && !type.IsInterface)
+            .ToList();
 
-        var serviceName = _serviceName;
-        
-        if (_environment == "Development")
+        foreach (var eventType in eventTypes)
         {
-            Console.WriteLine("\nDeleting Topics due to ENV: Development...");
+            var topicAttribute = (TopicNameAttribute)Attribute.GetCustomAttribute(eventType, typeof(TopicNameAttribute));
 
-            // Get all environment variables
-            var environmentVariables = _environmentVariables;
-
-            foreach (var key in environmentVariables.Keys)
+            if (topicAttribute == null) 
             {
-                // Check if the environment variable starts with 'TOPIC_'
-                if (key.ToString().StartsWith("TOPIC_"))
-                {
-                    // Get the topic name
-                    var topicName = $"{serviceName}-{environmentVariables[key].ToString()}";
-                
-                    // Delete the topic
-                    var existingTopic = _publisherClient.GetTopic(new TopicName(_projectId, topicName));
-                    if (existingTopic != null)
-                    {
-                        _publisherClient.DeleteTopic(existingTopic.TopicName);
-                    }
-                }
+                // Ignore the event if the attribute is not set.
+                return;
             }
-            
-        }
-    }
 
-    private void CreateTopics()
-    {
-        // Get all environment variables
-        var environmentVariables = _environmentVariables;
-        var serviceName = _serviceName;
-        var topics = new List<string>();
+            var topicId = $"{_serviceName}-{topicAttribute.Name}";
 
-        Console.WriteLine("\nCreating Topics:");
-
-        // Filter environment variables starting with "TOPIC_"
-        foreach (DictionaryEntry variable in environmentVariables)
-        {
-            string key = variable.Key.ToString();
-            if (key.StartsWith("TOPIC_"))
+            if(!string.IsNullOrEmpty(topicId))
             {
-                Console.WriteLine($"\n{variable.Key}");
-                Console.WriteLine($"{variable.Value}");
-                var topicID = $"{serviceName}-{variable.Value.ToString()}";
-                topics.Add(topicID);
-            }
-        }
-
-        // Create topics if they don't exist
-        foreach (var topicId in topics)
-        {
-            var topicName = TopicName.FromProjectTopic(_projectId, topicId);
-            try 
-            {
-                _publisherClient.GetTopic(topicName);
-            } 
-            catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
-            {
-                _publisherClient.CreateTopic(topicName);
+                InitializeTopic(topicId);
             }
         }
     }
-
-    private async Task CreateTopicsAsync()
+    
+    private void InitializeTopic(string topicId)
     {
-        // Get all environment variables
-        var environmentVariables = _environmentVariables;
-        var serviceName = _serviceName;
-        var topics = new List<string>();
-
-        Console.WriteLine("\nCreating Topics:");
-
-        // Filter environment variables starting with "TOPIC_"
-        foreach (DictionaryEntry variable in environmentVariables)
+        var topicName = TopicName.FromProjectTopic(_projectId, topicId);
+        try
         {
-            string key = variable.Key.ToString();
-            if (key.StartsWith("TOPIC_"))
-            {
-                Console.WriteLine($"\n{variable.Key}");
-                Console.WriteLine($"{variable.Value}");
-                var topicID = $"{serviceName}-{variable.Value.ToString()}";
-                topics.Add(topicID);
-            }
+            _publisherClient.GetTopic(topicName);
         }
-
-        // Create topics if they don't exist
-        var tasks = topics.Select(async topicId =>
+        catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
         {
-            var topicName = TopicName.FromProjectTopic(_projectId, topicId);
-            try 
-            {
-                await _publisherClient.GetTopicAsync(topicName);
-            } 
-            catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
-            {
-                await _publisherClient.CreateTopicAsync(topicName);
-            }
-        });
-
-        await Task.WhenAll(tasks);
+            _publisherClient.CreateTopic(topicName);
+        }
     }
-
+    
     private void ListAllTopicNames()
     {
         ProjectName projectName = new ProjectName(_projectId);
@@ -148,4 +79,112 @@ public class PubTopicsManager
             Console.WriteLine($"Topic: {topic.TopicName}");
         }
     }
+    
+    // private void IfDevelopment()
+    // {
+    //
+    //     var serviceName = _serviceName;
+    //     
+    //     if (_environment == "Development")
+    //     {
+    //         Console.WriteLine("\nDeleting Topics due to ENV: Development...");
+    //
+    //         // Get all environment variables
+    //         var environmentVariables = _environmentVariables;
+    //
+    //         foreach (var key in environmentVariables.Keys)
+    //         {
+    //             // Check if the environment variable starts with 'TOPIC_'
+    //             if (key.ToString().StartsWith("TOPIC_"))
+    //             {
+    //                 // Get the topic name
+    //                 var topicName = $"{serviceName}-{environmentVariables[key].ToString()}";
+    //             
+    //                 // Delete the topic
+    //                 var existingTopic = _publisherClient.GetTopic(new TopicName(_projectId, topicName));
+    //                 if (existingTopic != null)
+    //                 {
+    //                     _publisherClient.DeleteTopic(existingTopic.TopicName);
+    //                 }
+    //             }
+    //         }
+    //         
+    //     }
+    // }
+    //
+    // private void CreateTopics()
+    // {
+    //     // Get all environment variables
+    //     var environmentVariables = _environmentVariables;
+    //     var serviceName = _serviceName;
+    //     var topics = new List<string>();
+    //
+    //     Console.WriteLine("\nCreating Topics:");
+    //
+    //     // Filter environment variables starting with "TOPIC_"
+    //     foreach (DictionaryEntry variable in environmentVariables)
+    //     {
+    //         string key = variable.Key.ToString();
+    //         if (key.StartsWith("TOPIC_"))
+    //         {
+    //             Console.WriteLine($"\n{variable.Key}");
+    //             Console.WriteLine($"{variable.Value}");
+    //             var topicID = $"{serviceName}-{variable.Value.ToString()}";
+    //             topics.Add(topicID);
+    //         }
+    //     }
+    //
+    //     // Create topics if they don't exist
+    //     foreach (var topicId in topics)
+    //     {
+    //         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
+    //         try 
+    //         {
+    //             _publisherClient.GetTopic(topicName);
+    //         } 
+    //         catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
+    //         {
+    //             _publisherClient.CreateTopic(topicName);
+    //         }
+    //     }
+    // }
+    //
+    // private async Task CreateTopicsAsync()
+    // {
+    //     // Get all environment variables
+    //     var environmentVariables = _environmentVariables;
+    //     var serviceName = _serviceName;
+    //     var topics = new List<string>();
+    //
+    //     Console.WriteLine("\nCreating Topics:");
+    //
+    //     // Filter environment variables starting with "TOPIC_"
+    //     foreach (DictionaryEntry variable in environmentVariables)
+    //     {
+    //         string key = variable.Key.ToString();
+    //         if (key.StartsWith("TOPIC_"))
+    //         {
+    //             Console.WriteLine($"\n{variable.Key}");
+    //             Console.WriteLine($"{variable.Value}");
+    //             var topicID = $"{serviceName}-{variable.Value.ToString()}";
+    //             topics.Add(topicID);
+    //         }
+    //     }
+    //
+    //     // Create topics if they don't exist
+    //     var tasks = topics.Select(async topicId =>
+    //     {
+    //         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
+    //         try 
+    //         {
+    //             await _publisherClient.GetTopicAsync(topicName);
+    //         } 
+    //         catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
+    //         {
+    //             await _publisherClient.CreateTopicAsync(topicName);
+    //         }
+    //     });
+    //
+    //     await Task.WhenAll(tasks);
+    // }
 }
