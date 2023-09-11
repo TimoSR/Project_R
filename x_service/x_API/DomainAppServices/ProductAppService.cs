@@ -21,8 +21,8 @@ public class ProductAppService : IAppService
     public async Task InsertAsync(Product data)
     {
         await _productRepo.InsertAsync(data);
-        // await _eventManager.PublishJsonEventAsync(data);
-        // await _eventManager.PublishProtobufEventAsync(data);
+        await _eventManager.PublishJsonEventAsync(data);
+        await _eventManager.PublishProtobufEventAsync(data);
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()
