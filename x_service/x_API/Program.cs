@@ -41,9 +41,9 @@ builder.Services.AddGraphQLServices();
 // Add / Disable MongoDB
 builder.Services.AddMongoDBServices(config);
 // Add / Disable Publisher
-builder.Services.AddPublisherServices(config);
+// builder.Services.AddPublisherServices(config);
 // Add / Disable Subscriber 
-builder.Services.AddSubscriberServices();
+// builder.Services.AddSubscriberServices();
 // Add / Disable Redis
 //builder.Services.AddRedisServices(config);
 

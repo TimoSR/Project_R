@@ -1,5 +1,5 @@
 using System.Reflection;
-using x_endpoints.DomainServices;
+using x_endpoints.DomainAppServices;
 
 namespace x_endpoints.Registration.Services;
 

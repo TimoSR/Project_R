@@ -1,5 +1,6 @@
 using x_endpoints.DomainAppServices;
 using x_endpoints.Registration.GraphQL.Queries;
+using x_lib.DomainModels;
 
 namespace x_endpoints.ControllersGraphQL.ProductCollection;
 
@@ -12,7 +13,7 @@ public class ProductQuery : BaseQuery
         _productAppService = productAppService;
     }
     
-    public async Task<IEnumerable<x_lib.DomainModels.Product>> GetProducts() 
+    public async Task<IEnumerable<Product>> GetProducts() 
     {
         return await _productAppService.GetAllAsync();
     }

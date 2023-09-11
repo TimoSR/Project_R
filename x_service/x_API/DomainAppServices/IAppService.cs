@@ -1,4 +1,4 @@
-namespace x_endpoints.DomainServices;
+namespace x_endpoints.DomainAppServices;
 
 public interface IAppService
 {
