@@ -10,7 +10,7 @@ public static class ServiceRegistration
         
         // Using reflection to get all types which are classes, not abstract, and implement IService
         var serviceTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && typeof(IService).IsAssignableFrom(t));
+            .Where(t => t.IsClass && !t.IsAbstract && typeof(IAppService).IsAssignableFrom(t));
 
         foreach (var type in serviceTypes)
         {

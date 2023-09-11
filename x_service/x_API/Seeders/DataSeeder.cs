@@ -1,8 +1,8 @@
-// using x_endpoints.DomainModels;
-// using x_endpoints.DomainServices;
-// using x_endpoints.Registration.DataSeeder;
+// using x_API.DomainModels;
+// using x_API.DomainServices;
+// using x_API.Registration.DataSeeder;
 //
-// namespace x_endpoints.Seeders;
+// namespace x_API.Seeders;
 //
 // public class DataSeeder : IDataSeeder
 // {

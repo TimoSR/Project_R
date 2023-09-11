@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using x_endpoints.DomainModels;
+using x_endpoints.DomainAppServices;
 using x_endpoints.DomainServices;
+using x_lib.DomainModels;
 
 namespace x_endpoints.ControllersREST;
 
@@ -8,11 +9,11 @@ namespace x_endpoints.ControllersREST;
 [Route("api/[controller]")]
 public class PubSubController : ControllerBase
 {
-    private readonly ProductService _productService;
+    private readonly ProductAppService _productAppService;
 
-    public PubSubController(ProductService productService)
+    public PubSubController(ProductAppService productAppService)
     {
-        _productService = productService;
+        _productAppService = productAppService;
     }
 
     [HttpPost("Subscription1")]
@@ -40,7 +41,7 @@ public class PubSubController : ControllerBase
             Price = 29.99m
         };
 
-        await _productService.InsertAsync(product1);
+        await _productAppService.InsertAsync(product1);
 
         return Ok();
     }

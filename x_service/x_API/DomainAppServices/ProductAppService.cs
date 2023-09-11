@@ -1,18 +1,18 @@
-using x_endpoints.DomainModels;
 using x_endpoints.DomainRepositories._Interfaces;
-using x_endpoints.DomainRepositories.MongoDB;
+using x_endpoints.DomainServices;
 using x_endpoints.Helpers;
 using x_endpoints.Persistence._Interfaces;
+using x_lib.DomainModels;
 
-namespace x_endpoints.DomainServices;
+namespace x_endpoints.DomainAppServices;
 
-public class ProductService : IService
+public class ProductAppService : IAppService
 {
     private readonly IEventManager _eventManager;
     private readonly ICacheManager _cacheManager;
     private readonly IRepository<Product> _productRepo;
     
-    public ProductService(IServiceDependencies dependencies, IRepository<Product> productRepo)
+    public ProductAppService(IServiceDependencies dependencies, IRepository<Product> productRepo)
     {
         _eventManager = dependencies.EventManager;
         _cacheManager = dependencies.CacheManager;

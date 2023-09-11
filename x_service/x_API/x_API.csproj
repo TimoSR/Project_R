@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <NoWarn>nullable</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>x_endpoints</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,13 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\x_lib\x_lib.csproj" />
-  </ItemGroup>
-
-
-
-  <ItemGroup>
-    <Folder Include="EventModels\" />
+    <ProjectReference Include="..\x_Lib\x_Lib.csproj" />
   </ItemGroup>
 
 </Project>

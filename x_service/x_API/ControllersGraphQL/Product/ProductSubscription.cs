@@ -6,5 +6,5 @@ public class ProductSubscriptions : BaseSubscription
 {
     [Subscribe]
     [Topic]
-    public DomainModels.Product ProductAdded([EventMessage] DomainModels.Product product) => product;
+    public x_lib.DomainModels.Product ProductAdded([EventMessage] x_lib.DomainModels.Product product) => product;
 }
