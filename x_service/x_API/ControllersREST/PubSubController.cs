@@ -38,7 +38,7 @@ public class PubSubController : ControllerBase
         {
             Name = "Product 1",
             Description = "This is product 1",
-            Price = 29.99m
+            Price = 29.99
         };
 
         await _productAppService.InsertAsync(product1);

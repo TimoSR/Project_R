@@ -1,8 +1,7 @@
 using x_endpoints.DomainAppServices;
-using x_endpoints.DomainServices;
 using x_endpoints.Registration.GraphQL.Queries;
 
-namespace x_endpoints.ControllersGraphQL.Product;
+namespace x_endpoints.ControllersGraphQL.Products;
 
 public class ProductQuery : BaseQuery
 {

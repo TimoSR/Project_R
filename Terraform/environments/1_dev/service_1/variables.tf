@@ -41,5 +41,5 @@ variable "cpu" {
 variable "memory" {
   description = "Memory allocation for the Cloud Run service"
   type        = string
-  default     = "256Mi"
+  default     = "512Mi"
 }
