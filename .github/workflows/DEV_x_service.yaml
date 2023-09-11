@@ -41,8 +41,7 @@ jobs:
     - name: Run Tests
       run: |
         cd ${{ env.SERVICE_NAME }}
-        ls
-        dotnet restore
+        dotnet restore x_service.sln
         dotnet test x_service.sln
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
