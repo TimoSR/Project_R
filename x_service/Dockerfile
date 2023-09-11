@@ -2,20 +2,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
-# Copy the solution file and restore dependencies
-COPY "x_service.sln" "x_service.sln"
-COPY "x_endpoints/" "x_endpoints/"
-COPY "x_BL_tests/" "x_BL_tests/"
-COPY "x_lib/" "x_lib/"
+# Copy csproj and restore as distinct layers
+COPY "x_service_no_tests.sln" .
+COPY "x_API/x_API.csproj" "x_API/"
+COPY "x_Lib/x_Lib.csproj" "x_Lib/"
 RUN dotnet restore
 
-# copy everything else and build
+# Copy everything else and build
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish "x_API/x_API.csproj" -c Release -o out
 
 # Runtime image
-FROM mcr.microsoft.com/dotnet/sdk:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 COPY --from=build-env /app/out .
-ENTRYPOINT [ "dotnet", "x_endpoints.dll" ]
+ENTRYPOINT [ "dotnet", "x_API.dll" ]
