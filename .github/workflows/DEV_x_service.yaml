@@ -41,6 +41,7 @@ jobs:
     - name: Run Tests
       run: |
         cd ${{ env.SERVICE_NAME }}
+        ls
         dotnet restore
         dotnet test x_service.sln
       env:
