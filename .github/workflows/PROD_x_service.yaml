@@ -41,11 +41,16 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet }}
         
+    - name: Change Directory
+      run: cd ${{ env.SERVICE_NAME }}
+
+    - name: Restore Dependencies
+      run: dotnet restore x_service.sln
+      env:
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
     - name: Run Tests
-      run: |
-        cd ${{ env.SERVICE_NAME }}
-        dotnet restore
-        dotnet test x_service.sln
+      run: dotnet test x_service.sln
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
