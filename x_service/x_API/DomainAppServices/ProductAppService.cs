@@ -1,5 +1,5 @@
+using x_endpoints.DomainEvents;
 using x_endpoints.DomainRepositories._Interfaces;
-using x_endpoints.EventModels;
 using x_endpoints.Helpers;
 using x_endpoints.Persistence._Interfaces;
 using x_lib.DomainModels;

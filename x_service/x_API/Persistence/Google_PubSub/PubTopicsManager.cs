@@ -3,7 +3,7 @@
 using System.Collections;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
-using x_endpoints.EventModels._Interfaces;
+using x_endpoints.DomainEvents._Interfaces;
 using x_endpoints.Helpers;
 using x_endpoints.Helpers.Attributes;
 using x_endpoints.Persistence.StartUp;

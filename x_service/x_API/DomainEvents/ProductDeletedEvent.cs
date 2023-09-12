@@ -1,8 +1,8 @@
 using ProtoBuf;
-using x_endpoints.EventModels._Interfaces;
+using x_endpoints.DomainEvents._Interfaces;
 using x_endpoints.Helpers.Attributes;
 
-namespace x_endpoints.EventModels;
+namespace x_endpoints.DomainEvents;
 
 [ProtoContract]
 [TopicName("ProductDeletedTopic")]
