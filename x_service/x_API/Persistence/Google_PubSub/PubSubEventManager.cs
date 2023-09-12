@@ -1,6 +1,7 @@
 using System.Reflection;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
+using x_endpoints.Helpers;
 using x_endpoints.Helpers.Attributes;
 using x_endpoints.Persistence._Interfaces;
 using x_endpoints.Persistence.StartUp;

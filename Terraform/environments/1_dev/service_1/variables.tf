@@ -5,7 +5,7 @@ variable "env_vars" {
 
     ########################################################################################
 
-    "BASE_URL"                    = "https://x-service-s4qgcf5egq-ew.a.run.app/"
+    "HOST_URL"                    = "https://x-service-s4qgcf5egq-ew.a.run.app/"
     "SERVICE_NAME"                = "x-service"
     "ENVIRONMENT"                 = "Development"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"

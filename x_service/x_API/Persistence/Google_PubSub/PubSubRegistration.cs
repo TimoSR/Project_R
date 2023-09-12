@@ -1,5 +1,6 @@
 using Google.Cloud.PubSub.V1;
 using Grpc.Core;
+using x_endpoints.Helpers;
 using x_endpoints.Persistence._Interfaces;
 using x_endpoints.Persistence.StartUp;
 

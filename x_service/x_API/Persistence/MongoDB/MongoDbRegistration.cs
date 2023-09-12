@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using x_endpoints.Helpers;
 using x_endpoints.Persistence._Interfaces;
 using x_endpoints.Persistence.StartUp;
 

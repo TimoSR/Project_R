@@ -1,9 +1,10 @@
 using System.Collections;
 
-namespace x_endpoints.Persistence.StartUp;
+namespace x_endpoints.Helpers;
 
 public class Configuration
 {
+    public string HostUrl { get; set; }
     public string ProjectId { get; set; }
     public string ServiceName { get; set; }
     public string Environment { get; set; }

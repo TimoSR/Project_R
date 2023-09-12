@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 DotNetEnv.Env.Load();
 
+var hostUrl = DotNetEnv.Env.GetString("HOST_URL");
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
 var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
@@ -21,6 +22,7 @@ var envVars = Environment.GetEnvironmentVariables();
 
 var config = new Configuration()
 {
+    HostUrl = hostUrl,
     ProjectId = projectId,
     ServiceName = serviceName,
     Environment = environment,
