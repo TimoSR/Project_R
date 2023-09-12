@@ -16,10 +16,14 @@ public class ProductsController : ControllerBase
         _productAppService = productAppService;
     }
 
-    [HttpGet]
+    [HttpGet("GetEverything")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _productAppService.GetAllAsync();
+        // Get the complete URL for this action.
+        var completeUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("GetAll", "Products")}";
+        Console.WriteLine(completeUrl);  // This will print the full URL.
+
         return Ok(result);
     }
 

@@ -106,7 +106,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Enable this for Https only
+//app.UseHttpsRedirection();
 
 app.UseCors("MyCorsPolicy");
 

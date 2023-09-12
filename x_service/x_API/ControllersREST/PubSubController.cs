@@ -41,6 +41,11 @@ public class PubSubController : ControllerBase
         };
 
         await _productAppService.InsertAsync(product1);
+        
+        // This dynamically gets actual host
+        // Get the complete URL for this action.
+        var completeUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ExampleInsertProduct", "PubSub")}";
+        Console.WriteLine(completeUrl);  // This will print the full URL for the "InsertProduct" action.
 
         return Ok();
     }

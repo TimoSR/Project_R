@@ -21,66 +21,92 @@ public class SubTopicsManager
         _environmentVariables = config.EnvironmentVariables;
         _subscriberService = subscriberService;
         //IfDevelopment();
-        RegisterSubscriptions();
+        RegisterPullSubscriptions();
+        RegisterPushSubscriptions();
         ListAllSubscriptions();        
     }
 
-    private void IfDevelopment()
-    {
-        if (_environment == "Development")
-        {
-            Console.WriteLine("\nDeleting Subscriptions due to ENV: Development...");
-
-            // Get all environment variables
-            var envVars = _environmentVariables;
-
-            foreach (var key in envVars.Keys)
-            {
-                // Check if the environment variable starts with 'SUBSCRIBE_'
-                if (key.ToString().StartsWith("SUBSCRIBE_"))
-                {
-                    // Get the subscription name
-                    var subscriptionName = $"{envVars[key].ToString()}-{_serviceName}";
-                
-                    // Delete the subscription
-                    var existingSubscription = _subscriberService.GetSubscription(new SubscriptionName(_projectId, subscriptionName));
-                    if (existingSubscription != null)
-                    {
-                        _subscriberService.DeleteSubscription(existingSubscription.SubscriptionName);
-                    }
-                }
-            }
-        }
-    }
-
-    private void RegisterSubscriptions()
+    private void RegisterPullSubscriptions() 
     {
         // Get all environment variables
         var envVars = _environmentVariables;
 
-        Console.WriteLine("\nRegistering Subscriptions:");
+        Console.WriteLine("\nRegistering Pull Subscriptions:");
 
-        // Filter environment variables starting with "SUBSCRIBE_"
+        // Filter environment variables starting with "PULLSUBSCRIBE_"
         foreach (DictionaryEntry variable in envVars)
         {
             string key = variable.Key.ToString();
-            if (key.StartsWith("SUBSCRIBE_"))
+            if (key.StartsWith("PULL_SUBSCRIBE_"))
             {
-                if (key.StartsWith("SUBSCRIBE_"))
+                Console.WriteLine($"\n{variable.Key}");
+                Console.WriteLine($"{variable.Value}");
+
+                var keyValue = variable.Key.ToString();
+                var topicValue = variable.Value.ToString();
+                var subscriptionId = $"{topicValue}-{_serviceName}";
+
+                RegisterPullSubscription(subscriptionId, topicValue);
+            }
+        }
+    }  
+
+    private void RegisterPullSubscription(string subscriptionId, string topicValue)
+    {
+        // Code to create a pull subscription
+        // No need to specify a pushEndpoint, just bind the subscription to the topic.
+        // If using the Google Cloud Pub/Sub client library, this could be done with:
+
+        var publisher = _subscriberService;
+        var topicName = new TopicName(_projectId, topicValue);
+        var subscriptionName = new SubscriptionName(_projectId, subscriptionId);
+
+        try
+        {
+            var subscription = publisher.CreateSubscription(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+            Console.WriteLine($"Pull Subscription {subscriptionName} created.");
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Failed to create pull subscription: {ex.Message}");
+        }
+    }
+
+    
+    private void RegisterPushSubscriptions()
+    {
+        // Get all environment variables
+        var envVars = _environmentVariables;
+
+        Console.WriteLine("\nRegistering Push Subscriptions:");
+
+        // Filter environment variables starting with "PUSH_SUBSCRIBE_"
+        foreach (DictionaryEntry variable in envVars)
+        {
+            string key = variable.Key.ToString();
+
+            if (key.StartsWith("PUSH_SUBSCRIBE_"))
+            {
+                Console.WriteLine($"\n{variable.Key}");
+                Console.WriteLine($"{variable.Value}");
+
+                var keyValue = variable.Key.ToString();
+                var topicValue = variable.Value.ToString();
+                var subscriptionId = $"{topicValue}-{_serviceName}";
+
+                // Generating the corresponding endpoint environment variable name
+                var endpointKey = key.Replace("PUSH_SUBSCRIBE_", "PUSH_ENDPOINT_");
+
+                // If the topic name is PRODUCT_UPDATES, the corresponding endpoint environment variable would be PUSH_ENDPOINT_PRODUCT_UPDATES.
+                var pushEndpoint = envVars[endpointKey]?.ToString();
+
+                if (string.IsNullOrEmpty(pushEndpoint))
                 {
-                    Console.WriteLine($"\n{variable.Key}");
-                    Console.WriteLine($"{variable.Value}");
-
-                    var keyValue = variable.Key.ToString();
-                    var topicValue = variable.Value.ToString();
-                    var subscriptionId = $"{topicValue}-{_serviceName}";
-                    var endpoint = $"{keyValue.ToUpper().Replace("SUBSCRIBE_", "ENDPOINT_")}";
-
-                    // If the topic name is order-updates, the corresponding endpoint environment variable would be ENDPOINT_ORDER_UPDATES.
-                    var pushEndpoint = envVars[endpoint].ToString();
-
-                    RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
+                    Console.WriteLine($"Warning: Push endpoint for {keyValue} is not defined.");
+                    continue;
                 }
+
+                RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
             }
         }
     }   
@@ -93,15 +119,12 @@ public class SubTopicsManager
 
         try
         {
-            // Check if the subscription already exists
-            var existingSubscription = _subscriberService.GetSubscription(subscriptionName);
-            Console.WriteLine($"Subscription {subscriptionId} already exists.");
-        }
-        catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
-        {
-            // If the subscription does not exist, create a new one
             _subscriberService.CreateSubscription(subscriptionName, topicName, pushConfig, ackDeadlineSeconds: 60);
-            //Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
+            Console.WriteLine($"\nPush Subscription {subscriptionId} has been created for topic {topicValue}.");
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Failed to create pull subscription: {ex.Message}");
         }
     }
 
@@ -118,6 +141,7 @@ public class SubTopicsManager
             Console.WriteLine($"Subscription: {subscription.SubscriptionName}");
         }
     }
+    
     private async void RegisterSubscriptionsAsync()
     {
         // Get all environment variables
