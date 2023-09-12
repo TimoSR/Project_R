@@ -19,6 +19,7 @@ public class ProductAppService : IAppService
         _productRepo = productRepo;
     }
 
+    // Command
     public async Task InsertAsync(Product data)
     {
         await _productRepo.InsertAsync(data);
@@ -32,6 +33,7 @@ public class ProductAppService : IAppService
         await _eventManager.PublishProtobufEventAsync(productCreatedEvent);
     }
 
+    // Query
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
         return await _productRepo.GetAllAsync();

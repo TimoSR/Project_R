@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using x_endpoints.DomainAppServices;
+using x_endpoints.Helpers.Attributes;
 using x_lib.DomainModels;
 
 namespace x_endpoints.ControllersREST;
@@ -28,8 +29,9 @@ public class ProductsController : ControllerBase
     }
 
     // POST api/products
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Product product)
+    [HttpPost("HandleProductUpdates")]
+    [EventSubscription("local-x-service-ProductCreatedTopic")]
+    public async Task<IActionResult> HandleProductUpdates([FromBody] Product product)
     {
         await _productAppService.InsertAsync(product);
 

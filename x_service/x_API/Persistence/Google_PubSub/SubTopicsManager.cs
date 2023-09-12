@@ -1,7 +1,11 @@
 using System.Collections;
+using System.Reflection;
+using System.Security.Claims;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
+using Microsoft.AspNetCore.Mvc;
 using x_endpoints.Helpers;
+using x_endpoints.Helpers.Attributes;
 using x_endpoints.Persistence.StartUp;
 
 namespace x_endpoints.Persistence.Google_PubSub;
@@ -12,6 +16,7 @@ public class SubTopicsManager
     private readonly string _projectId;
     private readonly string _serviceName;
     private readonly string _environment;
+    private readonly string _hostUrl;
     private readonly IDictionary _environmentVariables;
 
     public SubTopicsManager(Configuration config, SubscriberServiceApiClient subscriberService)
@@ -21,6 +26,7 @@ public class SubTopicsManager
         _environment = config.Environment;
         _environmentVariables = config.EnvironmentVariables;
         _subscriberService = subscriberService;
+        _hostUrl = config.HostUrl;
         //IfDevelopment();
         RegisterPullSubscriptions();
         RegisterPushSubscriptions();
@@ -34,16 +40,16 @@ public class SubTopicsManager
 
         Console.WriteLine("\nRegistering Pull Subscriptions:");
 
-        // Filter environment variables starting with "PULLSUBSCRIBE_"
+        // Filter environment variables starting with "PULL_SUBSCRIBE_"
         foreach (DictionaryEntry variable in envVars)
         {
             string key = variable.Key.ToString();
+            
             if (key.StartsWith("PULL_SUBSCRIBE_"))
             {
                 Console.WriteLine($"\n{variable.Key}");
                 Console.WriteLine($"{variable.Value}");
 
-                var keyValue = variable.Key.ToString();
                 var topicValue = variable.Value.ToString();
                 var subscriptionId = $"{topicValue}-{_serviceName}";
 
@@ -73,44 +79,79 @@ public class SubTopicsManager
         }
     }
 
+    // I have the base URL from the HostUrl property from the config
+    // I know which event i will subscribe to based on the handler i created in the controller
+    // I know what the endpoint will for the controller will be called in the controller
+    // Using a combination of events and attributes I should be able to define the full endpoint to register
     
-    private void RegisterPushSubscriptions()
+    public void RegisterPushSubscriptions()
     {
-        // Get all environment variables
-        var envVars = _environmentVariables;
-
         Console.WriteLine("\nRegistering Push Subscriptions:");
 
-        // Filter environment variables starting with "PUSH_SUBSCRIBE_"
-        foreach (DictionaryEntry variable in envVars)
+        var controllers = Assembly.GetExecutingAssembly().ExportedTypes
+            .Where(t => t.IsSubclassOf(typeof(ControllerBase)))
+            .ToArray();
+
+        foreach (var controller in controllers)
         {
-            string key = variable.Key.ToString();
+            var methods = controller.GetMethods()
+                .Where(m => m.GetCustomAttributes(typeof(EventSubscriptionAttribute), false).Length > 0)
+                .ToArray();
 
-            if (key.StartsWith("PUSH_SUBSCRIBE_"))
+            foreach (var method in methods)
             {
-                Console.WriteLine($"\n{variable.Key}");
-                Console.WriteLine($"{variable.Value}");
+                var attribute = (EventSubscriptionAttribute)method.GetCustomAttribute(typeof(EventSubscriptionAttribute));
+                var eventName = attribute.EventName;
 
-                var keyValue = variable.Key.ToString();
-                var topicValue = variable.Value.ToString();
-                var subscriptionId = $"{topicValue}-{_serviceName}";
+                var endpointUrl = $"{_hostUrl}/api/{controller.Name.Replace("Controller", "")}/{method.Name}";
 
-                // Generating the corresponding endpoint environment variable name
-                var endpointKey = key.Replace("PUSH_SUBSCRIBE_", "PUSH_ENDPOINT_");
+                var subscriptionId = $"{eventName}-{_serviceName}";
+                
+                Console.WriteLine($"{subscriptionId}");
+                Console.WriteLine($"{endpointUrl}");
 
-                // If the topic name is PRODUCT_UPDATES, the corresponding endpoint environment variable would be PUSH_ENDPOINT_PRODUCT_UPDATES.
-                var pushEndpoint = envVars[endpointKey]?.ToString();
-
-                if (string.IsNullOrEmpty(pushEndpoint))
-                {
-                    Console.WriteLine($"Warning: Push endpoint for {keyValue} is not defined.");
-                    continue;
-                }
-
-                RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
+                RegisterPushSubscription(subscriptionId, eventName, endpointUrl);
             }
         }
-    }   
+    }
+    
+    // private void RegisterPushSubscriptions()
+    // {
+    //     // Get all environment variables
+    //     var envVars = _environmentVariables;
+    //
+    //     Console.WriteLine("\nRegistering Push Subscriptions:");
+    //
+    //     // Filter environment variables starting with "PUSH_SUBSCRIBE_"
+    //     foreach (DictionaryEntry variable in envVars)
+    //     {
+    //         string key = variable.Key.ToString();
+    //
+    //         if (key.StartsWith("PUSH_SUBSCRIBE_"))
+    //         {
+    //             Console.WriteLine($"\n{variable.Key}");
+    //             Console.WriteLine($"{variable.Value}");
+    //
+    //             var keyValue = variable.Key.ToString();
+    //             var topicValue = variable.Value.ToString();
+    //             var subscriptionId = $"{topicValue}-{_serviceName}";
+    //
+    //             // Generating the corresponding endpoint environment variable name
+    //             var endpointKey = key.Replace("PUSH_SUBSCRIBE_", "PUSH_ENDPOINT_");
+    //
+    //             // If the topic name is PRODUCT_UPDATES, the corresponding endpoint environment variable would be PUSH_ENDPOINT_PRODUCT_UPDATES.
+    //             var pushEndpoint = envVars[endpointKey]?.ToString();
+    //
+    //             if (string.IsNullOrEmpty(pushEndpoint))
+    //             {
+    //                 Console.WriteLine($"Warning: Push endpoint for {keyValue} is not defined.");
+    //                 continue;
+    //             }
+    //
+    //             RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
+    //         }
+    //     }
+    // }   
 
     private void RegisterPushSubscription(string subscriptionId, string topicValue, string pushEndpoint)
     {
