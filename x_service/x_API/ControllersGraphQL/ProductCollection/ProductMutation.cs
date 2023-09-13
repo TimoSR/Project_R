@@ -1,5 +1,5 @@
 using x_endpoints.DomainAppServices;
-using x_endpoints.Registration.GraphQL.Mutations;
+using x_endpoints.Infrastructure.Registration.GraphQL.Mutations;
 using x_lib.DomainModels;
 
 namespace x_endpoints.ControllersGraphQL.ProductCollection;

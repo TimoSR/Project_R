@@ -1,4 +1,4 @@
-using x_endpoints.Registration.GraphQL.Subscriptions;
+using x_endpoints.Infrastructure.Registration.GraphQL.Subscriptions;
 
 namespace x_endpoints.ControllersGraphQL.ProductCollection;
 

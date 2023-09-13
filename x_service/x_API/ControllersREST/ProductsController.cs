@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using x_endpoints.DomainAppServices;
-using x_endpoints.Helpers.Attributes;
+using x_endpoints.Infrastructure.Helpers.Attributes;
 using x_lib.DomainModels;
 
 namespace x_endpoints.ControllersREST;
