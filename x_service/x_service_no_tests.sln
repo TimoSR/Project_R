@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_API", "x_API\x_API.csproj", "{A3E92781-BC80-4852-8C15-A4C27C24D97A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_App", "x_App\x_App.csproj", "{A3E92781-BC80-4852-8C15-A4C27C24D97A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_Lib", "x_Lib\x_Lib.csproj", "{AC0FD828-2906-4CB4-9A8E-08BB09748D85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_Domain", "x_Domain\x_Domain.csproj", "{AC0FD828-2906-4CB4-9A8E-08BB09748D85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
