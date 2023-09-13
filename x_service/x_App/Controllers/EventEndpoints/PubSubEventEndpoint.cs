@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using x_endpoints.DomainAppServices;
 using x_lib.DomainModels;
 
-namespace x_endpoints.Controllers.EventEndpoint;
+namespace x_endpoints.Controllers.EventEndpoints;
 
 [ApiController]
 [Route("api/[controller]")]
