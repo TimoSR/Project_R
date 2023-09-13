@@ -1,6 +1,4 @@
-using x_endpoints.Infrastructure.Registration.GraphQL.Mutations;
-using x_endpoints.Infrastructure.Registration.GraphQL.Queries;
-using x_endpoints.Infrastructure.Registration.GraphQL.Subscriptions;
+using x_endpoints.ControllersGraphQL._Interface;
 
 namespace x_endpoints.Infrastructure.Registration.GraphQL;
 

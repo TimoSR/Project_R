@@ -1,6 +1,6 @@
-using x_endpoints.Infrastructure.Registration.GraphQL.Subscriptions;
+using x_endpoints.ControllersGraphQL._Interface;
 
-namespace x_endpoints.ControllersGraphQL.ProductCollection;
+namespace x_endpoints.Controllers.GraphQL.ProductCollection;
 
 public class ProductSubscriptions : BaseSubscription
 {

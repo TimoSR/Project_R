@@ -2,15 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using x_endpoints.DomainAppServices;
 using x_lib.DomainModels;
 
-namespace x_endpoints.ControllersREST;
+namespace x_endpoints.Controllers.EventEndpoint;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PubSubController : ControllerBase
+public class PubSubEventEndpoint : ControllerBase
 {
     private readonly ProductAppService _productAppService;
 
-    public PubSubController(ProductAppService productAppService)
+    public PubSubEventEndpoint(ProductAppService productAppService)
     {
         _productAppService = productAppService;
     }
@@ -44,7 +44,7 @@ public class PubSubController : ControllerBase
         
         // This dynamically gets actual host
         // Get the complete URL for this action.
-        var completeUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ExampleInsertProduct", "PubSub")}";
+        var completeUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ExampleInsertProduct", "PubSubEventEndpoint")}";
         Console.WriteLine(completeUrl);  // This will print the full URL for the "InsertProduct" action.
 
         return Ok();
