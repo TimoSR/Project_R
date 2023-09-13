@@ -1,17 +1,18 @@
-using x_endpoints.Helpers;
-using x_endpoints.Persistence.MongoDB;
-using x_endpoints.Persistence.Google_PubSub;
-using x_endpoints.Persistence.StartUp;
-using x_endpoints.Registration.DataSeeder;
-using x_endpoints.Registration.GraphQL;
-using x_endpoints.Registration.Repositories;
-using x_endpoints.Registration.Services;
-using x_endpoints.Registration.Tools;
+using x_endpoints.Infrastructure.Helpers;
+using x_endpoints.Infrastructure.Persistence.Google_PubSub;
+using x_endpoints.Infrastructure.Persistence.MongoDB;
+using x_endpoints.Infrastructure.Persistence.StartUp;
+using x_endpoints.Infrastructure.Registration.DataSeeder;
+using x_endpoints.Infrastructure.Registration.GraphQL;
+using x_endpoints.Infrastructure.Registration.Repositories;
+using x_endpoints.Infrastructure.Registration.Services;
+using x_endpoints.Infrastructure.Registration.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
 DotNetEnv.Env.Load();
 
+var hostUrl = DotNetEnv.Env.GetString("HOST_URL");
 var serviceName = DotNetEnv.Env.GetString("SERVICE_NAME");
 var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
@@ -21,6 +22,7 @@ var envVars = Environment.GetEnvironmentVariables();
 
 var config = new Configuration()
 {
+    HostUrl = hostUrl,
     ProjectId = projectId,
     ServiceName = serviceName,
     Environment = environment,
@@ -39,7 +41,7 @@ builder.Services.AddApplicationTools();
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
 builder.Services.AddGraphQLServices(); 
 // Add / Disable MongoDB
-builder.Services.AddMongoDBServices(config);
+builder.Services.AddMongoDbServices(config);
 // Add / Disable Publisher
 builder.Services.AddPublisherServices(config);
 // Add / Disable Subscriber 
@@ -106,7 +108,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Enable this for Https only
+//app.UseHttpsRedirection();
 
 app.UseCors("MyCorsPolicy");
 

@@ -22,7 +22,7 @@ public class Product
 
     [BsonElement("Price")]
     [ProtoMember(4)]
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 
     // You can add more properties depending on your needs. Each property represents a field in your Product document.
 }

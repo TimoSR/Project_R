@@ -1,20 +1,18 @@
 variable "env_vars" {
   description = "Environment variables for the Cloud Run service"
   type = map(string)
-  default = {
+  default = {    
 
+    ########################################################################################
+    # HOST_URL should be URL without ending '/'
+    ########################################################################################
+    "HOST_URL"                    = "https://x-service-s4qgcf5egq-ew.a.run.app"
     "SERVICE_NAME"                = "x-service"
     "ENVIRONMENT"                 = "Development"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"
-    ########################################################################################
-    "TOPIC_PRODUCT_UPDATES"       = "product-updates-v1"
-    "TOPIC_ORDER_UPDATES"         = "order-updates-v1"
 
-    # Your subscriptions and endpoints need to go 1:1
     ########################################################################################
-    "SUBSCRIBE_PRODUCT_UPDATES"   = "x-service-product-updates-v1"
-    ########################################################################################
-    "ENDPOINT_PRODUCT_UPDATES"    = "https://x-service-s4qgcf5egq-ew.a.run.app/api/PubSub/Subscription1"
+    
   }
 }
 
@@ -41,5 +39,5 @@ variable "cpu" {
 variable "memory" {
   description = "Memory allocation for the Cloud Run service"
   type        = string
-  default     = "256Mi"
+  default     = "512Mi"
 }

@@ -1,4 +1,5 @@
-using x_endpoints.Persistence._Interfaces;
+using x_endpoints.Infrastructure.Persistence._Interfaces;
+using x_endpoints.Infrastructure.Persistence.MongoDB;
 using x_lib.DomainModels;
 
 namespace x_endpoints.DomainRepositories.MongoDB;
