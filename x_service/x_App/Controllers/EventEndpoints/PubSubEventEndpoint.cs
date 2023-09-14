@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using x_App.DomainAppServices;
-using x_lib.DomainModels;
+using x_Domain.DomainModels;
 
 namespace x_App.Controllers.EventEndpoints;
 

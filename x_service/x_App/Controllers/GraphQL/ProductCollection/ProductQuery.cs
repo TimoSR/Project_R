@@ -1,6 +1,6 @@
 using x_App.Controllers.GraphQL._Interface;
 using x_App.DomainAppServices;
-using x_lib.DomainModels;
+using x_Domain.DomainModels;
 
 namespace x_App.Controllers.GraphQL.ProductCollection;
 

@@ -1,6 +1,6 @@
 using x_App.DomainAppServices;
 using x_App.Infrastructure.Registration.DataSeeder;
-using x_lib.DomainModels;
+using x_Domain.DomainModels;
 
 namespace x_App.DataSeeders;
 

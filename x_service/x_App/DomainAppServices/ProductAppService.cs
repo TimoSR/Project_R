@@ -3,7 +3,7 @@ using x_App.DomainEvents;
 using x_App.DomainRepositories._Interfaces;
 using x_App.Infrastructure.Helpers;
 using x_App.Infrastructure.Persistence._Interfaces;
-using x_lib.DomainModels;
+using x_Domain.DomainModels;
 
 namespace x_App.DomainAppServices;
 
