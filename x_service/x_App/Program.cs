@@ -1,12 +1,15 @@
-using x_App.Infrastructure.Helpers;
-using x_App.Infrastructure.Persistence.Google_PubSub;
-using x_App.Infrastructure.Persistence.MongoDB;
-using x_App.Infrastructure.Persistence.StartUp;
-using x_App.Infrastructure.Registration.DataSeeder;
-using x_App.Infrastructure.Registration.GraphQL;
-using x_App.Infrastructure.Registration.Repositories;
-using x_App.Infrastructure.Registration.Services;
-using x_App.Infrastructure.Registration.Tools;
+using ServiceLibrary.Persistence._Interfaces;
+using ServiceLibrary.Persistence.Google_PubSub;
+using ServiceLibrary.Persistence.MongoDB;
+using ServiceLibrary.Persistence.Redis;
+using ServiceLibrary.UtilityRegistration.Tools;
+using x_App.Infrastructure.Containers;
+using x_App.Infrastructure.Reflectors.DataSeeder;
+using x_App.Infrastructure.Reflectors.GraphQL;
+using x_App.Infrastructure.Reflectors.Repositories;
+using x_App.Infrastructure.Reflectors.Services;
+using x_App.Reflectors.Events;
+using x_App.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,11 +46,15 @@ builder.Services.AddGraphQlServices();
 // Add / Disable MongoDB
 builder.Services.AddMongoDbServices(config);
 // Add / Disable Publisher
-builder.Services.AddPublisherServices(config);
+builder.Services.AddPublisherClient(config);
 // Add / Disable Subscriber 
-builder.Services.AddSubscriberServices();
+builder.Services.AddSubscriberClient();
 // Add / Disable Redis
-//builder.Services.AddRedisServices(config);
+builder.Services.AddRedisServices(config);
+
+// Adding All Pub & Sub Events with reflection
+builder.Services.AddSingleton<SubTopicsRegister>();
+builder.Services.AddSingleton<PubTopicsRegister>();
 
 // Hosting to make sure it dependencies connect on Program startup
 builder.Services.AddHostedService<StartExternalConnections>();

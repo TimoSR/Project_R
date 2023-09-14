@@ -1,5 +1,5 @@
-using x_App.Controllers.GraphQL._Interface;
 using x_App.DomainAppServices;
+using x_App.Infrastructure.Reflectors._Interfaces;
 using x_Domain.DomainModels;
 
 namespace x_App.Controllers.GraphQL.ProductCollection;

@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ServiceLibrary\ServiceLibrary.csproj" />
     <ProjectReference Include="..\x_Domain\x_Domain.csproj" />
   </ItemGroup>
   

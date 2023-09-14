@@ -1,21 +1,20 @@
-using x_App.DomainAppServices._Interface;
-using x_App.DomainEvents;
-using x_App.DomainRepositories._Interfaces;
-using x_App.Infrastructure.Helpers;
-using x_App.Infrastructure.Persistence._Interfaces;
+using ServiceLibrary.Persistence._Interfaces;
+using x_App.Infrastructure.Containers;
+using x_App.Infrastructure.Reflectors._Interfaces;
+using x_Domain.DomainEvents;
 using x_Domain.DomainModels;
 
 namespace x_App.DomainAppServices;
 
 public class ProductAppService : IAppService
 {
-    private readonly IEventManager _eventManager;
+    private readonly IEventPublisher _eventPublisher;
     private readonly ICacheManager _cacheManager;
     private readonly IRepository<Product> _productRepo;
     
     public ProductAppService(IServiceDependencies dependencies, IRepository<Product> productRepo)
     {
-        _eventManager = dependencies.EventManager;
+        _eventPublisher = dependencies.EventPublisher;
         _cacheManager = dependencies.CacheManager;
         _productRepo = productRepo;
     }
@@ -30,8 +29,8 @@ public class ProductAppService : IAppService
             test = "hello"
         };
         
-        await _eventManager.PublishJsonEventAsync(productCreatedEvent);
-        await _eventManager.PublishProtobufEventAsync(productCreatedEvent);
+        await _eventPublisher.PublishJsonEventAsync(productCreatedEvent);
+        await _eventPublisher.PublishProtobufEventAsync(productCreatedEvent);
     }
 
     // Query
