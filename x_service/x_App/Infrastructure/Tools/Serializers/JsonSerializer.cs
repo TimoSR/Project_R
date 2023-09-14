@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace x_endpoints.Infrastructure.Tools.Serializers;
+namespace x_App.Infrastructure.Tools.Serializers;
 
 public class JsonSerializer : ITool
 {

@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <NoWarn>nullable</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>x_endpoints</RootNamespace>
+    <RootNamespace>x_App</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

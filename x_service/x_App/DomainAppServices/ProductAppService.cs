@@ -1,11 +1,11 @@
-using x_endpoints.DomainAppServices._Interface;
-using x_endpoints.DomainEvents;
-using x_endpoints.DomainRepositories._Interfaces;
-using x_endpoints.Infrastructure.Helpers;
-using x_endpoints.Infrastructure.Persistence._Interfaces;
+using x_App.DomainAppServices._Interface;
+using x_App.DomainEvents;
+using x_App.DomainRepositories._Interfaces;
+using x_App.Infrastructure.Helpers;
+using x_App.Infrastructure.Persistence._Interfaces;
 using x_lib.DomainModels;
 
-namespace x_endpoints.DomainAppServices;
+namespace x_App.DomainAppServices;
 
 public class ProductAppService : IAppService
 {

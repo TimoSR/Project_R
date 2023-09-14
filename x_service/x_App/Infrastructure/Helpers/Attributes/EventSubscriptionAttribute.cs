@@ -1,4 +1,4 @@
-namespace x_endpoints.Infrastructure.Helpers.Attributes;
+namespace x_App.Infrastructure.Helpers.Attributes;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class EventSubscriptionAttribute : Attribute

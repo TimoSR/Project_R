@@ -1,7 +1,7 @@
 using System.Reflection;
-using x_endpoints.Infrastructure.Tools;
+using x_App.Infrastructure.Tools;
 
-namespace x_endpoints.Infrastructure.Registration.Tools;
+namespace x_App.Infrastructure.Registration.Tools;
 
 public static class ToolRegistration
 {

@@ -1,7 +1,7 @@
 using System.Reflection;
-using x_endpoints.DomainRepositories._Interfaces;
+using x_App.DomainRepositories._Interfaces;
 
-namespace x_endpoints.Infrastructure.Registration.Repositories;
+namespace x_App.Infrastructure.Registration.Repositories;
 
 public static class RepositoryRegistration
 {

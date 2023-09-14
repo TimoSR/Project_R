@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace x_endpoints.Infrastructure.Helpers;
+namespace x_App.Infrastructure.Helpers;
 
 public class Configuration
 {

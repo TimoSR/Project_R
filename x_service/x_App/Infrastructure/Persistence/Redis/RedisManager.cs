@@ -1,7 +1,7 @@
 using StackExchange.Redis;
-using x_endpoints.Infrastructure.Persistence._Interfaces;
+using x_App.Infrastructure.Persistence._Interfaces;
 
-namespace x_endpoints.Infrastructure.Persistence.Redis;
+namespace x_App.Infrastructure.Persistence.Redis;
 
 public class RedisManager : ICacheManager
 {

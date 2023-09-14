@@ -1,10 +1,10 @@
-using x_endpoints.ControllersGraphQL._Interface;
-using x_endpoints.DomainAppServices;
+using x_App.Controllers.GraphQL._Interface;
+using x_App.DomainAppServices;
 using x_lib.DomainModels;
 
-namespace x_endpoints.Controllers.GraphQL.ProductCollection;
+namespace x_App.Controllers.GraphQL.ProductCollection;
 
-public class ProductMutation : BaseMutation
+public class ProductMutation : IMutation
 {
     private readonly ProductAppService _productAppService;
     

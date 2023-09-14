@@ -3,10 +3,10 @@ using System.Reflection;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Microsoft.AspNetCore.Mvc;
-using x_endpoints.Infrastructure.Helpers;
-using x_endpoints.Infrastructure.Helpers.Attributes;
+using x_App.Infrastructure.Helpers;
+using x_App.Infrastructure.Helpers.Attributes;
 
-namespace x_endpoints.Infrastructure.Persistence.Google_PubSub;
+namespace x_App.Infrastructure.Persistence.Google_PubSub;
 
 public class SubTopicsManager
 {

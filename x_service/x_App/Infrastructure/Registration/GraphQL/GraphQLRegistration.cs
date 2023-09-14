@@ -1,14 +1,14 @@
-using x_endpoints.ControllersGraphQL._Interface;
+using x_App.Controllers.GraphQL._Interface;
 
-namespace x_endpoints.Infrastructure.Registration.GraphQL;
+namespace x_App.Infrastructure.Registration.GraphQL;
 
 public static class GraphQlRegistration
 {
-    public static IServiceCollection AddGraphQLServices(this IServiceCollection services)
+    public static IServiceCollection AddGraphQlServices(this IServiceCollection services)
     {
-        var queryTypes = GetTypes<BaseQuery>();
-        var mutationTypes = GetTypes<BaseMutation>();
-        var subscriptionTypes = GetTypes<BaseSubscription>();
+        var queryTypes = GetTypes<IQuery>();
+        var mutationTypes = GetTypes<IMutation>();
+        var subscriptionTypes = GetTypes<ISubscription>();
 
         var server = services.AddGraphQLServer();
 
@@ -33,12 +33,12 @@ public static class GraphQlRegistration
         return services;
     }
 
-    private static IEnumerable<Type> GetTypes<TBase>()
+    private static IEnumerable<Type> GetTypes<TInterface>() where TInterface : class
     {
-        var baseType = typeof(TBase);
+        var interfaceType = typeof(TInterface);
         var types = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly => assembly.GetTypes())
-            .Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(baseType));
+            .Where(type => type.IsClass && !type.IsAbstract && interfaceType.IsAssignableFrom(type));
         return types;
     }
 }

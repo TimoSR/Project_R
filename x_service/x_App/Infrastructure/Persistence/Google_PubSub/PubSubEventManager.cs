@@ -1,12 +1,12 @@
 using System.Reflection;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
-using x_endpoints.Infrastructure.Helpers;
-using x_endpoints.Infrastructure.Helpers.Attributes;
-using x_endpoints.Infrastructure.Persistence._Interfaces;
-using x_endpoints.Infrastructure.Tools.Serializers;
+using x_App.Infrastructure.Helpers;
+using x_App.Infrastructure.Helpers.Attributes;
+using x_App.Infrastructure.Persistence._Interfaces;
+using x_App.Infrastructure.Tools.Serializers;
 
-namespace x_endpoints.Infrastructure.Persistence.Google_PubSub;
+namespace x_App.Infrastructure.Persistence.Google_PubSub;
 
 public class PubSubEventManager : IEventManager
 {

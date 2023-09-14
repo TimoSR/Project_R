@@ -1,8 +1,7 @@
 using System.Reflection;
-using x_endpoints.DomainAppServices;
-using x_endpoints.DomainAppServices._Interface;
+using x_App.DomainAppServices._Interface;
 
-namespace x_endpoints.Infrastructure.Registration.Services;
+namespace x_App.Infrastructure.Registration.Services;
 
 public static class ServiceRegistration
 {

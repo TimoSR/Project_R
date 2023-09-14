@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using x_endpoints.DomainAppServices;
-using x_endpoints.Infrastructure.Helpers.Attributes;
+using x_App.DomainAppServices;
+using x_App.Infrastructure.Helpers.Attributes;
 using x_lib.DomainModels;
 
 namespace x_endpoints.Controllers.REST;

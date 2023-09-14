@@ -1,12 +1,12 @@
-using x_endpoints.Infrastructure.Helpers;
-using x_endpoints.Infrastructure.Persistence.Google_PubSub;
-using x_endpoints.Infrastructure.Persistence.MongoDB;
-using x_endpoints.Infrastructure.Persistence.StartUp;
-using x_endpoints.Infrastructure.Registration.DataSeeder;
-using x_endpoints.Infrastructure.Registration.GraphQL;
-using x_endpoints.Infrastructure.Registration.Repositories;
-using x_endpoints.Infrastructure.Registration.Services;
-using x_endpoints.Infrastructure.Registration.Tools;
+using x_App.Infrastructure.Helpers;
+using x_App.Infrastructure.Persistence.Google_PubSub;
+using x_App.Infrastructure.Persistence.MongoDB;
+using x_App.Infrastructure.Persistence.StartUp;
+using x_App.Infrastructure.Registration.DataSeeder;
+using x_App.Infrastructure.Registration.GraphQL;
+using x_App.Infrastructure.Registration.Repositories;
+using x_App.Infrastructure.Registration.Services;
+using x_App.Infrastructure.Registration.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +39,7 @@ Console.WriteLine($"\n{serviceName}");
 builder.Services.AddApplicationTools();
 
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
-builder.Services.AddGraphQLServices(); 
+builder.Services.AddGraphQlServices(); 
 // Add / Disable MongoDB
 builder.Services.AddMongoDbServices(config);
 // Add / Disable Publisher

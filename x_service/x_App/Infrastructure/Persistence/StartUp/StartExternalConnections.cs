@@ -1,7 +1,7 @@
-using x_endpoints.Infrastructure.Persistence._Interfaces;
-using x_endpoints.Infrastructure.Persistence.Google_PubSub;
+using x_App.Infrastructure.Persistence._Interfaces;
+using x_App.Infrastructure.Persistence.Google_PubSub;
 
-namespace x_endpoints.Infrastructure.Persistence.StartUp;
+namespace x_App.Infrastructure.Persistence.StartUp;
 
 public class StartExternalConnections : IHostedService
 {

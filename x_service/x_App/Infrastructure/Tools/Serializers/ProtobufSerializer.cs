@@ -1,6 +1,6 @@
 using ProtoBuf;
 
-namespace x_endpoints.Infrastructure.Tools.Serializers;
+namespace x_App.Infrastructure.Tools.Serializers;
 
 public class ProtobufSerializer : ITool
 {

@@ -1,8 +1,8 @@
-using x_endpoints.ControllersGraphQL._Interface;
+using x_App.Controllers.GraphQL._Interface;
 
-namespace x_endpoints.Controllers.GraphQL.ProductCollection;
+namespace x_App.Controllers.GraphQL.ProductCollection;
 
-public class ProductSubscriptions : BaseSubscription
+public class ProductSubscriptions : ISubscription
 {
     [Subscribe]
     [Topic]

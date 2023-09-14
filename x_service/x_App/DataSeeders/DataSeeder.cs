@@ -1,8 +1,8 @@
-using x_endpoints.DomainAppServices;
-using x_endpoints.Infrastructure.Registration.DataSeeder;
+using x_App.DomainAppServices;
+using x_App.Infrastructure.Registration.DataSeeder;
 using x_lib.DomainModels;
 
-namespace x_endpoints.DataSeeders;
+namespace x_App.DataSeeders;
 
 public class DataSeeder : IDataSeeder
 {

@@ -1,9 +1,9 @@
 using Google.Cloud.PubSub.V1;
 using Grpc.Core;
-using x_endpoints.Infrastructure.Helpers;
-using x_endpoints.Infrastructure.Persistence._Interfaces;
+using x_App.Infrastructure.Helpers;
+using x_App.Infrastructure.Persistence._Interfaces;
 
-namespace x_endpoints.Infrastructure.Persistence.Google_PubSub;
+namespace x_App.Infrastructure.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
 

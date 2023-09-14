@@ -1,4 +1,4 @@
-namespace x_endpoints.DomainRepositories._Interfaces;
+namespace x_App.DomainRepositories._Interfaces;
 
 public interface IRepository<T>
 {

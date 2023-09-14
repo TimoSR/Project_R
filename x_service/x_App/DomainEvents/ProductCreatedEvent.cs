@@ -1,8 +1,8 @@
 using ProtoBuf;
-using x_endpoints.DomainEvents._Interfaces;
-using x_endpoints.Infrastructure.Helpers.Attributes;
+using x_App.DomainEvents._Interfaces;
+using x_App.Infrastructure.Helpers.Attributes;
 
-namespace x_endpoints.DomainEvents;
+namespace x_App.DomainEvents;
 
 [ProtoContract]
 [TopicName("ProductCreatedTopic")]

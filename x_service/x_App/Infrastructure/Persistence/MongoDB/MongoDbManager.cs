@@ -1,7 +1,7 @@
 using MongoDB.Driver;
-using x_endpoints.Infrastructure.Persistence._Interfaces;
+using x_App.Infrastructure.Persistence._Interfaces;
 
-namespace x_endpoints.Infrastructure.Persistence.MongoDB;
+namespace x_App.Infrastructure.Persistence.MongoDB;
 
 public class MongoDbManager : IMongoDbManager
 {

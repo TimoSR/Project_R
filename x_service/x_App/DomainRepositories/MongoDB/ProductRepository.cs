@@ -1,8 +1,8 @@
-using x_endpoints.Infrastructure.Persistence._Interfaces;
-using x_endpoints.Infrastructure.Persistence.MongoDB;
+using x_App.Infrastructure.Persistence._Interfaces;
+using x_App.Infrastructure.Persistence.MongoDB;
 using x_lib.DomainModels;
 
-namespace x_endpoints.DomainRepositories.MongoDB;
+namespace x_App.DomainRepositories.MongoDB;
 
 public class ProductRepository : MongoRepository<Product>
 {
