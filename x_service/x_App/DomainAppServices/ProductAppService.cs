@@ -1,3 +1,4 @@
+using x_endpoints.DomainAppServices._Interface;
 using x_endpoints.DomainEvents;
 using x_endpoints.DomainRepositories._Interfaces;
 using x_endpoints.Infrastructure.Helpers;

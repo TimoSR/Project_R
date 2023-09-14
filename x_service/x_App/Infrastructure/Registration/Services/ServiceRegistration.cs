@@ -1,5 +1,6 @@
 using System.Reflection;
 using x_endpoints.DomainAppServices;
+using x_endpoints.DomainAppServices._Interface;
 
 namespace x_endpoints.Infrastructure.Registration.Services;
 
