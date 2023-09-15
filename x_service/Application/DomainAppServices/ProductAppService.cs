@@ -1,6 +1,7 @@
 using ServiceLibrary.Persistence._Interfaces;
 using x_App.Infrastructure.Containers;
 using x_App.Infrastructure.Reflectors._Interfaces;
+using x_Domain;
 using x_Domain.DomainEvents;
 using x_Domain.DomainModels;
 

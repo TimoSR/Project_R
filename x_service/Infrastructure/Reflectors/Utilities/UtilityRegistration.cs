@@ -4,7 +4,7 @@ using ServiceLibrary.Utilities._Interfaces;
 
 namespace ServiceLibrary.UtilityRegistration.Tools;
 
-public static class ToolRegistration
+public static class UtilityRegistration
 {
     public static IServiceCollection AddApplicationTools(this IServiceCollection services)
     {   

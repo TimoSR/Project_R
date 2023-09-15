@@ -31,12 +31,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\x_Domain\x_Domain.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
 
     <ItemGroup>
-      <Folder Include="UtilityRegistration\" />
+      <Folder Include="Reflectors\" />
     </ItemGroup>
 
 </Project>

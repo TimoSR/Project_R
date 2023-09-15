@@ -32,8 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ServiceLibrary\ServiceLibrary.csproj" />
-    <ProjectReference Include="..\x_Domain\x_Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DataViewModels\" />
   </ItemGroup>
   
 </Project>

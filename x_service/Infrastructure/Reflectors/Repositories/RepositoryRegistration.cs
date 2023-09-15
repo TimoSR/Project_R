@@ -1,12 +1,14 @@
 using System.Reflection;
-using ServiceLibrary.Persistence._Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using x_Domain;
 
-namespace x_App.Infrastructure.Reflectors.Repositories;
+namespace ServiceLibrary.Reflectors.Repositories;
 
 public static class RepositoryRegistration
 {
     public static IServiceCollection AddApplicationRepositories(this IServiceCollection services)
     {
+        
         // Using reflection to get all types which are classes, not abstract, and implement IRepository<T>
         var repoTypes = Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && t.BaseType != null && t.BaseType.IsGenericType && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRepository<>)))

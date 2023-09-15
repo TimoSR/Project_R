@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLibrary", "ServiceLibrary\ServiceLibrary.csproj", "{B85ACEEE-DFB6-4475-A13B-3889183108DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B85ACEEE-DFB6-4475-A13B-3889183108DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_App", "x_App\x_App.csproj", "{337B81A8-6B8C-4B6A-BCB8-1D401BA726FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{337B81A8-6B8C-4B6A-BCB8-1D401BA726FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_Domain", "x_Domain\x_Domain.csproj", "{66379AD6-6DBA-403D-90EC-0840760A6CD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{66379AD6-6DBA-403D-90EC-0840760A6CD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_Integration_tests", "x_Integration_tests\x_Integration_tests.csproj", "{3ABE29E7-9F2D-4D2B-BD9D-7A334C84A049}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration_Tests", "Integration_Tests\Integration_Tests.csproj", "{3ABE29E7-9F2D-4D2B-BD9D-7A334C84A049}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "x_Unit_tests", "x_Unit_tests\x_Unit_tests.csproj", "{286B53BA-3B0F-4341-AB06-78B57D0863F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit_Tests", "Unit_Tests\Unit_Tests.csproj", "{286B53BA-3B0F-4341-AB06-78B57D0863F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

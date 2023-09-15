@@ -1,4 +1,4 @@
-namespace ServiceLibrary.Persistence._Interfaces;
+namespace x_Domain;
 
 public interface IRepository<T>
 {
