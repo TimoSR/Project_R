@@ -18,4 +18,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 COPY --from=build-env /app/out .
-ENTRYPOINT [ "dotnet", "x_App.dll" ]
+ENTRYPOINT [ "dotnet", "Application.dll" ]
