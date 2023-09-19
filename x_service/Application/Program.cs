@@ -50,7 +50,7 @@ builder.Services.AddPublisherClient(config);
 // Add / Disable Subscriber 
 builder.Services.AddSubscriberClient();
 // Add / Disable Redis
-builder.Services.AddRedisServices(config);
+//builder.Services.AddRedisServices(config);
 
 // Adding All Pub & Sub Events with reflection
 builder.Services.AddSingleton<SubTopicsRegister>();
