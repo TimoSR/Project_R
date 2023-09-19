@@ -1,9 +1,8 @@
-using Domain.DomainEvents.EventAttributes;
+using Domain.DomainEvents._Attributes;
+using Domain.DomainEvents._Interfaces;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Infrastructure.Persistence._Interfaces;
-using ServiceLibrary.Persistence._Interfaces;
-using x_Domain.Attributes;
 
 namespace Application.Registrations.Events;
 

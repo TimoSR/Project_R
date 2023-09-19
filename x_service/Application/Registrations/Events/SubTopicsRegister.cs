@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Reflection;
-using Domain.DomainEvents.EventAttributes;
+using Domain.DomainEvents._Attributes;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Infrastructure.Persistence._Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using ServiceLibrary.Persistence._Interfaces;
-using x_Domain.Attributes;
 
 namespace Application.Registrations.Events;
 

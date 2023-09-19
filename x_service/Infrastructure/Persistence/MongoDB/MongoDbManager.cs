@@ -1,8 +1,7 @@
 using Infrastructure.Persistence._Interfaces;
 using MongoDB.Driver;
-using ServiceLibrary.Persistence._Interfaces;
 
-namespace ServiceLibrary.Persistence.MongoDB;
+namespace Infrastructure.Persistence.MongoDB;
 
 public class MongoDbManager : IMongoDbManager
 {

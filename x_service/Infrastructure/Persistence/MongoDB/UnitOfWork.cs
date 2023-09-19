@@ -1,6 +1,6 @@
 using MongoDB.Driver;
 
-namespace ServiceLibrary.Persistence.MongoDB;
+namespace Infrastructure.Persistence.MongoDB;
 
 public class UnitOfWork : IDisposable
 {

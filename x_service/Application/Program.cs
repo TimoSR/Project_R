@@ -5,12 +5,11 @@ using Application.Registrations.Services;
 using Application.Startup;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Persistence.Google_PubSub;
+using Infrastructure.Persistence.MongoDB;
+using Infrastructure.Persistence.Redis;
 using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
 using Infrastructure.Utilities.Containers;
-using ServiceLibrary.Persistence._Interfaces;
-using ServiceLibrary.Persistence.MongoDB;
-using ServiceLibrary.Persistence.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 

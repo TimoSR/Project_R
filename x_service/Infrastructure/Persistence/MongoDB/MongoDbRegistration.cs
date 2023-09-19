@@ -2,9 +2,8 @@ using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ServiceLibrary.Persistence._Interfaces;
 
-namespace ServiceLibrary.Persistence.MongoDB;
+namespace Infrastructure.Persistence.MongoDB;
 
 public static class MongoDbRegistration
 {

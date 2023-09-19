@@ -3,8 +3,6 @@ using Domain.DomainEvents;
 using Domain.DomainModels;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities.Containers;
-using ServiceLibrary.Persistence._Interfaces;
-using x_Domain;
 
 namespace Application.AppServices;
 

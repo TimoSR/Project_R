@@ -1,9 +1,8 @@
 using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLibrary.Persistence._Interfaces;
 using StackExchange.Redis;
 
-namespace ServiceLibrary.Persistence.Redis;
+namespace Infrastructure.Persistence.Redis;
 
 public static class RedisRegistration
 {

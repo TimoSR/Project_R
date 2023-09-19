@@ -1,11 +1,8 @@
-
 using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using ServiceLibrary.Persistence._Interfaces;
-using x_Domain;
 
-namespace ServiceLibrary.DomainRepositories._Abstract;
+namespace Infrastructure.Persistence.MongoDB;
 
 
 public abstract class MongoRepository<T> : IRepository<T>

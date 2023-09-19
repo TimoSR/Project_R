@@ -1,10 +1,9 @@
 using Domain.DomainModels;
 using Domain.IRepositories;
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Persistence.MongoDB;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using ServiceLibrary.DomainRepositories._Abstract;
-using ServiceLibrary.Persistence._Interfaces;
 
 namespace Infrastructure.DomainRepositories;
 

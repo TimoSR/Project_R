@@ -1,6 +1,5 @@
 using Application.Registrations.Events;
 using Infrastructure.Persistence._Interfaces;
-using ServiceLibrary.Persistence._Interfaces;
 
 namespace Application.Startup;
 

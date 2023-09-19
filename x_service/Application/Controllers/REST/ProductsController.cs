@@ -1,8 +1,7 @@
 using Application.AppServices;
-using Domain.DomainEvents.EventAttributes;
+using Domain.DomainEvents._Attributes;
 using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;
-using x_Domain.Attributes;
 
 namespace Application.Controllers.REST;
 

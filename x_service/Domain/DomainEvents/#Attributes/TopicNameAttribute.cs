@@ -1,4 +1,4 @@
-namespace Domain.DomainEvents.EventAttributes;
+namespace Domain.DomainEvents._Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class TopicNameAttribute : Attribute

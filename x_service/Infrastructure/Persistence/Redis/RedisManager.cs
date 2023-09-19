@@ -1,7 +1,7 @@
-using ServiceLibrary.Persistence._Interfaces;
+using Infrastructure.Persistence._Interfaces;
 using StackExchange.Redis;
 
-namespace ServiceLibrary.Persistence.Redis;
+namespace Infrastructure.Persistence.Redis;
 
 public class RedisManager : ICacheManager
 {

@@ -1,6 +1,6 @@
-using Domain.DomainEvents.EventAttributes;
+using Domain.DomainEvents._Attributes;
+using Domain.DomainEvents._Interfaces;
 using ProtoBuf;
-using x_Domain.Attributes;
 
 namespace Domain.DomainEvents;
 
