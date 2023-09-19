@@ -1,9 +1,9 @@
 using Google.Cloud.PubSub.V1;
 using Grpc.Core;
+using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLibrary.Persistence._Interfaces;
 
-namespace ServiceLibrary.Persistence.Google_PubSub;
+namespace Infrastructure.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
 

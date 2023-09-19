@@ -1,8 +1,8 @@
-using x_App.DomainAppServices;
-using x_App.Infrastructure.Reflectors.DataSeeder;
-using x_Domain.DomainModels;
+using Application.AppServices;
+using Application.Registrations.DataSeeder;
+using Domain.DomainModels;
 
-namespace x_App.DataSeeders;
+namespace Application.DataSeeders;
 
 public class DataSeeder : IDataSeeder
 {

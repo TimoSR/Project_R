@@ -1,4 +1,4 @@
-namespace x_App.Controllers.EventPollers;
+namespace Application.Controllers.EventPollers;
 
 public class PollerClass
 {

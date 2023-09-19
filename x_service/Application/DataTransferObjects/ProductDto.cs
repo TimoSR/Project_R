@@ -1,4 +1,4 @@
-namespace x_Domain.DataTransferObjects;
+namespace Application.DataTransferObjects;
 
 public class ProductDto
 {

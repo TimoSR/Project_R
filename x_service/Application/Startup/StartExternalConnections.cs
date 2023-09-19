@@ -1,7 +1,8 @@
+using Application.Registrations.Events;
+using Infrastructure.Persistence._Interfaces;
 using ServiceLibrary.Persistence._Interfaces;
-using x_App.Reflectors.Events;
 
-namespace x_App.Startup;
+namespace Application.Startup;
 
 public class StartExternalConnections : IHostedService
 {

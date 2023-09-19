@@ -1,11 +1,12 @@
+using Domain.DomainModels;
+using Domain.IRepositories;
+using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using ServiceLibrary.DomainRepositories._Abstract;
 using ServiceLibrary.Persistence._Interfaces;
-using x_Domain.DomainModels;
-using x_Domain.IRepositories;
 
-namespace ServiceLibrary.DomainRepositories;
+namespace Infrastructure.DomainRepositories;
 
 public class ProductRepository : MongoRepository<Product>, IProductRepository
 {

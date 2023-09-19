@@ -1,3 +1,4 @@
+using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLibrary.Persistence._Interfaces;
 using StackExchange.Redis;

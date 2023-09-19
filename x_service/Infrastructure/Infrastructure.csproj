@@ -4,7 +4,6 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>ServiceLibrary</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -36,7 +35,7 @@
 
 
     <ItemGroup>
-      <Folder Include="Reflectors\" />
+      <Folder Include="Registrations\" />
     </ItemGroup>
 
 </Project>

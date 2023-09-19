@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace ServiceLibrary.Persistence._Interfaces;
+namespace Infrastructure.Persistence._Interfaces;
 
 public class Configuration
 {

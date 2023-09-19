@@ -1,11 +1,11 @@
 using System.Reflection;
+using Domain.DomainEvents.EventAttributes;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
-using ServiceLibrary.Persistence._Interfaces;
-using ServiceLibrary.Utilities.Serializers;
-using x_Domain.Attributes;
+using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities.Serializers;
 
-namespace ServiceLibrary.Persistence.Google_PubSub;
+namespace Infrastructure.Persistence.Google_PubSub;
 
 public class EventPublisher : IEventPublisher
 {

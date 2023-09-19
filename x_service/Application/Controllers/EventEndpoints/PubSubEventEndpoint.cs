@@ -1,8 +1,8 @@
+using Application.AppServices;
+using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;
-using x_App.DomainAppServices;
-using x_Domain.DomainModels;
 
-namespace x_App.Controllers.EventEndpoints;
+namespace Application.Controllers.EventEndpoints;
 
 [ApiController]
 [Route("api/[controller]")]

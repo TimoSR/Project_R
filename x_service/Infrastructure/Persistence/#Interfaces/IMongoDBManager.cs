@@ -1,6 +1,6 @@
 using MongoDB.Driver;
 
-namespace ServiceLibrary.Persistence._Interfaces;
+namespace Infrastructure.Persistence._Interfaces;
 
 public interface IMongoDbManager
 {

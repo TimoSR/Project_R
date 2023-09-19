@@ -1,7 +1,7 @@
-using x_App.Infrastructure.Reflectors._Interfaces;
-using x_Domain.DomainModels;
+using Application.Registrations._Interfaces;
+using Domain.DomainModels;
 
-namespace x_App.Controllers.GraphQL.ProductCollection;
+namespace Application.Controllers.GraphQL.ProductCollection;
 
 public class ProductSubscriptions : ISubscription
 {

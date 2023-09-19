@@ -1,3 +1,3 @@
-namespace ServiceLibrary.Utilities._Interfaces;
+namespace Infrastructure.Utilities._Interfaces;
 
 public interface IUtilityTool {}

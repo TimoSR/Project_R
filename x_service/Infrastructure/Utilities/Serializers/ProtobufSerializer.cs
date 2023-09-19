@@ -1,7 +1,7 @@
+using Infrastructure.Utilities._Interfaces;
 using ProtoBuf;
-using ServiceLibrary.Utilities._Interfaces;
 
-namespace ServiceLibrary.Utilities.Serializers;
+namespace Infrastructure.Utilities.Serializers;
 
 public class ProtobufSerializer : IUtilityTool
 {

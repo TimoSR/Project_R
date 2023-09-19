@@ -1,8 +1,8 @@
-using x_Domain.DomainModels;
+using Domain.DomainModels;
 
-namespace x_Domain.IRepositories;
+namespace Domain.IRepositories;
 
-public interface IProductRepository : IRepository<Product>
+public interface IProductRepository
 {
     Task<IEnumerable<Product>> GetProductsByNameAsync(string productName);
 }

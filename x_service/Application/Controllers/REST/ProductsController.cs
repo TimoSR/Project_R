@@ -1,9 +1,10 @@
+using Application.AppServices;
+using Domain.DomainEvents.EventAttributes;
+using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;
-using x_App.DomainAppServices;
 using x_Domain.Attributes;
-using x_Domain.DomainModels;
 
-namespace x_endpoints.Controllers.REST;
+namespace Application.Controllers.REST;
 
 [Route("api/[controller]")]
 [ApiController]

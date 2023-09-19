@@ -1,15 +1,16 @@
+using Application.Registrations.DataSeeder;
+using Application.Registrations.Events;
+using Application.Registrations.GraphQL;
+using Application.Registrations.Services;
+using Application.Startup;
+using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Persistence.Google_PubSub;
+using Infrastructure.Registrations.Repositories;
+using Infrastructure.Registrations.Utilities;
+using Infrastructure.Utilities.Containers;
 using ServiceLibrary.Persistence._Interfaces;
-using ServiceLibrary.Persistence.Google_PubSub;
 using ServiceLibrary.Persistence.MongoDB;
 using ServiceLibrary.Persistence.Redis;
-using ServiceLibrary.Reflectors.Repositories;
-using ServiceLibrary.UtilityRegistration.Tools;
-using x_App.Infrastructure.Containers;
-using x_App.Infrastructure.Reflectors.DataSeeder;
-using x_App.Infrastructure.Reflectors.GraphQL;
-using x_App.Infrastructure.Reflectors.Services;
-using x_App.Reflectors.Events;
-using x_App.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 

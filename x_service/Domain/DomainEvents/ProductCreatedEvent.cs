@@ -1,7 +1,8 @@
+using Domain.DomainEvents.EventAttributes;
 using ProtoBuf;
 using x_Domain.Attributes;
 
-namespace x_Domain.DomainEvents;
+namespace Domain.DomainEvents;
 
 [ProtoContract]
 [TopicName("ProductCreatedTopic")]
