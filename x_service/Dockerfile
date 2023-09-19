@@ -11,7 +11,7 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . .
-RUN dotnet publish "x_App/x_App.csproj" -c Release -o out
+RUN dotnet publish "Application/Application.csproj" -c Release -o out
 
 # Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
