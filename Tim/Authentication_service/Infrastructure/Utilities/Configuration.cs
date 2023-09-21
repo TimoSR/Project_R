@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Infrastructure.Persistence._Interfaces;
+namespace Infrastructure.Utilities;
 
 public class Configuration
 {
@@ -11,4 +11,6 @@ public class Configuration
     public IDictionary EnvironmentVariables { get; set; }
     public string MongoConnectionString { get; set; }
     public string RedisConnectionString { get; set; }
+    
+    public string JwtKey { get; set; }
 }

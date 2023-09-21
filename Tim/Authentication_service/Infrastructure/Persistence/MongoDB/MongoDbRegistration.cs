@@ -1,4 +1,5 @@
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;

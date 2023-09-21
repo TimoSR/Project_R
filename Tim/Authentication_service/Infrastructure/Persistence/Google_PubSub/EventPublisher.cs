@@ -3,6 +3,7 @@ using Domain.DomainEvents._Attributes;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities;
 using Infrastructure.Utilities.Serializers;
 
 namespace Infrastructure.Persistence.Google_PubSub;

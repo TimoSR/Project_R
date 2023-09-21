@@ -1,86 +1,78 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using System.Threading.Tasks;
 using Application.Registrations._Interfaces;
 using Domain.DomainModels;
 using Domain.IRepositories;
-using Google.Apis.Auth;
-using Microsoft.Extensions.Options;
+using Infrastructure.DomainRepositories;
+using Infrastructure.Utilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.AppServices
+namespace AppServices
 {
-    public class AuthService : IAppService
+    public class AuthService : IAppService  // Assuming IAuthService is your service interface
     {
-        private readonly IUserRepository _userRepository;
-        private readonly JwtSettings _jwtSettings;
+        private readonly UserRepository _userRepository;
+        private readonly string _key;
 
-        public AuthService(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
+        public AuthService(UserRepository userRepository, Configuration configuration)
         {
             _userRepository = userRepository;
-            _jwtSettings = jwtSettings.Value;
+            _key = configuration.JwtKey;
         }
 
-        public async Task<(User, string AccessToken, string RefreshToken)> AuthenticateGoogleUserAsync(string googleToken)
+        public async Task<string> AuthenticateAsync(string email, string password)
         {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(googleToken);
-            var email = payload.Email;
-
             var user = await _userRepository.FindByEmailAsync(email);
 
-            if (user == null)
+            if (user == null || user.Password != password)  // Replace with password hash check in production
             {
-                user = new User
-                {
-                    Email = email,
-                    GoogleId = payload.Subject,
-                };
-
-                await _userRepository.CreateUserAsync(user);
+                return null;
             }
 
-            var (accessToken, refreshToken) = GenerateJwtToken(user);
-            await SaveRefreshTokenToDatabase(user.Id, refreshToken);
-            return (user, accessToken, refreshToken);
-        }
-
-        private (string AccessToken, string RefreshToken) GenerateJwtToken(User user)
-        {
-            var accessToken = GenerateAccessToken(user);
-            var refreshToken = GenerateRefreshToken();
-
-            return (accessToken, refreshToken);
-        }
-
-        private string GenerateAccessToken(User user)
-        {
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+            // Generate JWT token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Convert.FromBase64String(_key); // Replace with your key
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                }),
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id) }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            
             return tokenHandler.WriteToken(token);
         }
 
-        private string GenerateRefreshToken()
+        public async Task<bool> RegisterAsync(User newUser)
         {
-            return Guid.NewGuid().ToString();
+            // Check if email already exists
+            var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
+            
+            if (existingUser != null)
+            {
+                return false;
+            }
+
+            // Insert new user
+            await _userRepository.CreateUserAsync(newUser);
+            return true;
         }
 
-        private async Task SaveRefreshTokenToDatabase(string userId, string refreshToken)
+        public async Task<bool> LogoutAsync(string userId)
         {
-            var expiryTime = DateTime.UtcNow.AddHours(1);  // Set your own expiry time
-            await _userRepository.UpdateRefreshTokenAsync(userId, refreshToken, expiryTime);
+            // Invalidate the refresh token (optional)
+            await _userRepository.UpdateRefreshTokenAsync(userId, null, DateTime.UtcNow);
+            return true;
+        }
+        
+        public async Task<bool> DeleteUserAsync(string userId)
+        {
+            // Deleting the user (pseudo code, implement actual delete logic)
+            // await _userRepository.DeleteUserAsync(userId);
+            return true;
         }
     }
 }

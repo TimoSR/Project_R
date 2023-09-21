@@ -1,48 +1,129 @@
-using System;
-using System.Threading.Tasks;
-using Application.AppServices;
+using AppServices;
+using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-namespace WebApi.Controllers
+namespace Application.Controllers.REST
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
-        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(AuthService authService, ILogger<AuthController> logger)
+        public AuthController(AuthService authService)
         {
             _authService = authService;
-            _logger = logger;
         }
 
-        [HttpPost("authenticate-google")]
-        public async Task<IActionResult> AuthenticateGoogleUserAsync([FromBody] string googleToken)
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
         {
-            try
+            var newUser = new User
             {
-                var (user, accessToken, refreshToken) = await _authService.AuthenticateGoogleUserAsync(googleToken);
+                Email = newUserDto.Email,
+                Password = newUserDto.Password
+            };
 
-                if (user == null)
-                {
-                    return Unauthorized("Invalid Google token.");
-                }
+            var result = await _authService.RegisterAsync(newUser);
 
-                return Ok(new
+            if (result)
+            {
+                return Ok(new { Message = "User successfully registered" });
+            }
+
+            return BadRequest(new { Message = "Email already exists" });
+        }
+
+        /// <summary>
+        /// Authenticate a user
+        /// </summary>
+        [HttpPost("authenticate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Authenticate([FromBody] AuthRequestDto requestDto)
+        {
+            var token = await _authService.AuthenticateAsync(requestDto.Email, requestDto.Password);
+
+            if (token != null)
+            {
+                return Ok(new AuthResponseDto
                 {
-                    user,
-                    accessToken,
-                    refreshToken
+                    Token = token,
+                    // ... other properties
                 });
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in {nameof(AuthenticateGoogleUserAsync)}: {ex.Message}");
-                return BadRequest("An error occurred while authenticating.");
-            }
+
+            return Unauthorized(new { Message = "Invalid email or password" });
         }
+
+        /// <summary>
+        /// Logout a user
+        /// </summary>
+        [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
+        {
+            var result = await _authService.LogoutAsync(requestDto.UserId);
+
+            if (result)
+            {
+                return Ok(new { Message = "Logged out successfully" });
+            }
+
+            return BadRequest(new { Message = "Failed to logout" });
+        }
+
+        /// <summary>
+        /// Delete a user
+        /// </summary>
+        [HttpDelete("delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteRequestDto requestDto)
+        {
+            var result = await _authService.DeleteUserAsync(requestDto.UserId);
+
+            if (result)
+            {
+                return Ok(new { Message = "User deleted successfully" });
+            }
+
+            return BadRequest(new { Message = "Failed to delete user" });
+        }
+    }
+
+    public class UserRegisterDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+    
+    public class AuthRequestDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class LogoutRequestDto
+    {
+        public string UserId { get; set; }
+    }
+
+    public class DeleteRequestDto
+    {
+        public string UserId { get; set; }
+    }
+    
+    public class AuthResponseDto
+    {
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }
+        public DateTime ExpiryTime { get; set; }
     }
 }

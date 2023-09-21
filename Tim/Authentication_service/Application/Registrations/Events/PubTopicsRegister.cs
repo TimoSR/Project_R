@@ -3,6 +3,7 @@ using Domain.DomainEvents._Interfaces;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities;
 
 namespace Application.Registrations.Events;
 

@@ -22,7 +22,7 @@ public static class RepositoryRegistration
             // Construct the IRepository<T> type for the found entity type
             var repoInterfaceType = typeof(IRepository<>).MakeGenericType(entityType);
 
-            services.AddSingleton(repoInterfaceType, type);
+            services.AddSingleton(type);
         }
 
         return services;

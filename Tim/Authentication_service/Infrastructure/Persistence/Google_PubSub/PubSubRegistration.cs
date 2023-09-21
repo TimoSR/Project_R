@@ -1,6 +1,7 @@
 using Google.Cloud.PubSub.V1;
 using Grpc.Core;
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Persistence.Google_PubSub;

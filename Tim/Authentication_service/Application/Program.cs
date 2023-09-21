@@ -3,12 +3,11 @@ using Application.Registrations.Events;
 using Application.Registrations.GraphQL;
 using Application.Registrations.Services;
 using Application.Startup;
-using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
-using Infrastructure.Persistence.Redis;
 using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
+using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +20,7 @@ var projectId = DotNetEnv.Env.GetString("GOOGLE_CLOUD_PROJECT");
 var environment = DotNetEnv.Env.GetString("ENVIRONMENT");
 var mongoConnectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
 var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
+var jwtKey = DotNetEnv.Env.GetString("JWT_KEY");
 var envVars = Environment.GetEnvironmentVariables();
 
 var config = new Configuration()
@@ -31,7 +31,8 @@ var config = new Configuration()
     Environment = environment,
     MongoConnectionString = mongoConnectionString,
     RedisConnectionString = redisConnectionString,
-    EnvironmentVariables = envVars
+    EnvironmentVariables = envVars,
+    JwtKey = jwtKey
 };
 
 builder.Services.AddSingleton(config);

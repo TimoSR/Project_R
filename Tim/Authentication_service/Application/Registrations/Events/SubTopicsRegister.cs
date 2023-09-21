@@ -4,6 +4,7 @@ using Domain.DomainEvents._Attributes;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Registrations.Events;
