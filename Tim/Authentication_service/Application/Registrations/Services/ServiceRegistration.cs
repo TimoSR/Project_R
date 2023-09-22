@@ -14,7 +14,7 @@ public static class ServiceRegistration
 
         foreach (var type in serviceTypes)
         {
-            services.AddTransient(type);
+            services.AddScoped(type);
         }
 
         return services;
