@@ -67,5 +67,10 @@ namespace Infrastructure.DomainRepositories
                 throw;
             }
         }
+
+        public async Task<bool> DeleteUserAsync(string id)
+        {
+            return await DeleteAsync(id);
+        }
     }
 }
