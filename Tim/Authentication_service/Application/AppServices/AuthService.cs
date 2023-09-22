@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Application.Registrations._Interfaces;
 using Domain.DomainModels;
+using Domain.ValueObject;
 using Infrastructure.DomainRepositories;
 using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Application.AppServices
 {
-    public class AuthService : IAppService  // Assuming IAuthService is your service interface
+    public class AuthService : IAppService
     {
         private readonly UserRepository _userRepository;
         private readonly string _key;
@@ -45,14 +46,30 @@ namespace Application.AppServices
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<bool> RegisterAsync(User newUser)
+        // Create an enum for registration outcomes
+        public enum RegistrationResult
         {
-            // Check if email already exists
-            var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
+            Successful,
+            EmailAlreadyExists,
+            InvalidEmail
+        }
 
+        public async Task<RegistrationResult> RegisterAsync(User newUser)
+        {
+            EmailAddress emailAddress;
+            try
+            {
+                emailAddress = new EmailAddress(newUser.Email);
+            }
+            catch (Exception)
+            {
+                return RegistrationResult.InvalidEmail;
+            }
+
+            var existingUser = await _userRepository.FindByEmailAsync(emailAddress.Value);
             if (existingUser != null)
             {
-                return false;
+                return RegistrationResult.EmailAlreadyExists;
             }
 
             // Hash the password
@@ -60,9 +77,8 @@ namespace Application.AppServices
 
             // Insert new user
             await _userRepository.CreateUserAsync(newUser);
-            return true;
+            return RegistrationResult.Successful;
         }
-
 
         public async Task<bool> LogoutAsync(string userId)
         {

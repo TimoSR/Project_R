@@ -31,13 +31,19 @@ namespace Application.Controllers.REST
 
             var result = await _authService.RegisterAsync(newUser);
 
-            if (result)
+            switch (result)
             {
-                return Ok(new { Message = "User successfully registered" });
+                case AuthService.RegistrationResult.Successful:
+                    return Ok(new { Message = "User successfully registered" });
+                case AuthService.RegistrationResult.EmailAlreadyExists:
+                    return BadRequest(new { Message = "Email already exists" });
+                case AuthService.RegistrationResult.InvalidEmail:
+                    return BadRequest(new { Message = "Invalid email address" });
+                default:
+                    return BadRequest(new { Message = "An unknown error occurred" });
             }
-
-            return BadRequest(new { Message = "Email already exists" });
         }
+
 
         /// <summary>
         /// Authenticate a user
