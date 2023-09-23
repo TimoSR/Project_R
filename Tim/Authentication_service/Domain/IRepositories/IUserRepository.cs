@@ -9,5 +9,6 @@ namespace Domain.IRepositories
 
         Task UpdateRefreshTokenAsync(string userId, string refreshToken, DateTime expiryTime);
         Task<User> GetUserByRefreshTokenAsync(string refreshToken);
+        Task<bool> DeleteUserAsync(string id);
     }
 } 

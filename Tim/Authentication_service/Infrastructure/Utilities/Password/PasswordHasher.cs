@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Utilities.Password;
 
-public class PasswordHasher : IUtilityTool
+public class PasswordHasher : IPasswordHasher
 {
     private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 

@@ -1,19 +1,20 @@
 using System.Text.RegularExpressions;
+using Infrastructure.Utilities._Interfaces;
 
 namespace Infrastructure.Utilities.Password;
 
-public class PasswordValidator
+public class PasswordValidator : IPasswordValidator
 {
     // Minimum length required for the password
     private const int MinimumLength = 6;
 
     // Regular expressions for various types of characters
-    private static readonly Regex UpperCase = new Regex("[A-Z]");
-    private static readonly Regex LowerCase = new Regex("[a-z]");
-    private static readonly Regex Digits = new Regex("[0-9]");
-    private static readonly Regex SpecialChars = new Regex("[!@#$%^&*(),.?\":{}|<>]");
+    private readonly Regex _upperCase = new Regex("[A-Z]");
+    private readonly Regex _lowerCase = new Regex("[a-z]");
+    private readonly Regex _digits = new Regex("[0-9]");
+    private readonly Regex _specialChars = new Regex("[!@#$%^&*(),.?\":{}|<>]");
 
-    public static bool IsValid(string password)
+    public bool IsValid(string password)
     {
         // Check minimum length
         if (string.IsNullOrEmpty(password) || password.Length < MinimumLength)
@@ -22,25 +23,19 @@ public class PasswordValidator
         }
 
         // Check for upper-case letters
-        if (!UpperCase.IsMatch(password))
-        {
-            return false;
-        }
-
-        // Check for lower-case letters
-        if (!LowerCase.IsMatch(password))
+        if (!_upperCase.IsMatch(password))
         {
             return false;
         }
 
         // Check for digits
-        if (!Digits.IsMatch(password))
+        if (!_digits.IsMatch(password))
         {
             return false;
         }
 
         // Check for special characters
-        if (!SpecialChars.IsMatch(password))
+        if (!_specialChars.IsMatch(password))
         {
             return false;
         }

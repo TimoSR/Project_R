@@ -40,7 +40,7 @@ builder.Services.AddSingleton(config);
 Console.WriteLine($"\n{serviceName}");
 
 // Custom Tools written tools to simplify development
-builder.Services.AddApplicationTools();
+builder.Services.RegisterUtilityServices();
 
 // Add / Disable GraphQL (MapGraphQL should be out-commented too)
 builder.Services.AddGraphQlServices(); 
@@ -61,7 +61,7 @@ builder.Services.AddSingleton<PubTopicsRegister>();
 builder.Services.AddHostedService<StartExternalConnections>();
 
 // Adding Dependencies to Service Dependency Container
-builder.Services.AddSingleton<IServiceDependencies, ServiceDependencies>();
+builder.Services.AddScoped<IServiceDependencies, ServiceDependencies>();
 
 // Adding Database Repositories
 builder.Services.AddApplicationRepositories();

@@ -43,7 +43,7 @@ public static class PubSubRegistration {
             return client;
         });
         
-        services.AddSingleton<IEventPublisher, EventPublisher>();
+        services.AddScoped<IEventPublisher, EventPublisher>();
             
         return services;
     }

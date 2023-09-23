@@ -1,17 +1,18 @@
 using System.Text.RegularExpressions;
+using Infrastructure.Utilities._Interfaces;
 
 namespace Infrastructure.Utilities.Email;
 
-public class EmailValidator
+public class EmailValidator : IEmailValidator
 {
     
-    private static readonly Regex UsernameRegex = new Regex("^[a-zA-Z0-9._-]+$", RegexOptions.Compiled);
+    private readonly Regex _usernameRegex = new Regex("^[a-zA-Z0-9._-]+$", RegexOptions.Compiled);
     
     // The '@' symbol before the string denotes a verbatim string literal in C#.
     // In a verbatim string, backslashes are treated as literal characters and not as escape characters.
     // This is particularly useful when writing regular expressions, which often contain many backslashes.
     // Without '@', you would need to escape each backslash, making the regex less readable.
-    private static readonly List<Regex> PopularEmailRegexes = new List<Regex>
+    private readonly List<Regex> _popularEmailRegexes = new List<Regex>
     {
         new Regex(@"gmail\.com$", RegexOptions.Compiled),
         new Regex(@"yahoo\.com$", RegexOptions.Compiled),
@@ -34,10 +35,8 @@ public class EmailValidator
         new Regex(@"sina\.com$", RegexOptions.Compiled),
         new Regex(@"qq\.com$", RegexOptions.Compiled),
     };
-
-
     
-    public static bool IsValid(string email)
+    public bool IsValid(string email)
     {
         // Split email into username and domain parts
         var parts = email.Split('@');
@@ -48,13 +47,13 @@ public class EmailValidator
         }
 
         // Validate username part
-        if (!UsernameRegex.IsMatch(parts[0]))
+        if (!_usernameRegex.IsMatch(parts[0]))
         {
             return false;
         }
 
         // Validate domain part
-        if (!PopularEmailRegexes.Any(regex => regex.IsMatch(parts[1])))
+        if (!_popularEmailRegexes.Any(regex => regex.IsMatch(parts[1])))
         {
             return false;
         }

@@ -1,89 +1,118 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text.RegularExpressions;
 using Application.Registrations._Interfaces;
 using Domain.DomainModels;
-using Domain.Enums;
+using Domain.DomainModels.Enums;
 using Infrastructure.DomainRepositories;
-using Infrastructure.Utilities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+using Infrastructure.Utilities._Interfaces;
+namespace Application.AppServices;
 
-namespace Application.AppServices
+public class AuthService : IAppService
 {
-    public class AuthService : IAppService
+    private readonly UserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
+    private readonly IEmailValidator _emailValidator;
+    private readonly IPasswordValidator _passwordValidator;
+    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ILogger<AuthService> _logger;
+
+    public AuthService(
+        UserRepository userRepository,
+        IPasswordHasher passwordHasher,
+        IEmailValidator emailValidator,
+        IPasswordValidator passwordValidator,
+        ITokenGenerator tokenGenerator,
+        ILogger<AuthService> logger
+        )
     {
-        private readonly UserRepository _userRepository;
-        private readonly string _key;
-        private readonly IPasswordHasher<User> _passwordHasher;
+        _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
+        _emailValidator = emailValidator;
+        _passwordValidator = passwordValidator;
+        _tokenGenerator = tokenGenerator;
+        _logger = logger;
+    }
 
-        public AuthService(UserRepository userRepository, Configuration configuration)
+    public async Task<string> AuthenticateAsync(string email, string password)
+    {
+        _logger.LogInformation("Attempting to authenticate user with email: {Email}", email);
+
+        if (!_emailValidator.IsValid(email))
         {
-            _userRepository = userRepository;
-            _key = configuration.JwtKey;
-            _passwordHasher = new PasswordHasher<User>();
+            _logger.LogWarning("Invalid email provided: {Email}", email);
+            return null;
         }
 
-        public async Task<string> AuthenticateAsync(string email, string password)
+        var user = await _userRepository.FindByEmailAsync(email);
+
+        if (user == null || !_passwordHasher.VerifyHashedPassword(user, password))
         {
-            var user = await _userRepository.FindByEmailAsync(email);
-
-            if (user == null || _passwordHasher.VerifyHashedPassword(user, user.Password, password) == PasswordVerificationResult.Failed)
-            {
-                return null;
-            }
-
-            // Generate JWT token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Convert.FromBase64String(_key); // Replace with your key
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id) }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
+            _logger.LogWarning("Authentication failed for email: {Email}", email);
+            return null;
         }
 
-        public async Task<RegistrationResult> RegisterAsync(User newUser)
+        // Generate JWT token
+        var token = _tokenGenerator.GenerateToken(user.Id);
+
+        _logger.LogInformation("Successfully authenticated user with email: {Email}", email);
+
+        return token;
+    }
+
+    public async Task<UserRegistrationResult> RegisterAsync(User newUser)
+    {
+        _logger.LogInformation("Attempting to register new user with email: {Email}", newUser.Email);
+
+        if (!_emailValidator.IsValid(newUser.Email))
         {
-
-            if (IsValidEmail(newUser.Email))
-            {
-                var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
-            
-                if (existingUser != null)
-                {
-                    return RegistrationResult.EmailAlreadyExists;
-                }
-            }
-            else
-            {
-                return RegistrationResult.InvalidEmail;
-            }
-
-            // Hash the password
-            newUser.Password = _passwordHasher.HashPassword(newUser, newUser.Password);
-
-            // Insert new user
-            await _userRepository.CreateUserAsync(newUser);
-            return RegistrationResult.Successful;
+            _logger.LogWarning("Invalid email provided for registration: {Email}", newUser.Email);
+            return UserRegistrationResult.InvalidEmail;
         }
 
-        public async Task<bool> LogoutAsync(string userId)
+        var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
+        
+        if (existingUser != null)
         {
-            // Invalidate the refresh token (optional)
-            await _userRepository.UpdateRefreshTokenAsync(userId, null, DateTime.UtcNow);
-            return true;
+            _logger.LogWarning("Email already exists: {Email}", newUser.Email);
+            return UserRegistrationResult.EmailAlreadyExists;
         }
         
-        public async Task<bool> DeleteUserAsync(string userId)
+        if (!_passwordValidator.IsValid(newUser.Password))
         {
-            // Deleting the user (pseudo code, implement actual delete logic)
-            await _userRepository.DeleteUserAsync(userId);
-            return true;
+            _logger.LogWarning("Invalid password provided for email: {Email}", newUser.Email);
+            return UserRegistrationResult.InvalidPassword;
         }
+
+        // Hash the password
+        newUser.Password = _passwordHasher.HashPassword(newUser);
+
+        // Insert new user
+        await _userRepository.CreateUserAsync(newUser);
+
+        _logger.LogInformation("Successfully registered new user with email: {Email}", newUser.Email);
+
+        return UserRegistrationResult.Successful;
+    }
+
+    public async Task<bool> LogoutAsync(string userId)
+    {
+        _logger.LogInformation("Attempting to logout user with ID: {UserId}", userId);
+
+        // Invalidate the refresh token (optional)
+        await _userRepository.UpdateRefreshTokenAsync(userId, null, DateTime.UtcNow);
+
+        _logger.LogInformation("Successfully logged out user with ID: {UserId}", userId);
+
+        return true;
+    }
+    
+    public async Task<bool> DeleteUserAsync(string userId)
+    {
+        _logger.LogInformation("Attempting to delete user with ID: {UserId}", userId);
+
+        // Deleting the user
+        await _userRepository.DeleteUserAsync(userId);
+
+        _logger.LogInformation("Successfully deleted user with ID: {UserId}", userId);
+
+        return true;
     }
 }

@@ -1,5 +1,8 @@
 using Application.AppServices;
+using Application.DataTransferObjects.Auth;
+using Application.DataTransferObjects.UserManagement;
 using Domain.DomainModels;
+using Domain.DomainModels.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers.REST
@@ -31,19 +34,15 @@ namespace Application.Controllers.REST
 
             var result = await _authService.RegisterAsync(newUser);
 
-            switch (result)
+            return result switch
             {
-                case AuthService.RegistrationResult.Successful:
-                    return Ok(new { Message = "User successfully registered" });
-                case AuthService.RegistrationResult.EmailAlreadyExists:
-                    return BadRequest(new { Message = "Email already exists" });
-                case AuthService.RegistrationResult.InvalidEmail:
-                    return BadRequest(new { Message = "Invalid email address" });
-                default:
-                    return BadRequest(new { Message = "An unknown error occurred" });
-            }
+                UserRegistrationResult.Successful => Ok(new { Message = "User successfully registered" }),
+                UserRegistrationResult.InvalidEmail => BadRequest(new { Message = "Invalid email address" }),
+                UserRegistrationResult.EmailAlreadyExists => BadRequest(new { Message = "Email already exists" }),
+                UserRegistrationResult.InvalidPassword => BadRequest(new { Message = "Password must have a minimum length of 6 and include at least one uppercase letter, number, and special symbol (e.g., !@#$%^&*)." }),
+                _ => BadRequest(new { Message = "An unknown error occurred" })
+            };
         }
-
 
         /// <summary>
         /// Authenticate a user
@@ -60,7 +59,6 @@ namespace Application.Controllers.REST
                 return Ok(new AuthResponseDto
                 {
                     Token = token,
-                    // ... other properties
                 });
             }
 
@@ -102,34 +100,5 @@ namespace Application.Controllers.REST
 
             return BadRequest(new { Message = "Failed to delete user" });
         }
-    }
-
-    public class UserRegisterDto
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-    
-    public class AuthRequestDto
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class LogoutRequestDto
-    {
-        public string UserId { get; set; }
-    }
-
-    public class DeleteRequestDto
-    {
-        public string UserId { get; set; }
-    }
-    
-    public class AuthResponseDto
-    {
-        public string Token { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime ExpiryTime { get; set; }
     }
 }

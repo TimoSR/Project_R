@@ -4,14 +4,14 @@ using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities;
-using Infrastructure.Utilities.Serializers;
+using Infrastructure.Utilities._Interfaces;
 
 namespace Infrastructure.Persistence.Google_PubSub;
 
 public class EventPublisher : IEventPublisher
 {
-    private readonly JsonSerializer _jsonSerializer;
-    private readonly ProtobufSerializer _protobufSerializer;
+    private readonly IJsonSerializer _jsonSerializer;
+    private readonly IProtobufSerializer _protobufSerializer;
     private readonly PublisherServiceApiClient _publisherService;
     private readonly string _projectId;
     private readonly string _serviceName;
@@ -19,8 +19,8 @@ public class EventPublisher : IEventPublisher
     public EventPublisher(
         Configuration config,
         PublisherServiceApiClient publisherService,
-        JsonSerializer jsonSerializer,
-        ProtobufSerializer protobufSerializer)
+        IJsonSerializer jsonSerializer,
+        IProtobufSerializer protobufSerializer)
     {
         _projectId = config.ProjectId;
         _serviceName = config.ServiceName;

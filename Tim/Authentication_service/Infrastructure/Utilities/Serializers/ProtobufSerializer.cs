@@ -3,7 +3,7 @@ using ProtoBuf;
 
 namespace Infrastructure.Utilities.Serializers;
 
-public class ProtobufSerializer : IUtilityTool
+public class ProtobufSerializer : IProtobufSerializer
 {
     
     // It only works with models that uses Protobuf-Net Attributes!!!!
