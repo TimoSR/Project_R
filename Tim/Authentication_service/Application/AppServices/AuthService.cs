@@ -1,8 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Application.Registrations._Interfaces;
 using Domain.DomainModels;
-using Domain.ValueObject;
+using Domain.Enums;
 using Infrastructure.DomainRepositories;
 using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -46,30 +47,21 @@ namespace Application.AppServices
             return tokenHandler.WriteToken(token);
         }
 
-        // Create an enum for registration outcomes
-        public enum RegistrationResult
-        {
-            Successful,
-            EmailAlreadyExists,
-            InvalidEmail
-        }
-
         public async Task<RegistrationResult> RegisterAsync(User newUser)
         {
-            EmailAddress emailAddress;
-            try
+
+            if (IsValidEmail(newUser.Email))
             {
-                emailAddress = new EmailAddress(newUser.Email);
+                var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
+            
+                if (existingUser != null)
+                {
+                    return RegistrationResult.EmailAlreadyExists;
+                }
             }
-            catch (Exception)
+            else
             {
                 return RegistrationResult.InvalidEmail;
-            }
-
-            var existingUser = await _userRepository.FindByEmailAsync(emailAddress.Value);
-            if (existingUser != null)
-            {
-                return RegistrationResult.EmailAlreadyExists;
             }
 
             // Hash the password

@@ -38,6 +38,7 @@
 
     <ItemGroup>
       <Folder Include="Registrations\" />
+      <Folder Include="Utilities\TokenGenerator\" />
     </ItemGroup>
 
 </Project>
