@@ -1,13 +1,13 @@
-using Application.Registrations._Interfaces;
+using Application.AppServices._Interfaces;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
-using Infrastructure.DomainRepositories;
+using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 namespace Application.AppServices;
 
-public class AuthService : IAppService
+public class AuthService : IAuthService
 {
-    private readonly UserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
@@ -15,7 +15,7 @@ public class AuthService : IAppService
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
-        UserRepository userRepository,
+        IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         IEmailValidator emailValidator,
         IPasswordValidator passwordValidator,

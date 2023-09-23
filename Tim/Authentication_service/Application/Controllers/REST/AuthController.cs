@@ -1,4 +1,5 @@
 using Application.AppServices;
+using Application.AppServices._Interfaces;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
 using Domain.DomainModels;
@@ -11,9 +12,9 @@ namespace Application.Controllers.REST
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
-        public AuthController(AuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
