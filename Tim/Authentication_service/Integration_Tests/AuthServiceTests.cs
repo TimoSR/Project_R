@@ -80,5 +80,81 @@ namespace Integration_Tests
             // Assert
             Assert.True(result);
         }
+        
+         [Fact]
+        public async Task AuthenticateAsync_ReturnsNull_WhenInvalidEmail()
+        {
+            // Arrange
+            _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.AuthenticateAsync("invalidemail", "ValidPassword");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task AuthenticateAsync_ReturnsNull_WhenInvalidPassword()
+        {
+            // Arrange
+            _passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(false);
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.AuthenticateAsync("validemail@example.com", "InvalidPassword");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task RegisterAsync_ReturnsInvalidEmail_WhenInvalidEmail()
+        {
+            // Arrange
+            _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
+            var newUser = new User { Email = "invalidemail", Password = "ValidPassword" };
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.RegisterAsync(newUser);
+
+            // Assert
+            Assert.Equal(UserRegistrationResult.InvalidEmail, result);
+        }
+
+        [Fact]
+        public async Task RegisterAsync_ReturnsEmailAlreadyExists_WhenEmailAlreadyExists()
+        {
+            // Arrange
+            _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+            var newUser = new User { Email = "existingemail@example.com", Password = "ValidPassword" };
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.RegisterAsync(newUser);
+
+            // Assert
+            Assert.Equal(UserRegistrationResult.EmailAlreadyExists, result);
+        }
+
+        [Fact]
+        public async Task RegisterAsync_ReturnsInvalidPassword_WhenInvalidPassword()
+        {
+            // Arrange
+            _passwordValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
+            _userRepositoryMock.Setup(x => x.FindByEmailAsync("newuser@example.com")).Returns(Task.FromResult<User>(null)); // Add this line
+    
+            var newUser = new User { Email = "newuser@example.com", Password = "InvalidPassword" };
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.RegisterAsync(newUser);
+
+            // Assert
+            Assert.Equal(UserRegistrationResult.InvalidPassword, result);
+        }
+
     }
 }
