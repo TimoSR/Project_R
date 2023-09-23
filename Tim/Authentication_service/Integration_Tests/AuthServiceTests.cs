@@ -1,0 +1,84 @@
+using Application.AppServices;
+using Domain.DomainModels;
+using Domain.DomainModels.Enums;
+using Domain.IRepositories;
+using Infrastructure.Utilities._Interfaces;
+using Microsoft.Extensions.Logging;
+using Moq;
+
+namespace Integration_Tests
+{
+    public class AuthServiceTests
+    {
+        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private readonly Mock<IPasswordHasher> _passwordHasherMock = new Mock<IPasswordHasher>();
+        private readonly Mock<IEmailValidator> _emailValidatorMock = new Mock<IEmailValidator>();
+        private readonly Mock<IPasswordValidator> _passwordValidatorMock = new Mock<IPasswordValidator>();
+        private readonly Mock<ITokenGenerator> _tokenGeneratorMock = new Mock<ITokenGenerator>();
+        private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
+
+        public AuthServiceTests()
+        {
+            // Setup default mock behaviors, can be overridden in specific test cases
+            _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+            _passwordValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+            _passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(true);
+            _tokenGeneratorMock.Setup(x => x.GenerateToken(It.IsAny<string>())).Returns("SampleToken");
+            _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+        }
+
+        [Fact]
+        public async Task AuthenticateAsync_ReturnsToken_WhenValidCredentials()
+        {
+            // Arrange
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.AuthenticateAsync("validemail@example.com", "ValidPassword");
+
+            // Assert
+            Assert.Equal("SampleToken", result);
+        }
+
+        [Fact]
+        public async Task RegisterAsync_ReturnsSuccessful_WhenValidInput()
+        {
+            // Arrange
+            var newUser = new User { Email = "newuser@example.com", Password = "ValidPassword" };
+            _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.RegisterAsync(newUser);
+
+            // Assert
+            Assert.Equal(UserRegistrationResult.Successful, result);
+        }
+
+        [Fact]
+        public async Task LogoutAsync_ReturnsTrue()
+        {
+            // Arrange
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.LogoutAsync("userId");
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task DeleteUserAsync_ReturnsTrue()
+        {
+            // Arrange
+            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await authService.DeleteUserAsync("userId");
+
+            // Assert
+            Assert.True(result);
+        }
+    }
+}
