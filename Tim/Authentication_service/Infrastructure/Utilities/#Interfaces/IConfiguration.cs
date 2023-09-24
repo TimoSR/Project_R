@@ -1,9 +1,8 @@
 using System.Collections;
-using Infrastructure.Utilities._Interfaces;
 
-namespace Infrastructure.Utilities;
+namespace Infrastructure.Utilities._Interfaces;
 
-public class Configuration : IConfiguration
+public interface IConfiguration
 {
     public string HostUrl { get; set; }
     public string ProjectId { get; set; }

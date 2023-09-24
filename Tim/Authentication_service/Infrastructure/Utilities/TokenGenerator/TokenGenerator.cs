@@ -9,7 +9,7 @@ public class TokenGenerator : ITokenGenerator
 {
     private readonly string _key;
 
-    public TokenGenerator(Configuration configuration)
+    public TokenGenerator(IConfiguration configuration)
     {
         _key = configuration.JwtKey;
     }

@@ -9,6 +9,7 @@ using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
+using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
 
@@ -29,7 +30,7 @@ public class Program
         var jwtKey = DotNetEnv.Env.GetString("JWT_KEY");
         var envVars = Environment.GetEnvironmentVariables();
 
-        var config = new Configuration()
+        IConfiguration config = new Configuration()
         {
             HostUrl = hostUrl,
             ProjectId = projectId,
@@ -95,26 +96,25 @@ public class Program
 
         var app = builder.Build();
 
-        // if (environment.Equals("Development")) {
-        //
-        //     // Insert initial data into the MongoDB collections
-        //
-        //     var seederType = typeof(IDataSeeder);
-        //     var seeders = AppDomain.CurrentDomain.GetAssemblies()
-        //         .SelectMany(s => s.GetTypes())
-        //         .Where(p => seederType.IsAssignableFrom(p) && !p.IsInterface)
-        //         .ToList();
-        //
-        //     foreach(var seeder in seeders)
-        //     {
-        //         var instance = Activator.CreateInstance(seeder) as IDataSeeder;
-        //         instance?.SeedData(app.Services);
-        //     }
-        //     
-        //     Console.WriteLine("\n###################################");
-        //     Console.WriteLine("\nSeeding Database due to ENV: Development...");
-        // }
-
+        if (environment.Equals("Development")) {
+        
+            // Insert initial data into the MongoDB collections
+        
+            var seederType = typeof(IDataSeeder);
+            var seeders = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => seederType.IsAssignableFrom(p) && !p.IsInterface)
+                .ToList();
+        
+            foreach(var seeder in seeders)
+            {
+                var instance = Activator.CreateInstance(seeder) as IDataSeeder;
+                instance?.SeedData(app.Services);
+            }
+            
+            Console.WriteLine("\n###################################");
+            Console.WriteLine("\nSeeding Database due to ENV: Development...");
+        }
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

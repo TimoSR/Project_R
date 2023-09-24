@@ -1,14 +1,14 @@
 using Google.Cloud.PubSub.V1;
 using Grpc.Core;
 using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities;
+using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Persistence.Google_PubSub;
 
 public static class PubSubRegistration {
 
-    public static IServiceCollection AddPublisherClient(this IServiceCollection services, Configuration config)
+    public static IServiceCollection AddPublisherClient(this IServiceCollection services, IConfiguration config)
     {
 
         var projectId = config.ProjectId;

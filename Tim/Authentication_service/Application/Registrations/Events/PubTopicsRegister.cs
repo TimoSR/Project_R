@@ -2,8 +2,7 @@ using Domain.DomainEvents._Attributes;
 using Domain.DomainEvents._Interfaces;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
-using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities;
+using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application.Registrations.Events;
 
@@ -15,7 +14,7 @@ public class PubTopicsRegister
 
     // If the Attribute is not set at the event, it wont be registered.
     
-    public PubTopicsRegister(Configuration config, PublisherServiceApiClient publisherClient)
+    public PubTopicsRegister(IConfiguration config, PublisherServiceApiClient publisherClient)
     {
         _projectId = config.ProjectId;
         _serviceName = config.ServiceName;

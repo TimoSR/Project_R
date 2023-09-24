@@ -3,9 +3,8 @@ using System.Reflection;
 using Domain.DomainEvents._Attributes;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
-using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application.Registrations.Events;
 
@@ -18,7 +17,7 @@ public class SubTopicsRegister
     private readonly string _hostUrl;
     private readonly IDictionary _environmentVariables;
 
-    public SubTopicsRegister(Configuration config, SubscriberServiceApiClient subscriberService)
+    public SubTopicsRegister(IConfiguration config, SubscriberServiceApiClient subscriberService)
     {
         _projectId = config.ProjectId;
         _serviceName = config.ServiceName;

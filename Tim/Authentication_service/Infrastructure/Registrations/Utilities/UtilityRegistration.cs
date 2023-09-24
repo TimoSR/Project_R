@@ -18,7 +18,7 @@ public static class UtilityRegistration
             var serviceType = type.GetInterfaces().First(); // Assumes each class implements only one interface. Customize as needed.
 
             // Register the type with the DI container.
-            services.AddScoped(serviceType, type);
+            services.AddSingleton(serviceType, type);
         }
 
         return services;

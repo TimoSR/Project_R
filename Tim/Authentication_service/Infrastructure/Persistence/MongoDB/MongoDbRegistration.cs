@@ -1,5 +1,5 @@
 using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities;
+using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.MongoDB;
 
 public static class MongoDbRegistration
 {
-    public static IServiceCollection AddMongoDbServices(this IServiceCollection services, Configuration config)
+    public static IServiceCollection AddMongoDbServices(this IServiceCollection services, IConfiguration config)
     {
 
         var connectionString = config.MongoConnectionString;

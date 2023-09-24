@@ -17,7 +17,7 @@ public class EventPublisher : IEventPublisher
     private readonly string _serviceName;
 
     public EventPublisher(
-        Configuration config,
+        IConfiguration config,
         PublisherServiceApiClient publisherService,
         IJsonSerializer jsonSerializer,
         IProtobufSerializer protobufSerializer)
