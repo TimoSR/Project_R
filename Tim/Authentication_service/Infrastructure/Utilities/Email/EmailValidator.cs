@@ -38,6 +38,11 @@ public class EmailValidator : IEmailValidator
     
     public bool IsValid(string email)
     {
+        if (string.IsNullOrEmpty(email))
+        {
+            return false;
+        }
+        
         // Split email into username and domain parts
         var parts = email.Split('@');
 
