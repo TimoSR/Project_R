@@ -11,7 +11,7 @@ public class AuthService : IAuthService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
-    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ITokenHandler _tokenHandler;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
@@ -19,7 +19,7 @@ public class AuthService : IAuthService
         IPasswordHasher passwordHasher,
         IEmailValidator emailValidator,
         IPasswordValidator passwordValidator,
-        ITokenGenerator tokenGenerator,
+        ITokenHandler tokenHandler,
         ILogger<AuthService> logger
         )
     {
@@ -27,11 +27,11 @@ public class AuthService : IAuthService
         _passwordHasher = passwordHasher;
         _emailValidator = emailValidator;
         _passwordValidator = passwordValidator;
-        _tokenGenerator = tokenGenerator;
+        _tokenHandler = tokenHandler;
         _logger = logger;
     }
 
-    public async Task<string> AuthenticateAsync(string email, string password)
+    public async Task<string> LoginAsync(string email, string password)
     {
         _logger.LogInformation("Attempting to authenticate user with email: {Email}", email);
 
@@ -50,7 +50,7 @@ public class AuthService : IAuthService
         }
 
         // Generate JWT token
-        var token = _tokenGenerator.GenerateToken(user.Id);
+        var token = _tokenHandler.GenerateToken(user.Id);
 
         _logger.LogInformation("Successfully authenticated user with email: {Email}", email);
 

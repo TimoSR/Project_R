@@ -34,14 +34,14 @@ namespace Unit_Tests.Authentication;
     }
 
     [Fact]
-    public async Task Authenticate_ShouldReturnOk_WhenAuthenticationIsSuccessful()
+    public async Task Login_ShouldReturnOk_WhenLoginIsSuccessful()
     {
         // Arrange
-        _authServiceMock.Setup(service => service.AuthenticateAsync(It.IsAny<string>(), It.IsAny<string>()))
+        _authServiceMock.Setup(service => service.LoginAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync("ValidToken");
 
         // Act
-        var result = await _authController.Authenticate(new AuthRequestDto { Email = "test@example.com", Password = "Password123!" });
+        var result = await _authController.Login(new AuthRequestDto { Email = "test@example.com", Password = "Password123!" });
 
         // Assert
         Assert.IsType<OkObjectResult>(result);

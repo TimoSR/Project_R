@@ -14,7 +14,7 @@ namespace Unit_Tests.Authentication
         private readonly Mock<IPasswordHasher> _passwordHasherMock = new Mock<IPasswordHasher>();
         private readonly Mock<IEmailValidator> _emailValidatorMock = new Mock<IEmailValidator>();
         private readonly Mock<IPasswordValidator> _passwordValidatorMock = new Mock<IPasswordValidator>();
-        private readonly Mock<ITokenGenerator> _tokenGeneratorMock = new Mock<ITokenGenerator>();
+        private readonly Mock<ITokenHandler> _tokenGeneratorMock = new Mock<ITokenHandler>();
         private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
 
         public AuthServiceTests()
@@ -28,13 +28,13 @@ namespace Unit_Tests.Authentication
         }
 
         [Fact]
-        public async Task AuthenticateAsync_ReturnsToken_WhenValidCredentials()
+        public async Task LoginAsync_ReturnsToken_WhenValidCredentials()
         {
             // Arrange
             var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await authService.AuthenticateAsync("validemail@example.com", "ValidPassword");
+            var result = await authService.LoginAsync("validemail@example.com", "ValidPassword");
 
             // Assert
             Assert.Equal("SampleToken", result);
@@ -82,28 +82,28 @@ namespace Unit_Tests.Authentication
         }
         
          [Fact]
-        public async Task AuthenticateAsync_ReturnsNull_WhenInvalidEmail()
+        public async Task LoginAsync_ReturnsNull_WhenInvalidEmail()
         {
             // Arrange
             _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
             var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await authService.AuthenticateAsync("invalidemail", "ValidPassword");
+            var result = await authService.LoginAsync("invalidemail", "ValidPassword");
 
             // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public async Task AuthenticateAsync_ReturnsNull_WhenInvalidPassword()
+        public async Task LoginAsync_ReturnsNull_WhenInvalidPassword()
         {
             // Arrange
             _passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(false);
             var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await authService.AuthenticateAsync("validemail@example.com", "InvalidPassword");
+            var result = await authService.LoginAsync("validemail@example.com", "InvalidPassword");
 
             // Assert
             Assert.Null(result);

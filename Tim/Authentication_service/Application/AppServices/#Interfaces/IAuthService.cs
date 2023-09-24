@@ -6,7 +6,7 @@ namespace Application.AppServices._Interfaces;
 
 public interface IAuthService : IAppService
 {
-    Task<string> AuthenticateAsync(string email, string password);
+    Task<string> LoginAsync(string email, string password);
     Task<UserRegistrationResult> RegisterAsync(User newUser);
     Task<bool> LogoutAsync(string userId);
     Task<bool> DeleteUserAsync(string userId);

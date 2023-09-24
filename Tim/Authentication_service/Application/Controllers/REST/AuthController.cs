@@ -48,12 +48,12 @@ namespace Application.Controllers.REST
         /// <summary>
         /// Authenticate a user
         /// </summary>
-        [HttpPost("authenticate")]
+        [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Authenticate([FromBody] AuthRequestDto requestDto)
+        public async Task<IActionResult> Login([FromBody] AuthRequestDto requestDto)
         {
-            var token = await _authService.AuthenticateAsync(requestDto.Email, requestDto.Password);
+            var token = await _authService.LoginAsync(requestDto.Email, requestDto.Password);
 
             if (token != null)
             {

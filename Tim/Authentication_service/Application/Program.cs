@@ -28,6 +28,7 @@ public class Program
         var mongoConnectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
         var jwtKey = DotNetEnv.Env.GetString("JWT_KEY");
+        var jwtAudience = DotNetEnv.Env.GetString("JWT_AUDIENCE");
         var envVars = Environment.GetEnvironmentVariables();
 
         IConfiguration config = new Configuration()
@@ -39,7 +40,9 @@ public class Program
             MongoConnectionString = mongoConnectionString,
             RedisConnectionString = redisConnectionString,
             EnvironmentVariables = envVars,
-            JwtKey = jwtKey
+            JwtKey = jwtKey,
+            JwtIssuer = serviceName,
+            JwtAudience = jwtAudience
         };
 
         builder.Services.AddSingleton(config);

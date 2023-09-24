@@ -12,6 +12,7 @@ public class Configuration : IConfiguration
     public IDictionary EnvironmentVariables { get; set; }
     public string MongoConnectionString { get; set; }
     public string RedisConnectionString { get; set; }
-    
     public string JwtKey { get; set; }
+    public string JwtAudience { get; set; }
+    public string JwtIssuer { get; set; }
 }
