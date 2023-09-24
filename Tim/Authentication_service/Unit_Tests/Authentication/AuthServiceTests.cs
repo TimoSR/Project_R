@@ -16,15 +16,28 @@ namespace Unit_Tests.Authentication
         private readonly Mock<IPasswordValidator> _passwordValidatorMock = new Mock<IPasswordValidator>();
         private readonly Mock<ITokenHandler> _tokenGeneratorMock = new Mock<ITokenHandler>();
         private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
+        private readonly string expectedToken;
+        private readonly string expectedRefreshToken;
 
         public AuthServiceTests()
         {
+            
+            // Expected values
+            expectedToken = "SampleToken";
+            expectedRefreshToken = "SampleRefreshToken";
+            
             // Setup default mock behaviors, can be overridden in specific test cases
             _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
             _passwordValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
             _passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(true);
             _tokenGeneratorMock.Setup(x => x.GenerateToken(It.IsAny<string>())).Returns("SampleToken");
             _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+            _tokenGeneratorMock.Setup(t => t.GenerateToken(It.IsAny<string>()))
+                .Returns(expectedToken);
+    
+            _tokenGeneratorMock.Setup(t => t.GenerateRefreshToken())
+                .Returns(expectedRefreshToken);
+            
         }
 
         [Fact]
@@ -34,10 +47,12 @@ namespace Unit_Tests.Authentication
             var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await authService.LoginAsync("validemail@example.com", "ValidPassword");
+            var result = await authService.LoginAsync("validemail@gmail.com", "ValidPassword1!");
 
             // Assert
-            Assert.Equal("SampleToken", result);
+            Assert.NotNull(result);
+            Assert.Equal(expectedToken, result?.Token);
+            Assert.Equal(expectedRefreshToken, result?.RefreshToken);
         }
 
         [Fact]

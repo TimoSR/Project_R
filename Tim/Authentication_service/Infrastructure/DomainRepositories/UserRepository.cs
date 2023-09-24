@@ -30,6 +30,60 @@ namespace Infrastructure.DomainRepositories
             }
         }
 
+        public async Task<bool> IsUserAuthorized(string id)
+        {
+            try
+            {
+                var collection = GetCollection();
+                var user = await collection.Find(u => u.Id == id).FirstOrDefaultAsync();
+        
+                if (user == null)
+                {
+                    _logger.LogWarning($"User with ID {id} not found.");
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error checking if user with ID {id} is authorized: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<string> ValidateRefreshTokenAsync(string refreshToken)
+        {
+            try
+            {
+                var collection = GetCollection();
+                
+                // Find the user with the matching refresh token
+                var user = await collection
+                    .Find(u => u.RefreshToken == refreshToken)
+                    .FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"No user found with the provided refresh token.");
+                    return null;
+                }
+
+                if (user.RefreshTokenExpiryTime < DateTime.UtcNow)
+                {
+                    _logger.LogWarning($"Refresh token for user ID {user.Id} has expired.");
+                    return null;
+                }
+
+                return user.Id;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error validating refresh token: {ex.Message}");
+                throw;
+            }
+        }
+
+
         public async Task CreateUserAsync(User user)
         {
             await InsertAsync(user);

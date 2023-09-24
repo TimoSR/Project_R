@@ -18,6 +18,30 @@ namespace Application.Controllers.REST
         {
             _authService = authService;
         }
+        
+        /// <summary>
+        /// Authenticate a user's token
+        /// </summary>
+        [HttpPost("authenticate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Authenticate([FromBody] AuthRequestDto requestDto)
+        {
+            bool isAuthenticatedAndAuthorized = await _authService.AuthenticateAsync(requestDto.JwtToken);
+
+            if (isAuthenticatedAndAuthorized)
+            {
+                // Assume you have a method in your AuthService to refresh the token
+                var newToken = await _authService.RefreshTokenAsync(requestDto.RefreshToken);
+        
+                return Ok(new { 
+                    Message = "Authenticated and authorized",
+                    NewToken = newToken
+                });
+            }
+
+            return Unauthorized(new { Message = "Invalid token or unauthorized" });
+        }
 
         /// <summary>
         /// Register a new user
@@ -51,15 +75,17 @@ namespace Application.Controllers.REST
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Login([FromBody] AuthRequestDto requestDto)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
         {
-            var token = await _authService.LoginAsync(requestDto.Email, requestDto.Password);
+            var result = await _authService.LoginAsync(requestDto.Email, requestDto.Password);
 
-            if (token != null)
+            if (result != null)
             {
-                return Ok(new AuthResponseDto
+                var (token, refreshToken) = result.Value;  // Use Value to get the underlying non-nullable tuple
+                return Ok(new LoginResponseDto
                 {
                     Token = token,
+                    RefreshToken = refreshToken  // Assuming you've added this to LoginResponseDto
                 });
             }
 

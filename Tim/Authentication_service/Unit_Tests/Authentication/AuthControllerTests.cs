@@ -38,13 +38,21 @@ namespace Unit_Tests.Authentication;
     {
         // Arrange
         _authServiceMock.Setup(service => service.LoginAsync(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync("ValidToken");
+            .ReturnsAsync((Token: "ValidToken", RefreshToken: "ValidRefreshToken"));
 
         // Act
-        var result = await _authController.Login(new AuthRequestDto { Email = "test@example.com", Password = "Password123!" });
+        var result = await _authController.Login(new LoginRequestDto { Email = "test@example.com", Password = "Password123!" });
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
+        var okResult = result as OkObjectResult;
+
+        // Further assertions to check if the response contains Token and RefreshToken
+        Assert.NotNull(okResult?.Value);
+        var loginResponse = okResult?.Value as LoginResponseDto;
+        Assert.NotNull(loginResponse);
+        Assert.Equal("ValidToken", loginResponse?.Token);
+        Assert.Equal("ValidRefreshToken", loginResponse?.RefreshToken);  // Add RefreshToken to LoginResponseDto if it's not already there
     }
 
     [Fact]

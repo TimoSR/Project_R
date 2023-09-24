@@ -1,6 +1,6 @@
 namespace Application.DataTransferObjects.Auth;
 
-public class AuthResponseDto
+public class LoginResponseDto
 {
     public string Token { get; set; }
     public string RefreshToken { get; set; }

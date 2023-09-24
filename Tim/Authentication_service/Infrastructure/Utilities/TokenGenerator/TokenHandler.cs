@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +14,7 @@ public class TokenHandler : ITokenHandler
     private readonly string _audience;
     private readonly ILogger<TokenHandler> _logger;
 
-    public TokenHandler(IConfiguration configuration, ILogger<TokenHandler> logger = null)
+    public TokenHandler(IConfiguration configuration, ILogger<TokenHandler> logger)
     {
         _key = configuration.JwtKey;
         _issuer = configuration.JwtIssuer;
@@ -72,5 +73,15 @@ public class TokenHandler : ITokenHandler
             _logger.LogError($"An error occured while decoding the token: {ex.Message}");
             throw;
         }
+    }
+    
+    public string GenerateRefreshToken()
+    {
+        var random = new byte[32];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(random);
+        }
+        return Convert.ToBase64String(random);
     }
 }
