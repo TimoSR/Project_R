@@ -7,7 +7,7 @@ using Domain.DomainModels.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Unit_Tests;
+namespace Unit_Tests.Authentication;
 
  public class AuthControllerTests
 {

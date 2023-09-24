@@ -6,7 +6,7 @@ using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Unit_Tests
+namespace Unit_Tests.Authentication
 {
     public class AuthServiceTests
     {
