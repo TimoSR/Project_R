@@ -51,7 +51,7 @@ namespace Unit_Tests.Authentication;
         Assert.NotNull(okResult?.Value);
         var loginResponse = okResult?.Value as LoginResponseDto;
         Assert.NotNull(loginResponse);
-        Assert.Equal("ValidToken", loginResponse?.Token);
+        Assert.Equal("ValidToken", loginResponse?.AccessToken);
         Assert.Equal("ValidRefreshToken", loginResponse?.RefreshToken);  // Add RefreshToken to LoginResponseDto if it's not already there
     }
 

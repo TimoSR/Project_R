@@ -67,6 +67,7 @@ public class AuthService : IAuthService
             // Step 1: Validate Refresh Token
             // Assume ValidateRefreshTokenAsync checks if the token is valid and returns associated user ID
             var userId = await _userRepository.ValidateRefreshTokenAsync(refreshToken);
+            
             if (string.IsNullOrEmpty(userId))
             {
                 _logger.LogWarning($"Invalid or expired refresh token");
@@ -81,7 +82,8 @@ public class AuthService : IAuthService
             var newToken = _tokenHandler.GenerateToken(userId);
 
             // Optionally: Generate a new refresh token and store it
-            var newRefreshToken = Guid.NewGuid().ToString(); // Replace this with your own token generation logic
+            var newRefreshToken = _tokenHandler.GenerateRefreshToken();
+            
             await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken, DateTime.UtcNow.AddMinutes(120));
 
             // Step 3: Return New Token
@@ -112,15 +114,15 @@ public class AuthService : IAuthService
             return null;
         }
 
-        // Generate JWT token
-        var token = _tokenHandler.GenerateToken(user.Id);
+        // Generate Tokens
+        var accessToken = _tokenHandler.GenerateToken(user.Id);
         var refreshToken = _tokenHandler.GenerateRefreshToken();
         
         await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTime.UtcNow.AddHours(6)); // Assume 6 hours expiration for refresh tokens
 
         _logger.LogInformation("Successfully authenticated user with email: {Email}", email);
 
-        return (token, refreshToken);
+        return (accessToken, refreshToken);
     }
 
     public async Task<UserRegistrationResult> RegisterAsync(User newUser)

@@ -1,4 +1,3 @@
-using Application.AppServices;
 using Application.AppServices._Interfaces;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
@@ -27,7 +26,12 @@ namespace Application.Controllers.REST
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Authenticate([FromBody] AuthRequestDto requestDto)
         {
-            bool isAuthenticatedAndAuthorized = await _authService.AuthenticateAsync(requestDto.JwtToken);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            bool isAuthenticatedAndAuthorized = await _authService.AuthenticateAsync(requestDto.Token);
 
             if (isAuthenticatedAndAuthorized)
             {
@@ -51,6 +55,11 @@ namespace Application.Controllers.REST
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             var newUser = new User
             {
                 Email = newUserDto.Email,
@@ -82,9 +91,10 @@ namespace Application.Controllers.REST
             if (result != null)
             {
                 var (token, refreshToken) = result.Value;  // Use Value to get the underlying non-nullable tuple
+                
                 return Ok(new LoginResponseDto
                 {
-                    Token = token,
+                    AccessToken = token,
                     RefreshToken = refreshToken  // Assuming you've added this to LoginResponseDto
                 });
             }
