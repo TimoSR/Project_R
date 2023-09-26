@@ -21,6 +21,18 @@ namespace Application.Controllers.REST
         }
         
         /// <summary>
+        /// Check if the user's token is valid
+        /// </summary>
+        [HttpGet("check-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult CheckTokenValidity()
+        {
+            // If this point is reached, the token is valid
+            return Ok(new { Message = "Token is valid" });
+        }
+        
+        /// <summary>
         /// Refresh a user's token
         /// </summary>
         [HttpPost("refresh-token")]
