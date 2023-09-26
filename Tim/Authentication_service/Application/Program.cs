@@ -12,8 +12,6 @@ using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
@@ -130,6 +128,8 @@ public class Program
             });
         });
         
+        // Tried to implement my own method of handling it.
+        
         // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         //     .AddJwtBearer(options =>
         //     {
@@ -194,7 +194,7 @@ public class Program
         app.UseIpRateLimiting();
         // Jwt Authentication
         app.UseMiddleware<JwtMiddleware>();
-        //app.UseAuthentication();
+        //app.UseAuthentication(); // This is the disabled auth.
         app.UseAuthorization();
 
         app.MapControllers();

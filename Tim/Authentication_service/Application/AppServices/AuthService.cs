@@ -31,34 +31,6 @@ public class AuthService : IAuthService
         _tokenHandler = tokenHandler;
         _logger = logger;
     }
-
-    public async Task<bool> AuthenticateAsync(string jwtToken)
-    {
-        try
-        {
-            // Step 1: Validate JWT Token
-            ClaimsPrincipal claimsPrincipal = _tokenHandler.DecodeToken(jwtToken);
-        
-            // Extract user id or other claim from ClaimsPrincipal if needed
-            string userId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-        
-            // Step 2: Authorize User based on Claims or User ID
-            bool isAuthorized = await _userRepository.IsUserAuthorized(userId);
-            
-            if (!isAuthorized)
-            {
-                _logger.LogWarning($"User {userId} is not authorized.");
-                return false;
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Authentication failed: {ex.Message}");
-            return false;
-        }
-    }
     
     public async Task<string> RefreshTokenAsync(string refreshToken)
     {

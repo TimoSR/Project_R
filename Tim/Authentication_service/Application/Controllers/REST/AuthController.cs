@@ -21,35 +21,6 @@ namespace Application.Controllers.REST
         }
         
         /// <summary>
-        /// Authenticate a user's token
-        /// </summary>
-        [HttpPost("authenticate")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Authenticate([FromBody] AuthRequestDto requestDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            
-            bool isAuthenticatedAndAuthorized = await _authService.AuthenticateAsync(requestDto.Token);
-
-            if (isAuthenticatedAndAuthorized)
-            {
-                // Assume you have a method in your AuthService to refresh the token
-                var newToken = await _authService.RefreshTokenAsync(requestDto.RefreshToken);
-        
-                return Ok(new { 
-                    Message = "Authenticated and authorized",
-                    NewToken = newToken
-                });
-            }
-
-            return Unauthorized(new { Message = "Invalid token or unauthorized" });
-        }
-        
-        /// <summary>
         /// Refresh a user's token
         /// </summary>
         [HttpPost("refresh-token")]
