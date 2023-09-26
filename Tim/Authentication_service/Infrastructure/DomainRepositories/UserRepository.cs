@@ -68,12 +68,6 @@ namespace Infrastructure.DomainRepositories
                     return null;
                 }
 
-                if (user.RefreshTokenExpiryTime < DateTime.UtcNow)
-                {
-                    _logger.LogWarning($"Refresh token for user ID {user.Id} has expired.");
-                    return null;
-                }
-
                 return user.Id;
             }
             catch (Exception ex)
@@ -89,15 +83,14 @@ namespace Infrastructure.DomainRepositories
             await InsertAsync(user);
         }
         
-        public async Task UpdateRefreshTokenAsync(string userId, string refreshToken, DateTime expiryTime)
+        public async Task UpdateRefreshTokenAsync(string userId, string refreshToken)
         {
             try
             {
                 var collection = GetCollection();
                 var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
                 var update = Builders<User>.Update
-                    .Set(u => u.RefreshToken, refreshToken)
-                    .Set(u => u.RefreshTokenExpiryTime, expiryTime);
+                    .Set(u => u.RefreshToken, refreshToken);
                 
                 await collection.UpdateOneAsync(filter, update);
             }

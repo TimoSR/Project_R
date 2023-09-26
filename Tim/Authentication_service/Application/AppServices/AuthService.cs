@@ -47,7 +47,7 @@ public class AuthService : IAuthService
             }
             
             // Optionally: Revoke the old refresh token
-            await _userRepository.UpdateRefreshTokenAsync(userId, null, DateTime.UtcNow);
+            await _userRepository.UpdateRefreshTokenAsync(userId, null);
 
             // Step 2: Generate New Tokens
             // Generate a new JWT token
@@ -56,7 +56,7 @@ public class AuthService : IAuthService
             // Optionally: Generate a new refresh token and store it
             var newRefreshToken = _tokenHandler.GenerateRefreshToken();
             
-            await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken, DateTime.UtcNow.AddMinutes(120));
+            await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken);
 
             // Step 3: Return New Token
             return newToken;
@@ -90,7 +90,7 @@ public class AuthService : IAuthService
         var accessToken = _tokenHandler.GenerateToken(user.Id);
         var refreshToken = _tokenHandler.GenerateRefreshToken();
         
-        await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTime.UtcNow.AddHours(6)); // Assume 6 hours expiration for refresh tokens
+        await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken); // Assume 6 hours expiration for refresh tokens
 
         _logger.LogInformation("Successfully authenticated user with email: {Email}", email);
 
@@ -137,7 +137,7 @@ public class AuthService : IAuthService
         _logger.LogInformation("Attempting to logout user with ID: {UserId}", userId);
 
         // Invalidate the refresh token (optional)
-        await _userRepository.UpdateRefreshTokenAsync(userId, null, DateTime.UtcNow);
+        await _userRepository.UpdateRefreshTokenAsync(userId, null);
 
         _logger.LogInformation("Successfully logged out user with ID: {UserId}", userId);
 

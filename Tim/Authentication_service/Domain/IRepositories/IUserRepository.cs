@@ -8,7 +8,7 @@ namespace Domain.IRepositories
         Task<bool> IsUserAuthorized(string id);
         Task<string> ValidateRefreshTokenAsync(string refreshToken);
         Task CreateUserAsync(User user);
-        Task UpdateRefreshTokenAsync(string userId, string refreshToken, DateTime expiryTime);
+        Task UpdateRefreshTokenAsync(string userId, string refreshToken);
         Task<User> GetUserByRefreshTokenAsync(string refreshToken);
         Task<bool> DeleteUserAsync(string id);
     }

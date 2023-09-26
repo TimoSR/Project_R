@@ -17,8 +17,5 @@ namespace Domain.DomainModels
         
         [BsonElement("RefreshToken")]
         public string RefreshToken { get; set; } // The refresh token for this user.
-        
-        [BsonElement("RefreshTokenExpiryTime")]
-        public DateTime RefreshTokenExpiryTime { get; set; } // The expiry time for the refresh token.
     }
 }
