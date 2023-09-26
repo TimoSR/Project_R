@@ -3,12 +3,14 @@ using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers.REST
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -46,10 +48,36 @@ namespace Application.Controllers.REST
 
             return Unauthorized(new { Message = "Invalid token or unauthorized" });
         }
+        
+        /// <summary>
+        /// Refresh a user's token
+        /// </summary>
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
+        {
+            // Since JwtMiddleware takes care of authentication, you can trust that the request is authenticated at this point.
+        
+            // Now you can focus on the token refresh logic.
+            var newToken = await _authService.RefreshTokenAsync(authRequestDto.RefreshToken);
+
+            if (newToken != null)
+            {
+                return Ok(new 
+                { 
+                    Message = "Token refreshed",
+                    NewToken = newToken 
+                });
+            }
+
+            return Unauthorized(new { Message = "Invalid token or unauthorized" });
+        }
 
         /// <summary>
         /// Register a new user
         /// </summary>
+        [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -81,6 +109,7 @@ namespace Application.Controllers.REST
         /// <summary>
         /// Authenticate a user
         /// </summary>
+        [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

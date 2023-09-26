@@ -1,8 +1,10 @@
+using System.Text;
 using Application.Registrations.DataSeeder;
 using Application.Registrations.Events;
 using Application.Registrations.GraphQL;
 using Application.Registrations.Services;
 using Application.Startup;
+using AspNetCoreRateLimit;
 using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
@@ -10,7 +12,9 @@ using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
-using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
@@ -86,7 +90,34 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme.",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new List<string>()
+                }
+            });
+        });
 
         builder.Services.AddCors(options =>
         {
@@ -98,6 +129,33 @@ public class Program
                     .AllowAnyHeader();
             });
         });
+        
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = config.JwtIssuer,
+                    ValidAudience = config.JwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
+                };
+            });
+        
+        // Add memory cache services
+        builder.Services.AddMemoryCache();
+        builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+        
+        // Adding Rate Limiting 
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+        builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+        builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+        builder.Services.Configure<IpRateLimitPolicies>(builder.Configuration.GetSection("IpRateLimitPolicies"));
 
         var app = builder.Build();
 
@@ -130,11 +188,13 @@ public class Program
 
         // Enable this for Https only
         //app.UseHttpsRedirection();
-
+        
+        // Controller Middlewares
         app.UseCors("MyCorsPolicy");
-
-        app.UseMiddleware<JwtMiddleware>();
-
+        app.UseIpRateLimiting();
+        // Jwt Authentication
+        //app.UseMiddleware<JwtMiddleware>();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

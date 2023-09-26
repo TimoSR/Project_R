@@ -9,29 +9,32 @@ namespace Infrastructure.Utilities.TokenGenerator;
 
 public class TokenHandler : ITokenHandler
 {
-    private readonly string _key;
-    private readonly string _issuer;
-    private readonly string _audience;
+    private readonly JwtSettings _jwtSettings;
     private readonly ILogger<TokenHandler> _logger;
 
     public TokenHandler(IConfiguration configuration, ILogger<TokenHandler> logger)
     {
-        _key = configuration.JwtKey;
-        _issuer = configuration.JwtIssuer;
-        _audience = configuration.JwtAudience;
-        _logger = logger;
+        _jwtSettings = new JwtSettings()
+        {
+            Key = configuration.JwtKey,
+            Issuer = configuration.JwtIssuer,
+            Audience = configuration.JwtAudience,
+            ExpirationInHours = 6
+        };
+       
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public string GenerateToken(string userId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Convert.FromBase64String(_key);
+        var key = Convert.FromBase64String(_jwtSettings.Key);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim("id", userId) }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            Issuer = _issuer,
-            Audience = _audience,
+            Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId) }),
+            Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationInHours),
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
@@ -43,20 +46,19 @@ public class TokenHandler : ITokenHandler
     {
         try
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Convert.FromBase64String(_key);
+            var key = Convert.FromBase64String(_jwtSettings.Key);
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
-                ValidIssuer = _issuer,
+                ValidIssuer = _jwtSettings.Issuer,
                 ValidateAudience = true,
-                ValidAudience = _audience,
+                ValidAudience = _jwtSettings.Audience,
                 ClockSkew = TimeSpan.Zero
             };
 
-            return tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+            return new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out _);
         }
         catch (SecurityTokenExpiredException ex)
         {
@@ -70,18 +72,24 @@ public class TokenHandler : ITokenHandler
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occured while decoding the token: {ex.Message}");
+            _logger.LogError($"An error occurred while decoding the token: {ex.Message}");
             throw;
         }
     }
-    
+
     public string GenerateRefreshToken()
     {
-        var random = new byte[32];
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(random);
-        }
-        return Convert.ToBase64String(random);
+        using var rng = RandomNumberGenerator.Create();
+        var randomBytes = new byte[32];
+        rng.GetBytes(randomBytes);
+        return Convert.ToBase64String(randomBytes);
     }
+}
+
+public class JwtSettings
+{
+    public string Key { get; set; }
+    public string Issuer { get; set; }
+    public string Audience { get; set; }
+    public int ExpirationInHours { get; set; }
 }
