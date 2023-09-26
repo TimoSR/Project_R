@@ -3,12 +3,14 @@ using Application.Registrations.Events;
 using Application.Registrations.GraphQL;
 using Application.Registrations.Services;
 using Application.Startup;
+using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
 using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
+using Microsoft.IdentityModel.JsonWebTokens;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
@@ -130,6 +132,8 @@ public class Program
         //app.UseHttpsRedirection();
 
         app.UseCors("MyCorsPolicy");
+
+        app.UseMiddleware<JwtMiddleware>();
 
         app.UseAuthorization();
 
