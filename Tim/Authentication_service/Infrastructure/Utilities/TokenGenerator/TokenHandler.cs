@@ -31,7 +31,7 @@ public class TokenHandler : ITokenHandler
         var key = Convert.FromBase64String(_jwtSettings.Key);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId) }),
+            Subject = new ClaimsIdentity(new[] { new Claim("id", userId) }),
             Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationInHours),
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience,

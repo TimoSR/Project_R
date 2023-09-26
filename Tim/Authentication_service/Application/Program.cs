@@ -130,20 +130,20 @@ public class Program
             });
         });
         
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = config.JwtIssuer,
-                    ValidAudience = config.JwtAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
-                };
-            });
+        // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //     .AddJwtBearer(options =>
+        //     {
+        //         options.TokenValidationParameters = new TokenValidationParameters
+        //         {
+        //             ValidateIssuer = true,
+        //             ValidateAudience = true,
+        //             ValidateLifetime = true,
+        //             ValidateIssuerSigningKey = true,
+        //             ValidIssuer = config.JwtIssuer,
+        //             ValidAudience = config.JwtAudience,
+        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
+        //         };
+        //     });
         
         // Add memory cache services
         builder.Services.AddMemoryCache();
@@ -193,8 +193,8 @@ public class Program
         app.UseCors("MyCorsPolicy");
         app.UseIpRateLimiting();
         // Jwt Authentication
-        //app.UseMiddleware<JwtMiddleware>();
-        app.UseAuthentication();
+        app.UseMiddleware<JwtMiddleware>();
+        //app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
