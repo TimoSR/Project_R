@@ -40,17 +40,15 @@ namespace Application.Controllers.REST
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
         {
-            // Since JwtMiddleware takes care of authentication, you can trust that the request is authenticated at this point.
-        
-            // Now you can focus on the token refresh logic.
-            var newToken = await _authService.RefreshTokenAsync(authRequestDto.RefreshToken);
+            var refreshedTokens = await _authService.RefreshTokenAsync(authRequestDto.RefreshToken);
 
-            if (newToken != null)
+            if (refreshedTokens != null)
             {
                 return Ok(new 
                 { 
                     Message = "Token refreshed",
-                    NewToken = newToken 
+                    refreshedTokens.Value.NewToken,
+                    refreshedTokens.Value.NewRefreshToken 
                 });
             }
 

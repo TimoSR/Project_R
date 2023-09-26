@@ -31,34 +31,30 @@ public class AuthService : IAuthService
         _logger = logger;
     }
     
-    public async Task<string> RefreshTokenAsync(string refreshToken)
+    public async Task<(string NewToken, string NewRefreshToken)?> RefreshTokenAsync(string refreshToken)
     {
         try
         {
-            // Step 1: Validate Refresh Token
-            // Assume ValidateRefreshTokenAsync checks if the token is valid and returns associated user ID
             var userId = await _userRepository.ValidateRefreshTokenAsync(refreshToken);
-            
+        
             if (string.IsNullOrEmpty(userId))
             {
                 _logger.LogWarning($"Invalid or expired refresh token");
                 return null;
             }
-            
+        
             // Optionally: Revoke the old refresh token
             await _userRepository.UpdateRefreshTokenAsync(userId, null);
 
-            // Step 2: Generate New Tokens
             // Generate a new JWT token
             var newToken = _tokenHandler.GenerateToken(userId);
 
             // Optionally: Generate a new refresh token and store it
             var newRefreshToken = _tokenHandler.GenerateRefreshToken();
-            
+        
             await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken);
 
-            // Step 3: Return New Token
-            return newToken;
+            return (NewToken: newToken, NewRefreshToken: newRefreshToken);
         }
         catch (Exception ex)
         {
@@ -66,6 +62,7 @@ public class AuthService : IAuthService
             return null;
         }
     }
+
 
     public async Task<(string Token, string RefreshToken)?> LoginAsync(string email, string password)
     {
