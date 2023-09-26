@@ -128,8 +128,8 @@ public class Program
             });
         });
         
+        // The standard way of implementing jwt auth in dotnet
         // Tried to implement my own method of handling it.
-        
         // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         //     .AddJwtBearer(options =>
         //     {
