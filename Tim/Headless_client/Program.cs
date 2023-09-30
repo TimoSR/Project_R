@@ -3,14 +3,13 @@ using Newtonsoft.Json;
 
 namespace Headless_client
 {
-    
     enum MenuOption
     {
         Login = 1,
         CreateNewUser,
-        CreateNewGame,
-        PlayGame,
-        Exit
+        //CreateNewGame,
+        //PlayGame,
+        //Exit
     }
     
     class Program
