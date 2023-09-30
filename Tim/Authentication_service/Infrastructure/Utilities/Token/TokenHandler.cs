@@ -5,7 +5,7 @@ using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Utilities.TokenGenerator;
+namespace Infrastructure.Utilities.Token;
 
 public class TokenHandler : ITokenHandler
 {

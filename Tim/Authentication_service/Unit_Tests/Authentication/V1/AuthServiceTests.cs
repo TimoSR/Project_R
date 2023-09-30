@@ -1,4 +1,4 @@
-using Application.AppServices;
+using Application.AppServices.V1._Interfaces;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
 using Domain.IRepositories;
@@ -6,7 +6,7 @@ using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Unit_Tests.Authentication
+namespace Unit_Tests.Authentication.V1
 {
     public class AuthServiceTests
     {

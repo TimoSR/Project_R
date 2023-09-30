@@ -1,10 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities._Interfaces;
-using Infrastructure.Utilities.TokenGenerator;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
+using TokenHandler = Infrastructure.Utilities.Token.TokenHandler;
 
 namespace Unit_Tests.UtilityTests;
 
@@ -32,6 +34,19 @@ public class TokenGeneratorTests
         var loggerMock = new Mock<ILogger<TokenHandler>>();
         
         _tokenHandler = new TokenHandler(configMock, loggerMock.Object);
+    }
+    
+    private string GenerateExpiredToken()
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes("NzQ5OTU4YzEtNmFhZi00YmFkLWIxNWMtYjY4YzQwN2I3ZDA5"); // Invalid key to generate invalid token
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[] { new Claim("id", "1") }),
+            Expires = DateTime.UtcNow.AddMinutes(-1), // Expired token
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+        return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
     }
 
     [Fact]
@@ -62,7 +77,7 @@ public class TokenGeneratorTests
         var claim = token.Claims.First(c => c.Type == "id");
         Assert.Equal(userId, claim.Value);
     }
-
+    
     [Fact]
     public void GenerateToken_WhenCalled_ShouldHaveValidExpiration()
     {
@@ -76,8 +91,9 @@ public class TokenGeneratorTests
 
         // Assert
         Assert.True(token.ValidTo > DateTime.UtcNow);
-        Assert.True(token.ValidTo < DateTime.UtcNow.AddHours(2));  // Assuming token expires in 1 hour
+        Assert.True(token.ValidTo < DateTime.UtcNow.AddHours(7));  // Assuming token expires in 6 hours
     }
+
 
     [Fact]
     public void GenerateToken_WhenCalled_ShouldHaveValidIssuer()
@@ -108,4 +124,18 @@ public class TokenGeneratorTests
         // Assert
         Assert.True(token.Audiences.Contains(_sampleAudience));
     }
+
+    [Fact]
+    public void DecodeToken_WhenExceptionThrown_ShouldThrowException()
+    {
+        // Arrange
+        var token = "invalid_token";
+    
+        // Act
+        Action action = () => _tokenHandler.DecodeToken(token);
+    
+        // Assert
+        Assert.Throws<SecurityTokenMalformedException>(action);
+    }
+
 }
