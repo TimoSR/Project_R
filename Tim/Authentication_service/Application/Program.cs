@@ -247,7 +247,7 @@ public class Program
 
                     if (swaggerDocAttribute != null && apiVersionAttribute != null)
                     {
-                        var apiVersion = apiVersionAttribute.Version;  // Updated this line
+                        var apiVersion = apiVersionAttribute.Version; // Updated this line
                         documentConfigs.Add(new DocumentConfig
                         {
                             DocName = swaggerDocAttribute.DocName,
@@ -256,18 +256,18 @@ public class Program
                     }
                 }
 
-                // No longer grouping by DocName as we can have multiple versions per DocName
-                var distinctDocumentConfigs = documentConfigs
-                    .DistinctBy(dc => new { dc.DocName, dc.ApiVersion })  // Using DistinctBy (assuming you have a method or a library that provides this functionality)
+                // Sort the document configs by DocName and then by ApiVersion
+                var sortedDocumentConfigs = documentConfigs
+                    .OrderBy(dc => dc.DocName)
+                    .ThenBy(dc => dc.ApiVersion)
                     .ToList();
 
-                foreach (var config in distinctDocumentConfigs)
+                foreach (var config in sortedDocumentConfigs)
                 {
                     var endpointName = $"{config.DocName} {config.ApiVersion}";
-                    c.SwaggerEndpoint($"/swagger/{config.DocName} {config.ApiVersion}/swagger.json", endpointName);  // Updated this line
+                    c.SwaggerEndpoint($"/swagger/{config.DocName} {config.ApiVersion}/swagger.json", endpointName); // Updated this line
                 }
             });
-
         }
 
         // Enable this for Https only
