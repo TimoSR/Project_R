@@ -14,7 +14,6 @@ namespace Application.Controllers.REST.V2;
 [Route("api/v2/[controller]")]
 [SwaggerDoc("Authentication")]
 [ApiVersion("2.0")]
-//[ApiExplorerSettings(GroupName = "Projects v1")]
 [Authorize]
 public class AuthController : ControllerBase
 {
