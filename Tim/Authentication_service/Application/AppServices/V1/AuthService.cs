@@ -1,9 +1,10 @@
+using Application.AppServices.V1._Interfaces;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
 using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 
-namespace Application.AppServices.V1._Interfaces;
+namespace Application.AppServices.V1;
 
 public class AuthService : IAuthService
 {

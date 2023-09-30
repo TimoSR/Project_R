@@ -7,15 +7,20 @@ namespace Domain.DomainModels
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } // The unique identifier for this user.
-        
+        public string Id { get; set; }
+
+        private string _email;
         [BsonElement("Email")]
-        public string Email { get; set; } // The user's email address.
-        
+        public string Email 
+        { 
+            get => _email; 
+            set => _email = value?.ToLowerInvariant(); 
+        }
+
         [BsonElement("Password")]
-        public string Password { get; set; } // The user's hashed password.
-        
+        public string Password { get; set; }
+
         [BsonElement("RefreshToken")]
-        public string RefreshToken { get; set; } // The refresh token for this user.
+        public string RefreshToken { get; set; }
     }
 }

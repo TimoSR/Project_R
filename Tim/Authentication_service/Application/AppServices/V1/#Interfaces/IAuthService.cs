@@ -2,7 +2,7 @@ using Application.Registrations._Interfaces;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
 
-namespace Application.AppServices.V1;
+namespace Application.AppServices.V1._Interfaces;
 
 public interface IAuthService : IAppService
 {
