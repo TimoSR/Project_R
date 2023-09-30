@@ -1,5 +1,6 @@
 using Application.AppServices._Interfaces;
 using Application.Controllers.REST;
+using Application.Controllers.REST.V1;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
 using Domain.DomainModels;

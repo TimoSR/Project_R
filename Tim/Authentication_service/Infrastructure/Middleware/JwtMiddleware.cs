@@ -5,9 +5,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Middleware;
 
-/*
- * 
- */
 public class JwtMiddleware
 {
     private readonly RequestDelegate _next;

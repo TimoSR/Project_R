@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Application.Registrations.DataSeeder;
 using Application.Registrations.Events;
@@ -10,8 +11,12 @@ using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
 using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
+using Infrastructure.Swagger;
+using Infrastructure.Swagger.Attributes;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
@@ -90,8 +95,52 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            var documentConfigs = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .Where(t => t.IsSubclassOf(typeof(ControllerBase)))
+                .SelectMany(t =>
+                    t.GetCustomAttributes<SwaggerDocAttribute>().Select(d => new { DocName = d.DocName, ControllerType = t })
+                        .Concat(
+                            t.GetCustomAttributes<ApiVersionAttribute>().Select(v => new { DocName = v.Version, ControllerType = t })
+                        )
+                )
+                .Select(item => new
+                {
+                    DocName = item.DocName,
+                    ApiVersion = item.ControllerType.GetCustomAttribute<ApiVersionAttribute>()?.Version
+                })
+                .Distinct();
 
+            Dictionary<string, List<string>> docNameToVersionMap = new Dictionary<string, List<string>>();
+
+            foreach (var config in documentConfigs)
+            {
+                var docKey = $"{config.DocName} {config.ApiVersion}";
+                c.SwaggerDoc(docKey, new OpenApiInfo { Title = config.DocName, Version = config.ApiVersion });
+                if (!docNameToVersionMap.ContainsKey(config.DocName))
+                {
+                    docNameToVersionMap[config.DocName] = new List<string>();
+                }
+                docNameToVersionMap[config.DocName].Add(config.ApiVersion);
+            }
+
+            c.DocInclusionPredicate((docName, apiDesc) =>
+            {
+                var controllerActionDescriptor = apiDesc.ActionDescriptor as ControllerActionDescriptor;
+                if (controllerActionDescriptor != null)
+                {
+                    var swaggerDocAttr = controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<SwaggerDocAttribute>();
+                    var apiVersionAttr = controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<ApiVersionAttribute>();
+
+                    if (swaggerDocAttr != null && apiVersionAttr != null)
+                    {
+                        var expectedDocName = $"{swaggerDocAttr.DocName} {apiVersionAttr.Version}";
+                        return docName.Equals(expectedDocName, StringComparison.OrdinalIgnoreCase);
+                    }
+                }
+                return false;
+            });
+        
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header using the Bearer scheme.",
@@ -183,7 +232,42 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c =>
+            {
+                var documentConfigs = new List<DocumentConfig>();
+
+                var controllerTypes = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a => a.GetTypes())
+                    .Where(t => t.IsSubclassOf(typeof(ControllerBase)));
+
+                foreach (var controllerType in controllerTypes)
+                {
+                    var swaggerDocAttribute = controllerType.GetCustomAttribute<SwaggerDocAttribute>();
+                    var apiVersionAttribute = controllerType.GetCustomAttribute<ApiVersionAttribute>();
+
+                    if (swaggerDocAttribute != null && apiVersionAttribute != null)
+                    {
+                        var apiVersion = apiVersionAttribute.Version;  // Updated this line
+                        documentConfigs.Add(new DocumentConfig
+                        {
+                            DocName = swaggerDocAttribute.DocName,
+                            ApiVersion = apiVersion
+                        });
+                    }
+                }
+
+                // No longer grouping by DocName as we can have multiple versions per DocName
+                var distinctDocumentConfigs = documentConfigs
+                    .DistinctBy(dc => new { dc.DocName, dc.ApiVersion })  // Using DistinctBy (assuming you have a method or a library that provides this functionality)
+                    .ToList();
+
+                foreach (var config in distinctDocumentConfigs)
+                {
+                    var endpointName = $"{config.DocName} {config.ApiVersion}";
+                    c.SwaggerEndpoint($"/swagger/{config.DocName} {config.ApiVersion}/swagger.json", endpointName);  // Updated this line
+                }
+            });
+
         }
 
         // Enable this for Https only
