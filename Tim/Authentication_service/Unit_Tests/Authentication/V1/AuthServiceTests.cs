@@ -2,64 +2,69 @@ using Application.AppServices.V1;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
 using Domain.IRepositories;
+using FluentAssertions;
 using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Unit_Tests.Authentication.V1.AuthServiceSetup;
 
 namespace Unit_Tests.Authentication.V1
 {
     public class AuthServiceTests
     {
-        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
-        private readonly Mock<IPasswordHasher> _passwordHasherMock = new Mock<IPasswordHasher>();
-        private readonly Mock<IEmailValidator> _emailValidatorMock = new Mock<IEmailValidator>();
-        private readonly Mock<IPasswordValidator> _passwordValidatorMock = new Mock<IPasswordValidator>();
-        private readonly Mock<ITokenHandler> _tokenGeneratorMock = new Mock<ITokenHandler>();
-        private readonly Mock<ILogger<AuthService>> _loggerMock = new Mock<ILogger<AuthService>>();
-        private readonly string expectedToken;
-        private readonly string expectedRefreshToken;
-
+        private readonly AuthService _authService;
+        private readonly AuthServiceTestSetup _testSetup;
+        
+        private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IPasswordHasher> _passwordHasherMock;
+        private readonly Mock<IEmailValidator> _emailValidatorMock;
+        private readonly Mock<IPasswordValidator> _passwordValidatorMock;
+        private readonly Mock<ITokenHandler> _tokenGeneratorMock;
+        private readonly Mock<ILogger<AuthService>> _loggerMock;
+        
         public AuthServiceTests()
         {
-            
-            // Expected values
-            expectedToken = "SampleToken";
-            expectedRefreshToken = "SampleRefreshToken";
-            
-            // Setup default mock behaviors, can be overridden in specific test cases
-            _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
-            _passwordValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
-            _passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(true);
-            _tokenGeneratorMock.Setup(x => x.GenerateToken(It.IsAny<string>())).Returns("SampleToken");
-            _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User()));
-            _tokenGeneratorMock.Setup(t => t.GenerateToken(It.IsAny<string>()))
-                .Returns(expectedToken);
-    
-            _tokenGeneratorMock.Setup(t => t.GenerateRefreshToken())
-                .Returns(expectedRefreshToken);
-            
-        }
+            _testSetup = new AuthServiceTestSetup();
+            _userRepositoryMock = new Mock<IUserRepository>();
+            _passwordHasherMock = new Mock<IPasswordHasher>();
+            _emailValidatorMock = new Mock<IEmailValidator>();
+            _passwordValidatorMock = new Mock<IPasswordValidator>();
+            _tokenGeneratorMock = new Mock<ITokenHandler>();
+            _loggerMock = new Mock<ILogger<AuthService>>();
 
-        [Fact]
-        public async Task LoginAsync_ReturnsToken_WhenValidCredentials()
+            _authService = new AuthService(
+                _userRepositoryMock.Object, 
+                _passwordHasherMock.Object, 
+                _emailValidatorMock.Object, 
+                _passwordValidatorMock.Object, 
+                _tokenGeneratorMock.Object, 
+                _loggerMock.Object);
+
+            _testSetup.SetupDefaultMocks(_emailValidatorMock, _passwordValidatorMock, _passwordHasherMock, _tokenGeneratorMock, _userRepositoryMock);
+        }
+        
+        [Theory]
+        [MemberData(nameof(AuthServiceTestCases.ValidCredentialsTestCases), MemberType = typeof(AuthServiceTestCases))]
+        public async Task LoginAsync_ReturnsToken_WhenValidCredentials(AuthServiceTestCases.TestCase testCase)
         {
             // Arrange
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            _testSetup.SetupTokenGeneratorMock(_tokenGeneratorMock, testCase);
 
             // Act
-            var result = await authService.LoginAsync("validemail@gmail.com", "ValidPassword1!");
+            var result = await _authService.LoginAsync(testCase.Email, testCase.Password);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedToken, result?.Token);
-            Assert.Equal(expectedRefreshToken, result?.RefreshToken);
+            result.Should().NotBeNull();
+            result?.Token.Should().Be(testCase.ExpectedToken);
+            result?.RefreshToken.Should().Be(testCase.ExpectedRefreshToken);
         }
 
-        [Fact]
-        public async Task RegisterAsync_ReturnsSuccessful_WhenValidInput()
+        [Theory]
+        [MemberData(nameof(AuthServiceTestCases.ValidCredentialsTestCases), MemberType = typeof(AuthServiceTestCases))]
+        public async Task RegisterAsync_ReturnsSuccessful_WhenValidInput(AuthServiceTestCases.TestCase testCase)
         {
             // Arrange
-            var newUser = new User { Email = "newuser@example.com", Password = "ValidPassword" };
+            var newUser = new User { Email = testCase.Email, Password = testCase.Password };
             _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
             var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
@@ -67,7 +72,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.RegisterAsync(newUser);
 
             // Assert
-            Assert.Equal(UserRegistrationResult.Successful, result);
+            result.Should().Be(UserRegistrationResult.Successful);
         }
 
         [Fact]
@@ -80,7 +85,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.LogoutAsync("userId");
 
             // Assert
-            Assert.True(result);
+            result.Should().Be(true);
         }
 
         [Fact]
@@ -93,7 +98,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.DeleteUserAsync("userId");
 
             // Assert
-            Assert.True(result);
+            result.Should().Be(true);
         }
         
          [Fact]
@@ -107,7 +112,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.LoginAsync("invalidemail", "ValidPassword");
 
             // Assert
-            Assert.Null(result);
+            result.Should().Be(null);
         }
 
         [Fact]
@@ -121,7 +126,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.LoginAsync("validemail@example.com", "InvalidPassword");
 
             // Assert
-            Assert.Null(result);
+            result.Should().Be(null);
         }
 
         [Fact]
@@ -136,7 +141,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.RegisterAsync(newUser);
 
             // Assert
-            Assert.Equal(UserRegistrationResult.InvalidEmail, result);
+            result.Should().Be(UserRegistrationResult.InvalidEmail);
         }
 
         [Fact]
@@ -151,7 +156,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.RegisterAsync(newUser);
 
             // Assert
-            Assert.Equal(UserRegistrationResult.EmailAlreadyExists, result);
+            result.Should().Be(UserRegistrationResult.EmailAlreadyExists);
         }
 
         [Fact]
@@ -168,8 +173,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.RegisterAsync(newUser);
 
             // Assert
-            Assert.Equal(UserRegistrationResult.InvalidPassword, result);
+            result.Should().Be(UserRegistrationResult.InvalidPassword);
         }
-
     }
 }
