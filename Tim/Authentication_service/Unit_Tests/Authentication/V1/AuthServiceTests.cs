@@ -85,7 +85,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.LogoutAsync("userId");
 
             // Assert
-            result.Should().Be(true);
+            result.Should().BeTrue();
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.DeleteUserAsync("userId");
 
             // Assert
-            result.Should().Be(true);
+            result.Should().BeTrue();
         }
         
          [Fact]
@@ -112,7 +112,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.LoginAsync("invalidemail", "ValidPassword");
 
             // Assert
-            result.Should().Be(null);
+            result.Should().BeNull();
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace Unit_Tests.Authentication.V1
             var result = await authService.LoginAsync("validemail@example.com", "InvalidPassword");
 
             // Assert
-            result.Should().Be(null);
+            result.Should().BeNull();
         }
 
         [Fact]
@@ -157,7 +157,7 @@ namespace Unit_Tests.Authentication.V1
 
             // Assert
             result.Should().Be(UserRegistrationResult.EmailAlreadyExists);
-        }
+        } 
 
         [Fact]
         public async Task RegisterAsync_ReturnsInvalidPassword_WhenInvalidPassword()
