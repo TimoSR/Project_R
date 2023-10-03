@@ -4,5 +4,7 @@ namespace Domain.IRepositories;
 
 public interface IProductRepository
 {
-    Task<IEnumerable<Product>> GetProductsByNameAsync(string productName);
+    Task<Product> GetProductsByNameAsync(string name);
+    Task InsertAsync(Product data);
+    Task<IEnumerable<Product>> GetAllAsync();
 }

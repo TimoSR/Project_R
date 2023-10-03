@@ -36,7 +36,7 @@ public abstract class MongoRepository<T> : IRepository<T>
         }
     }
 
-    public virtual async Task<List<T>> GetAllAsync()
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
         try
         {

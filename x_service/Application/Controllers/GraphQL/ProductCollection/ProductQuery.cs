@@ -6,15 +6,15 @@ namespace Application.Controllers.GraphQL.ProductCollection;
 
 public class ProductQuery : IQuery
 {
-    private readonly ProductAppService _productAppService;
+    private readonly IProductService _productService;
     
-    public ProductQuery(ProductAppService productAppService)
+    public ProductQuery(IProductService productService)
     {
-        _productAppService = productAppService;
+        _productService = productService;
     }
     
     public async Task<IEnumerable<Product>> GetProducts() 
     {
-        return await _productAppService.GetAllAsync();
+        return await _productService.GetAllAsync();
     }
 }

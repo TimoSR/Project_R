@@ -8,7 +8,7 @@ public class DataSeeder : IDataSeeder
 {
     public async Task SeedData(IServiceProvider serviceProvider)
     {
-        var productService = serviceProvider.GetRequiredService<ProductAppService>();
+        var productService = serviceProvider.GetRequiredService<ProductService>();
 
         var products = new List<Product>
         {
