@@ -1,4 +1,5 @@
 using Application.AppServices;
+using Application.AppServices.V1;
 using Application.Registrations.DataSeeder;
 using Domain.DomainModels;
 

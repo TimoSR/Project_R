@@ -1,7 +1,7 @@
 using Application.Registrations._Interfaces;
 using Domain.DomainModels;
 
-namespace Application.AppServices;
+namespace Application.AppServices.V1._Interfaces;
 
 public interface IProductService : IAppService
 {

@@ -1,4 +1,5 @@
 using Application.AppServices;
+using Application.AppServices.V1._Interfaces;
 using Application.Registrations._Interfaces;
 using Domain.DomainModels;
 

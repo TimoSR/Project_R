@@ -1,11 +1,11 @@
-using Application.Registrations._Interfaces;
+using Application.AppServices.V1._Interfaces;
 using Domain.DomainEvents;
 using Domain.DomainModels;
 using Domain.IRepositories;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities.Containers;
 
-namespace Application.AppServices;
+namespace Application.AppServices.V1;
 
 public class ProductService : IProductService
 {
