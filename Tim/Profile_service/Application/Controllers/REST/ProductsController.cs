@@ -1,4 +1,5 @@
 using Application.AppServices;
+using Application.AppServices.V1._Interfaces;
 using Domain.DomainEvents._Attributes;
 using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,9 @@ namespace Application.Controllers.REST;
 [ApiController]
 public class ProductsController : ControllerBase
 {
-    private readonly ProductAppService _productAppService;
+    private readonly IProductService _productAppService;
 
-    public ProductsController(ProductAppService productAppService)
+    public ProductsController(IProductService productAppService)
     {
         _productAppService = productAppService;
     }
