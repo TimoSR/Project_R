@@ -1,6 +1,6 @@
-using Domain.DomainModels;
+using Domain.Common.DomainModels;
 
-namespace Domain.IRepositories;
+namespace Domain.Common.IRepositories;
 
 public interface IProductRepository
 {

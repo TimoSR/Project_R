@@ -1,7 +1,7 @@
 using Application.AppServices.V1._Interfaces;
+using Domain.Common.IRepositories;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
-using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;

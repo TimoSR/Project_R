@@ -1,4 +1,5 @@
 using Application.Registrations._Interfaces;
+using Domain.Common.DomainModels;
 using Domain.DomainModels;
 
 namespace Application.Controllers.GraphQL.ProductCollection;

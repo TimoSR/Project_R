@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
+using Domain.Common.IRepositories;
 using Domain.DomainModels;
-using Domain.IRepositories;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Persistence.MongoDB;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
-namespace Infrastructure.DomainRepositories
+namespace Infrastructure.Repositories
 {
     public class UserRepository : MongoRepository<User>, IUserRepository
     {

@@ -11,7 +11,17 @@
     <PackageReference Include="protobuf-net.Core" Version="3.2.26" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DomainServices\" />
+    <Folder Include="Character\Aggregates\" />
+    <Folder Include="Character\Enums\" />
+    <Folder Include="Character\Events\#Attributes\" />
+    <Folder Include="Character\Events\#Interfaces\" />
+    <Folder Include="Character\Repository\" />
+    <Folder Include="Common\DomainServices\" />
+    <Folder Include="Profile\Aggregates\" />
+    <Folder Include="Profile\Enums\" />
+    <Folder Include="Profile\Events\#Attributes\" />
+    <Folder Include="Profile\Events\#Interfaces\" />
+    <Folder Include="Profile\ValueObjects\" />
   </ItemGroup>
 
 </Project>

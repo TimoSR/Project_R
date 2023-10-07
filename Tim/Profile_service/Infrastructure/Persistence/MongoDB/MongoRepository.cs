@@ -118,4 +118,20 @@ public abstract class MongoRepository<T> : IRepository<T>
             throw;
         }
     }
+    
+    public virtual async Task<bool> DeleteFilterAsync(FilterDefinition<T> filter)
+    {
+        try
+        {
+            var collection = GetCollection();
+            var result = await collection.DeleteOneAsync(filter);
+
+            return result.IsAcknowledged && result.DeletedCount > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error deleting data with the specified filter from {CollectionName}: {ex.Message}");
+            throw;
+        }
+    }
 }

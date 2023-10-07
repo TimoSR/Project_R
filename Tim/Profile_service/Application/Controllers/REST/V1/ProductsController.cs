@@ -1,4 +1,5 @@
 using Application.AppServices.V1._Interfaces;
+using Domain.Common.DomainModels;
 using Domain.DomainEvents._Attributes;
 using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;

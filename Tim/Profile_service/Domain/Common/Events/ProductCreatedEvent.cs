@@ -1,5 +1,5 @@
+using Domain.Common.Events._Interfaces;
 using Domain.DomainEvents._Attributes;
-using Domain.DomainEvents._Interfaces;
 using ProtoBuf;
 
 namespace Domain.DomainEvents;

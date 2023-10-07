@@ -1,7 +1,8 @@
 using Application.AppServices.V1._Interfaces;
+using Domain.Common.DomainModels;
+using Domain.Common.IRepositories;
 using Domain.DomainEvents;
 using Domain.DomainModels;
-using Domain.IRepositories;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities.Containers;
 

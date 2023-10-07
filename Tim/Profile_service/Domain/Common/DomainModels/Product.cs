@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using ProtoBuf;
 
-namespace Domain.DomainModels;
+namespace Domain.Common.DomainModels;
 
 [ProtoContract]
 public class Product

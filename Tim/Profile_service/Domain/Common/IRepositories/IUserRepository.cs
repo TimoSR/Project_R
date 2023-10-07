@@ -1,6 +1,6 @@
 using Domain.DomainModels;
 
-namespace Domain.IRepositories
+namespace Domain.Common.IRepositories
 {
     public interface IUserRepository
     {
