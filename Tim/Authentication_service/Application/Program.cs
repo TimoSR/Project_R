@@ -100,23 +100,6 @@ public class Program
             });
         });
         
-        // The standard way of implementing jwt auth in dotnet
-        // Tried to implement my own method of handling it.
-        // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //     .AddJwtBearer(options =>
-        //     {
-        //         options.TokenValidationParameters = new TokenValidationParameters
-        //         {
-        //             ValidateIssuer = true,
-        //             ValidateAudience = true,
-        //             ValidateLifetime = true,
-        //             ValidateIssuerSigningKey = true,
-        //             ValidIssuer = config.JwtIssuer,
-        //             ValidAudience = config.JwtAudience,
-        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
-        //         };
-        //     });
-        
         // Add memory cache services
         builder.Services.AddMemoryCache();
         builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
@@ -159,13 +142,13 @@ public class Program
 
         // Enable this for Https only
         //app.UseHttpsRedirection();
-        
+    
         // Controller Middlewares
         app.UseCors("MyCorsPolicy");
         app.UseIpRateLimiting();
         // Jwt Authentication
         app.UseMiddleware<JwtMiddleware>();
-        //app.UseAuthentication(); // This is the disabled auth.
+        
         app.UseAuthorization();
 
         app.MapControllers();
@@ -178,3 +161,22 @@ public class Program
         await app.RunAsync();
     }
 }
+
+        // The standard way of implementing jwt auth in dotnet
+        // Tried to implement my own method of handling it.
+        // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //     .AddJwtBearer(options =>
+        //     {
+        //         options.TokenValidationParameters = new TokenValidationParameters
+        //         {
+        //             ValidateIssuer = true,
+        //             ValidateAudience = true,
+        //             ValidateLifetime = true,
+        //             ValidateIssuerSigningKey = true,
+        //             ValidIssuer = config.JwtIssuer,
+        //             ValidAudience = config.JwtAudience,
+        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
+        //         };
+        //     });
+
+        //app.UseAuthentication(); // This is the disabled auth.
