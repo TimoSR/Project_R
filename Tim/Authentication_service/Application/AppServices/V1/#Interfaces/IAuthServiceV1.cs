@@ -4,7 +4,7 @@ using Domain.DomainModels.Enums;
 
 namespace Application.AppServices.V1._Interfaces;
 
-public interface IAuthService : IAppService
+public interface IAuthServiceV1 : IAppService
 {
     Task<(string NewToken, string NewRefreshToken)?> RefreshTokenAsync(string refreshToken);
     Task<(string Token, string RefreshToken)?> LoginAsync(string email, string password);

@@ -17,11 +17,11 @@ namespace Application.Controllers.REST.V1;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IAuthServiceV1 _authServiceV1;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthServiceV1 authServiceV1)
     {
-        _authService = authService;
+        _authServiceV1 = authServiceV1;
     }
     
     /// <summary>
@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
     {
-        var refreshedTokens = await _authService.RefreshTokenAsync(authRequestDto.RefreshToken);
+        var refreshedTokens = await _authServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
 
         if (refreshedTokens != null)
         {
@@ -79,7 +79,7 @@ public class AuthController : ControllerBase
             Password = newUserDto.Password
         };
 
-        var result = await _authService.RegisterAsync(newUser);
+        var result = await _authServiceV1.RegisterAsync(newUser);
 
         return result switch
         {
@@ -100,7 +100,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
     {
-        var result = await _authService.LoginAsync(requestDto.Email, requestDto.Password);
+        var result = await _authServiceV1.LoginAsync(requestDto.Email, requestDto.Password);
 
         if (result != null)
         {
@@ -124,7 +124,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
     {
-        var result = await _authService.LogoutAsync(requestDto.UserId);
+        var result = await _authServiceV1.LogoutAsync(requestDto.UserId);
 
         if (result)
         {
@@ -142,7 +142,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteUser([FromBody] DeleteRequestDto requestDto)
     {
-        var result = await _authService.DeleteUserAsync(requestDto.UserId);
+        var result = await _authServiceV1.DeleteUserAsync(requestDto.UserId);
 
         if (result)
         {

@@ -84,11 +84,12 @@ namespace Headless_client
             var password = Console.ReadLine();
 
             var tokens = await AuthenticateAsync(username, password);
+            
             if (tokens != null)
             {
                 accessToken = tokens.AccessToken;
                 refreshToken = tokens.RefreshToken;
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                httpClient.DefaultRequestHeaders.Authorization = new ("Bearer", accessToken);
                 Console.WriteLine("Successfully logged in!");
                 Console.WriteLine(accessToken);
             }
