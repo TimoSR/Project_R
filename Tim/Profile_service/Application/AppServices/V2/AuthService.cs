@@ -1,12 +1,13 @@
 using Application.AppServices.V1._Interfaces;
+using Application.AppServices.V2._Interfaces;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
 using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 
-namespace Application.AppServices.V1;
+namespace Application.AppServices.V2;
 
-public class AuthService : IAuthServiceV1
+public class AuthService : IAuthServiceV2
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;

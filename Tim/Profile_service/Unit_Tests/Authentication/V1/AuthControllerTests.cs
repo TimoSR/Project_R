@@ -15,11 +15,11 @@ namespace Unit_Tests.Authentication.V1
     public class AuthControllerTests
     {
         private readonly AuthController _authController;
-        private readonly Mock<IAuthService> _authServiceMock;
+        private readonly Mock<IAuthServiceV1> _authServiceMock;
 
         public AuthControllerTests()
         {
-            _authServiceMock = new Mock<IAuthService>();
+            _authServiceMock = new Mock<IAuthServiceV1>();
             _authController = new AuthController(_authServiceMock.Object);
         }
 

@@ -1,5 +1,4 @@
-using Application.AppServices.V1;
-using Application.AppServices.V1._Interfaces;
+using Application.AppServices.V2._Interfaces;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
 using Domain.DomainModels;
@@ -18,9 +17,9 @@ namespace Application.Controllers.REST.V2;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IAuthServiceV2 _authService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthServiceV2 authService)
     {
         _authService = authService;
     }
