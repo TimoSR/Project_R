@@ -14,9 +14,10 @@ public class TokenHandler : ITokenHandler
 
     public TokenHandler(IConfiguration configuration, ILogger<TokenHandler> logger)
     {
-        _jwtSettings = new JwtSettings()
+        _jwtSettings = new JwtSettings
         {
-            Key = configuration.JwtKey,
+            PlaintextKey = configuration.JwtKey,
+            EncryptionKey = configuration.JwtEncryptionKey,
             Issuer = configuration.JwtIssuer,
             Audience = configuration.JwtAudience,
             ExpirationInHours = 6
@@ -24,29 +25,86 @@ public class TokenHandler : ITokenHandler
        
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-
-    public string GenerateToken(string userId)
+    
+    public string GenerateJweToken(string userId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Convert.FromBase64String(_jwtSettings.Key);
+        var plaintextKey = Convert.FromBase64String(_jwtSettings.PlaintextKey);
+        var securityKey = new SymmetricSecurityKey(plaintextKey);
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] { new Claim("id", userId) }),
             Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationInHours),
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            EncryptingCredentials = new EncryptingCredentials(_jwtSettings.EncryptionKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512),
+            SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+        var jwe = tokenHandler.WriteToken(token);
+        return jwe;
+    }
+    
+    public ClaimsPrincipal DecodeJweToken(string jweToken)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                TokenDecryptionKey = _jwtSettings.EncryptionKey,
+                ValidateIssuer = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = _jwtSettings.Audience,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            return tokenHandler.ValidateToken(jweToken, validationParameters, out _);
+        }
+        catch (SecurityTokenExpiredException ex)
+        {
+            _logger.LogWarning($"Token expired: {ex.Message}");
+            throw;
+        }
+        catch (SecurityTokenInvalidSignatureException ex)
+        {
+            _logger.LogWarning($"Token has an invalid signature: {ex.Message}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while decoding the token: {ex.Message}");
+            throw;
+        }
+    }
+    
+    public string GenerateJwtToken(string userId)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var plaintextKey = Convert.FromBase64String(_jwtSettings.PlaintextKey);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[] { new Claim("id", userId) }),
+            Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationInHours),
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(plaintextKey), SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
-
-    public ClaimsPrincipal DecodeToken(string token)
+    
+    public ClaimsPrincipal DecodeJwtToken(string token)
     {
         try
         {
-            var key = Convert.FromBase64String(_jwtSettings.Key);
+            var key = Convert.FromBase64String(_jwtSettings.PlaintextKey);
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -88,7 +146,8 @@ public class TokenHandler : ITokenHandler
 
 public class JwtSettings
 {
-    public string Key { get; set; }
+    public string PlaintextKey { get; set; }
+    public RsaSecurityKey? EncryptionKey { get; set; }
     public string Issuer { get; set; }
     public string Audience { get; set; }
     public int ExpirationInHours { get; set; }

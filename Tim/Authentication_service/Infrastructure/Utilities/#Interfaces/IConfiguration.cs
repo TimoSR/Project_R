@@ -1,4 +1,5 @@
 using System.Collections;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Utilities._Interfaces;
 
@@ -14,4 +15,5 @@ public interface IConfiguration
     public string JwtKey { get; set; }
     public string JwtAudience { get; set; }
     public string JwtIssuer { get; set; }
+    public RsaSecurityKey? JwtEncryptionKey { get; set; }
 }

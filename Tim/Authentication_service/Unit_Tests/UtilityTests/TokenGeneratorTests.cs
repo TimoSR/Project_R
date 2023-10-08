@@ -56,7 +56,7 @@ public class TokenGeneratorTests
         var userId = "test-user-id";
 
         // Act
-        var result = _tokenHandler.GenerateToken(userId);
+        var result = _tokenHandler.GenerateJwtToken(userId);
 
         // Assert
         Assert.NotNull(result);
@@ -69,7 +69,7 @@ public class TokenGeneratorTests
         var userId = "test-user-id";
 
         // Act
-        var tokenString = _tokenHandler.GenerateToken(userId);
+        var tokenString = _tokenHandler.GenerateJwtToken(userId);
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.ReadJwtToken(tokenString);
 
@@ -85,7 +85,7 @@ public class TokenGeneratorTests
         var userId = "test-user-id";
 
         // Act
-        var tokenString = _tokenHandler.GenerateToken(userId);
+        var tokenString = _tokenHandler.GenerateJwtToken(userId);
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.ReadJwtToken(tokenString);
 
@@ -102,7 +102,7 @@ public class TokenGeneratorTests
         var userId = "test-user-id";
 
         // Act
-        var tokenString = _tokenHandler.GenerateToken(userId);
+        var tokenString = _tokenHandler.GenerateJwtToken(userId);
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.ReadJwtToken(tokenString);
 
@@ -117,7 +117,7 @@ public class TokenGeneratorTests
         var userId = "test-user-id";
 
         // Act
-        var tokenString = _tokenHandler.GenerateToken(userId);
+        var tokenString = _tokenHandler.GenerateJwtToken(userId);
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.ReadJwtToken(tokenString);
 
@@ -132,7 +132,7 @@ public class TokenGeneratorTests
         var token = "invalid_token";
     
         // Act
-        Action action = () => _tokenHandler.DecodeToken(token);
+        Action action = () => _tokenHandler.DecodeJwtToken(token);
     
         // Assert
         Assert.Throws<SecurityTokenMalformedException>(action);

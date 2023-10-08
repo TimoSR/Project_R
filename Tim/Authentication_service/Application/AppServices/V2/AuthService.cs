@@ -49,7 +49,7 @@ public class AuthService : IAuthServiceV2
             await _userRepository.UpdateRefreshTokenAsync(userId, null);
 
             // Generate a new JWT token
-            var newToken = _tokenHandler.GenerateToken(userId);
+            var newToken = _tokenHandler.GenerateJwtToken(userId);
 
             // Optionally: Generate a new refresh token and store it
             var newRefreshToken = _tokenHandler.GenerateRefreshToken();
@@ -85,7 +85,7 @@ public class AuthService : IAuthServiceV2
         }
 
         // Generate Tokens
-        var accessToken = _tokenHandler.GenerateToken(user.Id);
+        var accessToken = _tokenHandler.GenerateJwtToken(user.Id);
         var refreshToken = _tokenHandler.GenerateRefreshToken();
         
         await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken); // Assume 6 hours expiration for refresh tokens

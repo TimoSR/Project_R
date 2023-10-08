@@ -53,7 +53,7 @@ public class JwtMiddleware
         {
             using (_logger.BeginScope($"JWT Validation for Token: {token}"))
             {
-                var principal = _tokenHandler.DecodeToken(token);
+                var principal = _tokenHandler.DecodeJwtToken(token);
                 context.User = principal; // Setting the user.
             }
         }

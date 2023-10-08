@@ -20,14 +20,14 @@ public class AuthServiceTestSetup
         emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
         passwordValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
         passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(true);
-        tokenGeneratorMock.Setup(x => x.GenerateToken(It.IsAny<string>())).Returns(ExpectedToken);
+        tokenGeneratorMock.Setup(x => x.GenerateJwtToken(It.IsAny<string>())).Returns(ExpectedToken);
         userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new User());
         tokenGeneratorMock.Setup(t => t.GenerateRefreshToken()).Returns(ExpectedRefreshToken);
     }
 
     public void SetupTokenGeneratorMock(Mock<ITokenHandler> tokenGeneratorMock, AuthServiceTestCases.TestCase testCase)
     {
-        tokenGeneratorMock.Setup(x => x.GenerateToken(It.Is<string>(s => s == testCase.Email))).Returns(testCase.ExpectedToken);
+        tokenGeneratorMock.Setup(x => x.GenerateJwtToken(It.Is<string>(s => s == testCase.Email))).Returns(testCase.ExpectedToken);
         tokenGeneratorMock.Setup(t => t.GenerateRefreshToken()).Returns(testCase.ExpectedRefreshToken);
     }
 }

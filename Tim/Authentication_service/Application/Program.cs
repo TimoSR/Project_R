@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Application.Registrations.DataSeeder;
 using Application.Registrations.Events;
 using Application.Registrations.GraphQL;
@@ -12,6 +13,7 @@ using Infrastructure.Registrations.Utilities;
 using Infrastructure.Swagger;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
+using Microsoft.IdentityModel.Tokens;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
@@ -33,6 +35,8 @@ public class Program
         var jwtKey = DotNetEnv.Env.GetString("JWT_KEY");
         var jwtAudience = DotNetEnv.Env.GetString("JWT_AUDIENCE");
         var envVars = Environment.GetEnvironmentVariables();
+        
+        //Adding all settings to the config
 
         IConfiguration config = new Configuration()
         {

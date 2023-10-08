@@ -4,7 +4,7 @@ namespace Infrastructure.Utilities._Interfaces;
 
 public interface ITokenHandler : IUtilityTool
 {
-    string GenerateToken(string userId);
-    ClaimsPrincipal? DecodeToken(string token);
+    string GenerateJwtToken(string userId);
+    ClaimsPrincipal? DecodeJwtToken(string token);
     string GenerateRefreshToken();
 }
