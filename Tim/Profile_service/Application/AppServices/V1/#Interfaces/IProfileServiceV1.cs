@@ -7,6 +7,6 @@ public interface IProfileServiceV1 : IAppService
 {
     Task CreateProfile(Profile profile);
     Task GetProfileInfo(string userId);
-    Task UpdateProfile();
-    Task DeleteProfile();
+    Task UpdateProfile(Profile profile);
+    Task DeleteProfile(string userId);
 }

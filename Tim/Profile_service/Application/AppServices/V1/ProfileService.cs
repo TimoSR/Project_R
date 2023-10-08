@@ -27,13 +27,13 @@ public class ProfileService : IProfileServiceV1
         return _profileRepository.GetProfileInfoAsync(userId);
     }
 
-    public Task UpdateProfile()
+    public Task UpdateProfile(Profile profile)
     {
-        return _profileRepository.UpdateProfileAsync()
+        return _profileRepository.UpdateProfileAsync(profile);
     }
 
-    public Task DeleteProfile()
+    public Task DeleteProfile(string userId)
     {
-        throw new NotImplementedException();
+        return _profileRepository.DeleteProfileAsync(userId);
     }
 }
