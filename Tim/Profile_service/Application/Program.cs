@@ -5,6 +5,7 @@ using Application.Registrations.GraphQL;
 using Application.Registrations.Services;
 using Application.Startup;
 using AspNetCoreRateLimit;
+using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
 using Infrastructure.Registrations.Repositories;
@@ -33,6 +34,7 @@ public class Program
         var mongoConnectionString = DotNetEnv.Env.GetString("MONGODB_CONNECTION_STRING");
         var redisConnectionString = DotNetEnv.Env.GetString("REDIS_CONNECTION_STRING");
         var jwtKey = DotNetEnv.Env.GetString("JWT_KEY");
+        var jwtIssuer = DotNetEnv.Env.GetString("JWT_ISSUER");
         var jwtAudience = DotNetEnv.Env.GetString("JWT_AUDIENCE");
         var envVars = Environment.GetEnvironmentVariables();
 
@@ -46,7 +48,7 @@ public class Program
             RedisConnectionString = redisConnectionString,
             EnvironmentVariables = envVars,
             JwtKey = jwtKey,
-            JwtIssuer = serviceName,
+            JwtIssuer = jwtIssuer,
             JwtAudience = jwtAudience
         };
 
@@ -106,25 +108,25 @@ public class Program
         
         // Default JWT Authentication
         
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.RequireHttpsMetadata = false;
-            options.SaveToken = true;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = config.JwtIssuer,
-                ValidAudience = config.JwtAudience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
-            };
-        });
+        // builder.Services.AddAuthentication(options =>
+        // {
+        //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        // }).AddJwtBearer(options =>
+        // {
+        //     options.RequireHttpsMetadata = false;
+        //     options.SaveToken = true;
+        //     options.TokenValidationParameters = new TokenValidationParameters
+        //     {
+        //         ValidateIssuer = true,
+        //         ValidateAudience = true,
+        //         ValidateLifetime = true,
+        //         ValidateIssuerSigningKey = true,
+        //         ValidIssuer = config.JwtIssuer,
+        //         ValidAudience = config.JwtAudience,
+        //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
+        //     };
+        // });
         
         
         // This is just a test for the future
@@ -185,9 +187,9 @@ public class Program
         
         // Learning about middleware 
         // A test of implementing my own jwt auth
-        //app.UseMiddleware<JwtValidationMiddleware>();
+       app.UseMiddleware<JwtValidationMiddleware>();
         
-        app.UseAuthentication();
+        //app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
