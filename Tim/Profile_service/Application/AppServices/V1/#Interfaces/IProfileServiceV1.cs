@@ -5,8 +5,8 @@ namespace Application.AppServices.V1._Interfaces;
 
 public interface IProfileServiceV1 : IAppService
 {
-    Task CreateProfile(Profile profile);
-    Task GetProfileInfo(string userId);
-    Task UpdateProfile(Profile profile);
-    Task DeleteProfile(string userId);
+    Task CreateProfileAsync(Profile profile);
+    Task<Profile> GetProfileInfoAsync(string userId);
+    Task UpdateProfileAsync(Profile profile);
+    Task DeleteProfileAsync(string userId);
 }

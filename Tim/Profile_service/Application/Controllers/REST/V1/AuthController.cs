@@ -15,6 +15,7 @@ namespace Application.Controllers.REST.V1;
 [SwaggerDoc("Authentication")]
 [ApiVersion("1.0")]
 [Authorize]
+//[Authorize(Roles = "Admin")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthServiceV1 _authServiceV1;

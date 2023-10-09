@@ -1,3 +1,4 @@
+using System.Text;
 using Application.Registrations.DataSeeder;
 using Application.Registrations.Events;
 using Application.Registrations.GraphQL;
@@ -12,6 +13,8 @@ using Infrastructure.Registrations.Utilities;
 using Infrastructure.Swagger;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
@@ -89,6 +92,8 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerServices();
 
+        // Cors Access Rules
+        
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("MyCorsPolicy", builder =>
@@ -98,6 +103,38 @@ public class Program
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             });
+        });
+        
+        // Default JWT Authentication
+        
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = config.JwtIssuer,
+                ValidAudience = config.JwtAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
+            };
+        });
+        
+        
+        // This is just a test for the future
+        // Adding Roles to the Authentication
+        
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("User", policy => policy.RequireRole("User"));
+            options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
         });
         
         // Add memory cache services
@@ -111,7 +148,7 @@ public class Program
         builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
         builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
         builder.Services.Configure<IpRateLimitPolicies>(builder.Configuration.GetSection("IpRateLimitPolicies"));
-
+        
         var app = builder.Build();
 
         if (environment.Equals("Development")) {
@@ -146,8 +183,12 @@ public class Program
         // Controller Middlewares
         app.UseCors("MyCorsPolicy");
         app.UseIpRateLimiting();
-        // Jwt Authentication
-        app.UseMiddleware<JwtMiddleware>();
+        
+        // Learning about middleware 
+        // A test of implementing my own jwt auth
+        //app.UseMiddleware<JwtValidationMiddleware>();
+        
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

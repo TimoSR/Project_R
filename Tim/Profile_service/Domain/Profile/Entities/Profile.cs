@@ -7,7 +7,7 @@ public class Profile
 {
     [BsonId]
     [BsonElement("UserId")]
-    public string UserID { get; set; }
+    public string UserId { get; set; }
         
     [BsonElement("DisplayName")]
     public string DisplayName { get; set; }

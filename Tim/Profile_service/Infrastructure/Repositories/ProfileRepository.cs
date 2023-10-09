@@ -31,7 +31,7 @@ public class ProfileRepository : MongoRepository<Profile>, IProfileRepository
         try
         {
             var collection = GetCollection();
-            return await collection.Find(p => p.UserID == userId).FirstOrDefaultAsync();
+            return await collection.Find(p => p.UserId == userId).FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
@@ -45,7 +45,7 @@ public class ProfileRepository : MongoRepository<Profile>, IProfileRepository
         try
         {
             var collection = GetCollection();
-            var filter = Builders<Profile>.Filter.Eq(p => p.UserID, profile.UserID);
+            var filter = Builders<Profile>.Filter.Eq(p => p.UserId, profile.UserId);
             var result = await collection.ReplaceOneAsync(filter, profile);
             return result.IsAcknowledged && result.ModifiedCount > 0;
         }

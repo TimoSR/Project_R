@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Middleware;
 
-public class JwtMiddleware
+public class JwtValidationMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ITokenHandler _tokenHandler;
-    private readonly ILogger<JwtMiddleware> _logger;
+    private readonly ILogger<JwtValidationMiddleware> _logger;
 
-    public JwtMiddleware(RequestDelegate next, ITokenHandler tokenHandler, ILogger<JwtMiddleware> logger)
+    public JwtValidationMiddleware(RequestDelegate next, ITokenHandler tokenHandler, ILogger<JwtValidationMiddleware> logger)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _tokenHandler = tokenHandler ?? throw new ArgumentNullException(nameof(tokenHandler));
@@ -31,6 +31,7 @@ public class JwtMiddleware
         
         if (!context.Request.Headers.TryGetValue(AuthConstants.AuthorizationHeader, out var authHeader))
         {
+            _logger.LogWarning("No JWT token was sent in the request."); // <-- Log warning here
             await ProceedToNextMiddleware(context).ConfigureAwait(false);
             return;
         }
