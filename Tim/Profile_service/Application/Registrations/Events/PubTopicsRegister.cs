@@ -1,5 +1,6 @@
-using Domain.Common.Events._Interfaces;
+
 using Domain.DomainEvents._Attributes;
+using Domain.DomainEvents._Interfaces;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
