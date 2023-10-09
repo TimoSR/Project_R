@@ -5,7 +5,6 @@ using Application.Registrations.GraphQL;
 using Application.Registrations.Services;
 using Application.Startup;
 using AspNetCoreRateLimit;
-using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
 using Infrastructure.Registrations.Repositories;
