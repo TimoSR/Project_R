@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.AppServices.V1._Interfaces;
 using Application.DataTransferObjects.Profile;
 using Domain.Profile.Entities;
@@ -5,7 +6,7 @@ using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using ClaimTypes = Infrastructure.Middleware.ClaimTypes;
 
 namespace Application.Controllers.REST.V1
 {
@@ -29,9 +30,9 @@ namespace Application.Controllers.REST.V1
         
         private string GetUserId()
         {
-            // Assuming the claim for storing user ID is "UserId"
-            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            return User?.FindFirstValue(ClaimTypes.UserId);
         }
+
 
         [HttpPost("create")]
         [ProducesResponseType(200)]

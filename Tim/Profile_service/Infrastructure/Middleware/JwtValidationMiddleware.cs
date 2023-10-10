@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Infrastructure.Utilities._Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,7 @@ public class JwtValidationMiddleware
         
         if (!context.Request.Headers.TryGetValue(AuthConstants.AuthorizationHeader, out var authHeader))
         {
-            _logger.LogWarning("No JWT token was sent in the request."); // <-- Log warning here
+            _logger.LogWarning("No JWT token was sent in the request.");
             await ProceedToNextMiddleware(context).ConfigureAwait(false);
             return;
         }
@@ -56,6 +57,17 @@ public class JwtValidationMiddleware
             {
                 var principal = _tokenHandler.DecodeToken(token);
                 context.User = principal; // Setting the user.
+                
+                // Accessing the 'id' claim
+                var userIdClaimValue = context.User.FindFirstValue("id");
+                if (userIdClaimValue != null)
+                {
+                    _logger.LogInformation($"User Id Claim value: {userIdClaimValue}");
+                }
+                else
+                {
+                    _logger.LogWarning("User Id Claim not found.");
+                }
             }
         }
         catch (Exception ex)
