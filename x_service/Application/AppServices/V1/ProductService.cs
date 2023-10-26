@@ -1,28 +1,29 @@
-using Application.Registrations._Interfaces;
+using Application.AppServices.V1._Interfaces;
 using Domain.DomainEvents;
 using Domain.DomainModels;
+using Domain.IRepositories;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities.Containers;
 
-namespace Application.AppServices;
+namespace Application.AppServices.V1;
 
-public class ProductAppService : IAppService
+public class ProductService : IProductService
 {
     private readonly IEventPublisher _eventPublisher;
     private readonly ICacheManager _cacheManager;
-    private readonly IRepository<Product> _productRepo;
+    private readonly IProductRepository _productRepository;
     
-    public ProductAppService(IServiceDependencies dependencies, IRepository<Product> productRepo)
+    public ProductService(IServiceDependencies dependencies, IProductRepository productRepository)
     {
         _eventPublisher = dependencies.EventPublisher;
         _cacheManager = dependencies.CacheManager;
-        _productRepo = productRepo;
+        _productRepository = productRepository;
     }
 
     // Command
     public async Task InsertAsync(Product data)
     {
-        await _productRepo.InsertAsync(data);
+        await _productRepository.InsertAsync(data);
         
         var productCreatedEvent = new ProductCreatedEvent
         {
@@ -36,6 +37,6 @@ public class ProductAppService : IAppService
     // Query
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await _productRepo.GetAllAsync();
+        return await _productRepository.GetAllAsync();
     }
 }

@@ -1,4 +1,5 @@
 using Application.AppServices;
+using Application.AppServices.V1._Interfaces;
 using Domain.DomainModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,11 @@ namespace Application.Controllers.EventEndpoints;
 [Route("api/[controller]")]
 public class PubSubEventEndpoint : ControllerBase
 {
-    private readonly ProductAppService _productAppService;
+    private readonly IProductService _productService;
 
-    public PubSubEventEndpoint(ProductAppService productAppService)
+    public PubSubEventEndpoint(IProductService productService)
     {
-        _productAppService = productAppService;
+        _productService = productService;
     }
 
     [HttpPost("Subscription1")]
@@ -40,7 +41,7 @@ public class PubSubEventEndpoint : ControllerBase
             Price = 29.99
         };
 
-        await _productAppService.InsertAsync(product1);
+        await _productService.InsertAsync(product1);
         
         // This dynamically gets actual host
         // Get the complete URL for this action.
