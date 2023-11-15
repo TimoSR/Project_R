@@ -1,6 +1,8 @@
+using x_endpoints.DomainModels.Equipments;
 using x_endpoints.DomainModels.Items;
 using x_endpoints.DomainServices;
 using x_endpoints.Enums;
+using x_endpoints.GameObjectLibrary.Equipment;
 using x_endpoints.Persistence.DataSeeder;
 
 namespace x_endpoints.GameObjectLibrary.Item
@@ -9,16 +11,17 @@ namespace x_endpoints.GameObjectLibrary.Item
     {
         public async Task SeedData(IServiceProvider serviceProvider)
         {
+            
             var itemService = serviceProvider.GetRequiredService<OreService>();
-
+            List<Pickaxe> pickaxes = Pickaxes._pickaxes;
             var ores = new List<Ore> 
             {
                 new Ore
                 {
                     Name = "Gold",
                     Description = "A precious metal",
-                    Hits = "100",
-                    Requirement = "Mining pick",
+                    Duration = 100,
+                    Requirement = pickaxes[1],
                     Price = 500,
                     Rarity = ItemRarity.Rare // Assign the rarity using the enum
                 },
@@ -26,8 +29,8 @@ namespace x_endpoints.GameObjectLibrary.Item
                 {
                     Name = "Iron",
                     Description = "A common metal",
-                    Hits = "75",
-                    Requirement = "Mining pick",
+                    Duration = 75,
+                    Requirement = pickaxes[0],
                     Price = 100,
                     Rarity = ItemRarity.Common // Assign the rarity using the enum
                 },
@@ -35,10 +38,11 @@ namespace x_endpoints.GameObjectLibrary.Item
                 {
                     Name = "Diamond",
                     Description = "A valuable gem",
-                    Hits = "150",
-                    Requirement = "Diamond pickaxe",
+                    Duration = 150,
+                    Requirement = pickaxes[2],
                     Price = 1000,
                     Rarity = ItemRarity.Epic // Assign the rarity using the enum
+                    
                 },
                 // Add more ore items as needed
             };

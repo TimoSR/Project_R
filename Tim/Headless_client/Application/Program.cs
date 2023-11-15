@@ -8,14 +8,14 @@ enum MenuOption
     Login = 1,
     CreateNewUser,
     //CreateNewGame,
-    //PlayGame,
+    PlayGame,
     //Exit
 }
     
 public class Program 
 {
     static HttpClient httpClient = new HttpClient();
-    static string apiBaseAddress = "https://localhost:7076/api/v1";
+    static string apiBaseAddress = "https://localhost:7077/api/v1";
     static string accessToken = string.Empty;
     static string refreshToken = string.Empty;
 
@@ -24,13 +24,12 @@ public class Program
         Dictionary<MenuOption, Func<Task>> menuOptions = new Dictionary<MenuOption, Func<Task>>
         {
             { MenuOption.CreateNewUser, CreateNewUserAsync },
-            { MenuOption.Login, LoginAsync }
+            { MenuOption.Login, LoginAsync },
+            { MenuOption.PlayGame, PlayGame }
         };
 
         while (true)
         {
-            Console.WriteLine("Welcome to My Game!");
-
             foreach (MenuOption option in Enum.GetValues(typeof(MenuOption)))
             {
                 Console.WriteLine($"{(int)option}. {option}");
@@ -143,18 +142,32 @@ public class Program
         return false;
     }
 
+    static async Task<bool> IsTokenValidAsync()
+    {
+        var response = await httpClient.GetAsync($"{apiBaseAddress}/auth/check-token");
+        return response.IsSuccessStatusCode;
+    }
+
+    static async Task PlayGame()
+    {
+        if (await IsTokenValidAsync())
+        {
+            Console.WriteLine("Token is valid. Starting game...");
+            // Insert game logic here
+        }
+        else
+        {
+            Console.WriteLine("Token is invalid. Please log in again.");
+            await LoginAsync(); // Assuming LoginAsync is already implemented
+        }
+    }
+
+
     static void CreateNewGame()
     {
         RefreshTokenAsync().Wait();
         Console.WriteLine("Creating a new game...");
         // Placeholder for your game creation logic
-    }
-
-    static void PlayGame()
-    {
-        RefreshTokenAsync().Wait();
-        Console.WriteLine("Playing the game...");
-        // Placeholder for your game logic
     }
 
     public class LoginResponseDto
