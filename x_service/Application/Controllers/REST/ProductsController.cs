@@ -36,5 +36,5 @@ public class ProductsController : ControllerBase
         await _productAppService.InsertAsync(product);
 
         return Ok(product);
-    }
+    }   
 }

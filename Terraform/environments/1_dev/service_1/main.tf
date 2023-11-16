@@ -17,13 +17,13 @@ resource "google_project_service" "secret_manager" {
   disable_on_destroy = false
 }
 
-# Getting the references to secrets
-data "google_secret_manager_secret_version" "secrets" {
-  for_each = toset(["MONGODB_CONNECTION_STRING"])
-  secret   = each.key
-  version  = "latest"
-  depends_on = [ google_project_service.secret_manager ]
-}
+# # Getting the references to secrets
+# data "google_secret_manager_secret_version" "secrets" {
+#   for_each = toset(["MONGODB_CONNECTION_STRING"])
+#   secret   = each.key
+#   version  = "latest"
+#   depends_on = [ google_project_service.secret_manager ]
+# }
 
 # Creating the Google Cloud Run
 resource "google_cloud_run_service" "x-service" {
@@ -136,6 +136,7 @@ resource "google_project_service_identity" "pubsub_agent" {
   project  = data.google_project.project.project_id
   service  = "pubsub.googleapis.com"
 }
+
 resource "google_project_iam_binding" "project_token_creator" {
   project = data.google_project.project.project_id
   role    = "roles/iam.serviceAccountTokenCreator"
