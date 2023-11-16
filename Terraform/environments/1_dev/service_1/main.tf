@@ -17,13 +17,14 @@ resource "google_project_service" "secret_manager" {
   disable_on_destroy = false
 }
 
-# # Getting the references to secrets
-# data "google_secret_manager_secret_version" "secrets" {
-#   for_each = toset(["MONGODB_CONNECTION_STRING"])
-#   secret   = each.key
-#   version  = "latest"
-#   depends_on = [ google_project_service.secret_manager ]
-# }
+# This is used to register the keys for the secrets
+# Getting the references to secrets
+data "google_secret_manager_secret_version" "secrets" {
+  for_each = toset(["MONGODB_CONNECTION_STRING"])
+  secret   = each.key
+  version  = "latest"
+  depends_on = [ google_project_service.secret_manager ]
+}
 
 # Creating the Google Cloud Run
 resource "google_cloud_run_service" "x-service" {
