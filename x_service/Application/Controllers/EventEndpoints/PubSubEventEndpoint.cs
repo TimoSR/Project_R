@@ -11,6 +11,8 @@ public class PubSubEventEndpoint : ControllerBase
 {
     private readonly IProductService _productService;
 
+    //This class is not used for anything besides an old example
+    
     public PubSubEventEndpoint(IProductService productService)
     {
         _productService = productService;
