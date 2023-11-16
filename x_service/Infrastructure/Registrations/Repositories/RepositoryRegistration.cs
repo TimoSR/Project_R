@@ -18,7 +18,7 @@ public static class RepositoryRegistration
             throw new InvalidOperationException("No implementation for IRepository found.");
         }
     
-        Console.WriteLine("Found the following types that implement IRepository:"); // Debugging line
+        //Console.WriteLine("Found the following types that implement IRepository:"); // Debugging line
         
         foreach (var type in types)
         {

@@ -18,6 +18,7 @@ resource "google_project_service" "secret_manager" {
 }
 
 # This is used to register the keys for the secrets
+# I need to all the secrect variable names here to target them
 # Getting the references to secrets
 data "google_secret_manager_secret_version" "secrets" {
   for_each = toset(["MONGODB_CONNECTION_STRING"])
