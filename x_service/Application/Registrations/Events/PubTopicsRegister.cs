@@ -76,8 +76,9 @@ public class PubTopicsRegister
             Console.WriteLine($"Topic: {topic.TopicName}");
         }
     }
-    
-    // private void IfDevelopment()
+}
+
+// private void IfDevelopment()
     // {
     //
     //     var serviceName = _serviceName;
@@ -184,4 +185,3 @@ public class PubTopicsRegister
     //
     //     await Task.WhenAll(tasks);
     // }
-}

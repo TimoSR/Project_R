@@ -26,55 +26,8 @@ public class SubTopicsRegister
         _subscriberService = subscriberService;
         _hostUrl = config.HostUrl;
         //IfDevelopment();
-        RegisterPullSubscriptions();
         RegisterPushSubscriptions();
         ListAllSubscriptions();        
-    }
-
-    private void RegisterPullSubscriptions() 
-    {
-        // Get all environment variables
-        var envVars = _environmentVariables;
-
-        Console.WriteLine("\nRegistering Pull Subscriptions:");
-
-        // Filter environment variables starting with "PULL_SUBSCRIBE_"
-        foreach (DictionaryEntry variable in envVars)
-        {
-            string key = variable.Key.ToString();
-            
-            if (key.StartsWith("PULL_SUBSCRIBE_"))
-            {
-                Console.WriteLine($"\n{variable.Key}");
-                Console.WriteLine($"{variable.Value}");
-
-                var topicValue = variable.Value.ToString();
-                var subscriptionId = $"{topicValue}-{_serviceName}";
-
-                RegisterPullSubscription(subscriptionId, topicValue);
-            }
-        }
-    }  
-
-    private void RegisterPullSubscription(string subscriptionId, string topicValue)
-    {
-        // Code to create a pull subscription
-        // No need to specify a pushEndpoint, just bind the subscription to the topic.
-        // If using the Google Cloud Pub/Sub client library, this could be done with:
-
-        var publisher = _subscriberService;
-        var topicName = new TopicName(_projectId, topicValue);
-        var subscriptionName = new SubscriptionName(_projectId, subscriptionId);
-
-        try
-        {
-            var subscription = publisher.CreateSubscription(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
-            Console.WriteLine($"Pull Subscription {subscriptionName} created.");
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine($"Failed to create pull subscription: {ex.Message}");
-        }
     }
 
     // I have the base URL from the HostUrl property from the config
@@ -82,7 +35,7 @@ public class SubTopicsRegister
     // I know what the endpoint will for the controller will be called in the controller
     // Using a combination of events and attributes I should be able to define the full endpoint to register
     
-    public void RegisterPushSubscriptions()
+    private void RegisterPushSubscriptions()
     {
         Console.WriteLine("\nRegistering Push Subscriptions:");
 
@@ -112,44 +65,6 @@ public class SubTopicsRegister
             }
         }
     }
-    
-    // private void RegisterPushSubscriptions()
-    // {
-    //     // Get all environment variables
-    //     var envVars = _environmentVariables;
-    //
-    //     Console.WriteLine("\nRegistering Push Subscriptions:");
-    //
-    //     // Filter environment variables starting with "PUSH_SUBSCRIBE_"
-    //     foreach (DictionaryEntry variable in envVars)
-    //     {
-    //         string key = variable.Key.ToString();
-    //
-    //         if (key.StartsWith("PUSH_SUBSCRIBE_"))
-    //         {
-    //             Console.WriteLine($"\n{variable.Key}");
-    //             Console.WriteLine($"{variable.Value}");
-    //
-    //             var keyValue = variable.Key.ToString();
-    //             var topicValue = variable.Value.ToString();
-    //             var subscriptionId = $"{topicValue}-{_serviceName}";
-    //
-    //             // Generating the corresponding endpoint environment variable name
-    //             var endpointKey = key.Replace("PUSH_SUBSCRIBE_", "PUSH_ENDPOINT_");
-    //
-    //             // If the topic name is PRODUCT_UPDATES, the corresponding endpoint environment variable would be PUSH_ENDPOINT_PRODUCT_UPDATES.
-    //             var pushEndpoint = envVars[endpointKey]?.ToString();
-    //
-    //             if (string.IsNullOrEmpty(pushEndpoint))
-    //             {
-    //                 Console.WriteLine($"Warning: Push endpoint for {keyValue} is not defined.");
-    //                 continue;
-    //             }
-    //
-    //             RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
-    //         }
-    //     }
-    // }   
 
     private void RegisterPushSubscription(string subscriptionId, string topicValue, string pushEndpoint)
     {
@@ -181,46 +96,130 @@ public class SubTopicsRegister
             Console.WriteLine($"Subscription: {subscription.SubscriptionName}");
         }
     }
-    
-    private async void RegisterSubscriptionsAsync()
-    {
-        // Get all environment variables
-        var environmentVariables = _environmentVariables;
-        var serviceName = _serviceName;
-
-        Console.WriteLine("\nRegistering Subscriptions:");
-
-        // Filter environment variables starting with "SUBSCRIBE_"
-        foreach (DictionaryEntry variable in environmentVariables)
-        {
-            string key = variable.Key.ToString();
-            if (key.StartsWith("SUBSCRIBE_"))
-            {
-                Console.WriteLine($"\n{variable.Key}");
-                Console.WriteLine($"{variable.Value}");
-                var topicValue = variable.Value.ToString();
-                var subscriptionId = $"{topicValue}-{serviceName}";
-                await RegisterSubscriptionAsync(subscriptionId, topicValue);
-            }
-        }
-    }
-
-    private async Task RegisterSubscriptionAsync(string subscriptionId, string topicValue)
-    {
-        SubscriptionName subscriptionName = new SubscriptionName(_projectId, subscriptionId);
-        TopicName topicName = new TopicName(_projectId, topicValue);
-
-        try
-        {
-            // Check if the subscription already exists
-            var existingSubscription = await _subscriberService.GetSubscriptionAsync(subscriptionName);
-            Console.WriteLine($"Subscription {subscriptionId} already exists.");
-        }
-        catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
-        {
-            // If the subscription does not exist, create a new one
-            await _subscriberService.CreateSubscriptionAsync(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
-            Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
-        }
-    }
 }
+
+// private void RegisterPullSubscriptions() 
+// {
+//     // Get all environment variables
+//     var envVars = _environmentVariables;
+//
+//     Console.WriteLine("\nRegistering Pull Subscriptions:");
+//
+//     // Filter environment variables starting with "PULL_SUBSCRIBE_"
+//     foreach (DictionaryEntry variable in envVars)
+//     {
+//         string key = variable.Key.ToString();
+//         
+//         if (key.StartsWith("PULL_SUBSCRIBE_"))
+//         {
+//             Console.WriteLine($"\n{variable.Key}");
+//             Console.WriteLine($"{variable.Value}");
+//
+//             var topicValue = variable.Value.ToString();
+//             var subscriptionId = $"{topicValue}-{_serviceName}";
+//
+//             RegisterPullSubscription(subscriptionId, topicValue);
+//         }
+//     }
+// }
+
+// private void RegisterPullSubscription(string subscriptionId, string topicValue)
+// {
+//     // Code to create a pull subscription
+//     // No need to specify a pushEndpoint, just bind the subscription to the topic.
+//     // If using the Google Cloud Pub/Sub client library, this could be done with:
+//
+//     var publisher = _subscriberService;
+//     var topicName = new TopicName(_projectId, topicValue);
+//     var subscriptionName = new SubscriptionName(_projectId, subscriptionId);
+//
+//     try
+//     {
+//         var subscription = publisher.CreateSubscription(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+//         Console.WriteLine($"Pull Subscription {subscriptionName} created.");
+//     }
+//     catch(Exception ex)
+//     {
+//         Console.WriteLine($"Failed to create pull subscription: {ex.Message}");
+//     }
+// }
+
+// private void RegisterPushSubscriptions()
+// {
+//     // Get all environment variables
+//     var envVars = _environmentVariables;
+//
+//     Console.WriteLine("\nRegistering Push Subscriptions:");
+//
+//     // Filter environment variables starting with "PUSH_SUBSCRIBE_"
+//     foreach (DictionaryEntry variable in envVars)
+//     {
+//         string key = variable.Key.ToString();
+//
+//         if (key.StartsWith("PUSH_SUBSCRIBE_"))
+//         {
+//             Console.WriteLine($"\n{variable.Key}");
+//             Console.WriteLine($"{variable.Value}");
+//
+//             var keyValue = variable.Key.ToString();
+//             var topicValue = variable.Value.ToString();
+//             var subscriptionId = $"{topicValue}-{_serviceName}";
+//
+//             // Generating the corresponding endpoint environment variable name
+//             var endpointKey = key.Replace("PUSH_SUBSCRIBE_", "PUSH_ENDPOINT_");
+//
+//             // If the topic name is PRODUCT_UPDATES, the corresponding endpoint environment variable would be PUSH_ENDPOINT_PRODUCT_UPDATES.
+//             var pushEndpoint = envVars[endpointKey]?.ToString();
+//
+//             if (string.IsNullOrEmpty(pushEndpoint))
+//             {
+//                 Console.WriteLine($"Warning: Push endpoint for {keyValue} is not defined.");
+//                 continue;
+//             }
+//
+//             RegisterPushSubscription(subscriptionId, topicValue, pushEndpoint);
+//         }
+//     }
+// }   
+
+// private async void RegisterSubscriptionsAsync()
+// {
+//     // Get all environment variables
+//     var environmentVariables = _environmentVariables;
+//     var serviceName = _serviceName;
+//
+//     Console.WriteLine("\nRegistering Subscriptions:");
+//
+//     // Filter environment variables starting with "SUBSCRIBE_"
+//     foreach (DictionaryEntry variable in environmentVariables)
+//     {
+//         string key = variable.Key.ToString();
+//         if (key.StartsWith("SUBSCRIBE_"))
+//         {
+//             Console.WriteLine($"\n{variable.Key}");
+//             Console.WriteLine($"{variable.Value}");
+//             var topicValue = variable.Value.ToString();
+//             var subscriptionId = $"{topicValue}-{serviceName}";
+//             await RegisterSubscriptionAsync(subscriptionId, topicValue);
+//         }
+//     }
+// }
+//
+// private async Task RegisterSubscriptionAsync(string subscriptionId, string topicValue)
+// {
+//     SubscriptionName subscriptionName = new SubscriptionName(_projectId, subscriptionId);
+//     TopicName topicName = new TopicName(_projectId, topicValue);
+//
+//     try
+//     {
+//         // Check if the subscription already exists
+//         var existingSubscription = await _subscriberService.GetSubscriptionAsync(subscriptionName);
+//         Console.WriteLine($"Subscription {subscriptionId} already exists.");
+//     }
+//     catch (Grpc.Core.RpcException e) when (e.Status.StatusCode == Grpc.Core.StatusCode.NotFound)
+//     {
+//         // If the subscription does not exist, create a new one
+//         await _subscriberService.CreateSubscriptionAsync(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 60);
+//         Console.WriteLine($"\nSubscription {subscriptionId} has been created for topic {topicValue}.");
+//     }
+// }
