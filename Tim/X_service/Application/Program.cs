@@ -17,7 +17,7 @@ using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
 
-public class Program
+public static class Program
 {
     public static async Task Main(string[] args)
     {
@@ -65,7 +65,7 @@ public class Program
         // Add / Disable Subscriber 
         builder.Services.AddSubscriberClient();
         // Add / Disable Redis
-        //builder.Services.AddRedisServices(config);
+        builder.Services.AddRedisServices(config);
 
         // Adding All Pub & Sub Events with reflection
         builder.Services.AddSingleton<SubTopicsRegister>();
