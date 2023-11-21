@@ -70,7 +70,18 @@ public class Program
         }
         else
         {
-            Console.WriteLine("Failed to create user.");
+            // Read the response content which contains the error message
+            var responseContent = await response.Content.ReadAsStringAsync();
+            try
+            {
+                //var errorResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+                //Console.WriteLine($"Failed to create user: {errorResult["Message"]}");
+                Console.WriteLine($"{responseContent}");
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine("Failed to create user: An unknown error occurred.");
+            }
         }
     }
 
