@@ -1,3 +1,4 @@
+using _CommonLibrary.Patterns.ResultPattern;
 using Application.AppServices.V1._Interfaces;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
@@ -44,19 +45,23 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
     {
-        var refreshedTokens = await _authServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
+        var result = await _authServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
 
-        if (refreshedTokens != null)
+        if (result.IsSuccess)
         {
             return Ok(new 
-            { 
-                Message = "Token refreshed",
-                refreshedTokens.Value.NewToken,
-                refreshedTokens.Value.NewRefreshToken 
+            {
+                AccessToken = result.Data.NewToken,
+                RefreshToken = result.Data.NewRefreshToken 
             });
         }
 
-        return Unauthorized(new { Message = "Invalid token or unauthorized" });
+        return result.ErrorType switch
+        {
+            ServiceErrorType.BadRequest => BadRequest(new { result.Message }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Message }),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, new { result.Message })
+        };
     }
 
     /// <summary>
@@ -68,11 +73,6 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
         var newUser = new User
         {
             Email = newUserDto.Email,
@@ -97,23 +97,28 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
     {
         var result = await _authServiceV1.LoginAsync(requestDto.Email, requestDto.Password);
 
-        if (result != null)
+        if (result.IsSuccess)
         {
-            var (token, refreshToken) = result.Value;  // Use Value to get the underlying non-nullable tuple
-            
             return Ok(new LoginResponseDto
             {
-                AccessToken = token,
-                RefreshToken = refreshToken  // Assuming you've added this to LoginResponseDto
+                AccessToken = result.Data.AccessToken,
+                RefreshToken = result.Data.RefreshToken
             });
         }
 
-        return Unauthorized(new { Message = "Invalid email or password" });
+        return result.ErrorType switch
+        {
+            ServiceErrorType.BadRequest => BadRequest(new { result.Message }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Message }),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using _CommonLibrary.Patterns.ResultPattern;
 using Application.AppServices.V1;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;

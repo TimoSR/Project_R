@@ -1,6 +1,7 @@
+using _CommonLibrary.Patterns._Interfaces;
+using _CommonLibrary.Patterns.ResultPattern;
 using Application.AppServices.V1._Interfaces;
 using Domain.DomainModels;
-using Domain.DomainModels.Enums;
 using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 
@@ -32,90 +33,67 @@ public class AuthService : IAuthServiceV1
         _logger = logger;
     }
     
-    public async Task<(string NewToken, string NewRefreshToken)?> RefreshTokenAsync(string refreshToken)
+    public async Task<IServiceResult> RefreshTokenAsync(string refreshToken)
     {
-        try
+        var userId = await _userRepository.ValidateRefreshTokenAsync(refreshToken);
+
+        if (string.IsNullOrEmpty(userId))
         {
-            var userId = await _userRepository.ValidateRefreshTokenAsync(refreshToken);
-        
-            if (string.IsNullOrEmpty(userId))
-            {
-                _logger.LogWarning($"Invalid or expired refresh token");
-                return null;
-            }
-        
-            // Optionally: Revoke the old refresh token
-            await _userRepository.UpdateRefreshTokenAsync(userId, null);
-
-            // Generate a new JWT token
-            var newToken = _tokenHandler.GenerateJwtToken(userId);
-
-            // Optionally: Generate a new refresh token and store it
-            var newRefreshToken = _tokenHandler.GenerateRefreshToken();
-        
-            await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken);
-
-            return (NewToken: newToken, NewRefreshToken: newRefreshToken);
+            return ServiceResult<(string, string)>.Failure("Invalid or expired refresh token", ServiceErrorType.Unauthorized);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Failed to refresh token: {ex.Message}");
-            return null;
-        }
+
+        // Optionally: Revoke the old refresh token
+        await _userRepository.UpdateRefreshTokenAsync(userId, null);
+
+        // Generate a new JWT token
+        var newToken = _tokenHandler.GenerateJwtToken(userId);
+
+        // Optionally: Generate a new refresh token and store it
+        var newRefreshToken = _tokenHandler.GenerateRefreshToken();
+
+        await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken);
+
+        return ServiceResult<(string NewToken, string NewRefreshToken)>.Success((newToken, newRefreshToken), "Token refreshed successfully");
     }
-
-
-    public async Task<(string Token, string RefreshToken)?> LoginAsync(string email, string password)
+    
+    public async Task<IServiceResult> LoginAsync(string email, string password)
     {
-        _logger.LogInformation("Attempting to authenticate user with email: {Email}", email);
-
         if (!_emailValidator.IsValid(email))
         {
-            _logger.LogWarning("Invalid email provided: {Email}", email);
-            return null;
+            return ServiceResult<(string, string)>.Failure("Invalid email format", ServiceErrorType.BadRequest);
         }
 
         var user = await _userRepository.FindByEmailAsync(email);
-
+        
         if (user == null || !_passwordHasher.VerifyHashedPassword(user, password))
         {
-            _logger.LogWarning("Authentication failed for email: {Email}", email);
-            return null;
+            return ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.Unauthorized);
         }
 
-        // Generate Tokens
         var accessToken = _tokenHandler.GenerateJwtToken(user.Id);
         var refreshToken = _tokenHandler.GenerateRefreshToken();
-        
-        await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken); // Assume 6 hours expiration for refresh tokens
 
-        _logger.LogInformation("Successfully authenticated user with email: {Email}", email);
+        await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken);
 
-        return (accessToken, refreshToken);
+        return ServiceResult<(string AccessToken, string RefreshToken)>.Success((accessToken, refreshToken), "Login successful");
     }
 
-    public async Task<UserRegistrationResult> RegisterAsync(User newUser)
+    public async Task<IServiceResult> RegisterAsync(User newUser)
     {
-        _logger.LogInformation("Attempting to register new user with email: {Email}", newUser.Email);
-
         if (!_emailValidator.IsValid(newUser.Email))
         {
-            _logger.LogWarning("Invalid email provided for registration: {Email}", newUser.Email);
-            return UserRegistrationResult.InvalidEmail;
+            return ServiceResult.Failure("Invalid email format", ServiceErrorType.BadRequest);
         }
 
         var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
-        
         if (existingUser != null)
         {
-            _logger.LogWarning("Email already exists: {Email}", newUser.Email);
-            return UserRegistrationResult.EmailAlreadyExists;
+            return ServiceResult.Failure("Email already exists", ServiceErrorType.BadRequest);
         }
-        
+
         if (!_passwordValidator.IsValid(newUser.Password))
         {
-            _logger.LogWarning("Invalid password provided for email: {Email}", newUser.Email);
-            return UserRegistrationResult.InvalidPassword;
+            return ServiceResult.Failure("Invalid password", ServiceErrorType.BadRequest);
         }
 
         // Hash the password
@@ -124,10 +102,9 @@ public class AuthService : IAuthServiceV1
         // Insert new user
         await _userRepository.CreateUserAsync(newUser);
 
-        _logger.LogInformation("Successfully registered new user with email: {Email}", newUser.Email);
-
-        return UserRegistrationResult.Successful;
+        return ServiceResult.Success("User successfully registered");
     }
+
 
     public async Task<bool> LogoutAsync(string userId)
     {

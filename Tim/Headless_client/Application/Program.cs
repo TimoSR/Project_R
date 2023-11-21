@@ -72,15 +72,17 @@ public class Program
         {
             // Read the response content which contains the error message
             var responseContent = await response.Content.ReadAsStringAsync();
+            
+            // Get the numeric status code (e.g., 400, 401, 500)
+            int statusCode = (int)response.StatusCode;
+
             try
             {
-                //var errorResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
-                //Console.WriteLine($"Failed to create user: {errorResult["Message"]}");
-                Console.WriteLine($"{responseContent}");
+                Console.WriteLine($"Failed to create user (HTTP Status Code {statusCode}): {responseContent}");
             }
             catch (JsonException)
             {
-                Console.WriteLine("Failed to create user: An unknown error occurred.");
+                Console.WriteLine($"Failed to create user (HTTP Status Code {statusCode}): An unknown error occurred.");
             }
         }
     }
