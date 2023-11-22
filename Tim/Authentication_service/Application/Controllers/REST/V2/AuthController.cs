@@ -1,8 +1,6 @@
 using Application.AppServices.V2._Interfaces;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
-using Domain.DomainModels;
-using Domain.DomainModels.Enums;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -59,37 +57,37 @@ public class AuthController : ControllerBase
         return Unauthorized(new { Message = "Invalid token or unauthorized" });
     }
 
-    /// <summary>
-    /// Register a new user
-    /// </summary>
-    [AllowAnonymous]
-    [HttpPost("register")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        var newUser = new User
-        {
-            Email = newUserDto.Email,
-            Password = newUserDto.Password
-        };
-
-        var result = await _authService.RegisterAsync(newUser);
-
-        return result switch
-        {
-            UserRegistrationResult.Successful => Ok(new { Message = "User successfully registered" }),
-            UserRegistrationResult.InvalidEmail => BadRequest(new { Message = "Invalid email address" }),
-            UserRegistrationResult.EmailAlreadyExists => BadRequest(new { Message = "Email already exists" }),
-            UserRegistrationResult.InvalidPassword => BadRequest(new { Message = "Password must have a minimum length of 6 and include at least one uppercase letter, number, and special symbol (e.g., !@#$%^&*)." }),
-            _ => BadRequest(new { Message = "An unknown error occurred" })
-        };
-    }
+    // /// <summary>
+    // /// Register a new user
+    // /// </summary>
+    // [AllowAnonymous]
+    // [HttpPost("register")]
+    // [ProducesResponseType(StatusCodes.Status200OK)]
+    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
+    // {
+    //     if (!ModelState.IsValid)
+    //     {
+    //         return BadRequest(ModelState);
+    //     }
+    //     
+    //     var newUser = new User
+    //     {
+    //         Email = newUserDto.Email,
+    //         Password = newUserDto.Password
+    //     };
+    //
+    //     var result = await _authService.RegisterAsync(newUser);
+    //
+    //     return result switch
+    //     {
+    //         UserRegistrationResult.Successful => Ok(new { Message = "User successfully registered" }),
+    //         UserRegistrationResult.InvalidEmail => BadRequest(new { Message = "Invalid email address" }),
+    //         UserRegistrationResult.EmailAlreadyExists => BadRequest(new { Message = "Email already exists" }),
+    //         UserRegistrationResult.InvalidPassword => BadRequest(new { Message = "Password must have a minimum length of 6 and include at least one uppercase letter, number, and special symbol (e.g., !@#$%^&*)." }),
+    //         _ => BadRequest(new { Message = "An unknown error occurred" })
+    //     };
+    // }
 
     /// <summary>
     /// Authenticate a user

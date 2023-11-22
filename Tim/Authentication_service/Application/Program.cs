@@ -150,7 +150,7 @@ public class Program
     
         // Controller Middlewares
         app.UseCors("MyCorsPolicy");
-        app.UseMiddleware<DetailedLoggingMiddleware>();
+        app.UseMiddleware<RequestLoggingMiddleware>();
         app.UseIpRateLimiting();
         // Jwt Authentication
         app.UseMiddleware<JwtMiddleware>();

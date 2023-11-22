@@ -18,11 +18,11 @@ public class RequestLoggingMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var watch = Stopwatch.StartNew();
-        _logger.LogInformation($"Incoming request: {context.Request.Method} {context.Request.Path}");
+        _logger.LogWarning("Incoming request: {Method} {Path}", context.Request.Method, context.Request.Path);
 
         await _next(context);
 
         watch.Stop();
-        _logger.LogInformation($"Request completed with status code: {context.Response.StatusCode}, in {watch.ElapsedMilliseconds}ms");
+        _logger.LogWarning("Request completed with status code: {StatusCode}, in {ElapsedMilliseconds}ms", context.Response.StatusCode, watch.ElapsedMilliseconds);
     }
 }

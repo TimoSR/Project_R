@@ -1,7 +1,5 @@
-using Application.AppServices.V1._Interfaces;
 using Application.AppServices.V2._Interfaces;
 using Domain.DomainModels;
-using Domain.DomainModels.Enums;
 using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 
@@ -95,40 +93,40 @@ public class AuthService : IAuthServiceV2
         return (accessToken, refreshToken);
     }
 
-    public async Task<UserRegistrationResult> RegisterAsync(User newUser)
-    {
-        _logger.LogInformation("Attempting to register new user with email: {Email}", newUser.Email);
-
-        if (!_emailValidator.IsValid(newUser.Email))
-        {
-            _logger.LogWarning("Invalid email provided for registration: {Email}", newUser.Email);
-            return UserRegistrationResult.InvalidEmail;
-        }
-
-        var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
-        
-        if (existingUser != null)
-        {
-            _logger.LogWarning("Email already exists: {Email}", newUser.Email);
-            return UserRegistrationResult.EmailAlreadyExists;
-        }
-        
-        if (!_passwordValidator.IsValid(newUser.Password))
-        {
-            _logger.LogWarning("Invalid password provided for email: {Email}", newUser.Email);
-            return UserRegistrationResult.InvalidPassword;
-        }
-
-        // Hash the password
-        newUser.Password = _passwordHasher.HashPassword(newUser);
-
-        // Insert new user
-        await _userRepository.CreateUserAsync(newUser);
-
-        _logger.LogInformation("Successfully registered new user with email: {Email}", newUser.Email);
-
-        return UserRegistrationResult.Successful;
-    }
+    // public async Task<UserRegistrationResult> RegisterAsync(User newUser)
+    // {
+    //     _logger.LogInformation("Attempting to register new user with email: {Email}", newUser.Email);
+    //
+    //     if (!_emailValidator.IsValid(newUser.Email))
+    //     {
+    //         _logger.LogWarning("Invalid email provided for registration: {Email}", newUser.Email);
+    //         return UserRegistrationResult.InvalidEmail;
+    //     }
+    //
+    //     var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
+    //     
+    //     if (existingUser != null)
+    //     {
+    //         _logger.LogWarning("Email already exists: {Email}", newUser.Email);
+    //         return UserRegistrationResult.EmailAlreadyExists;
+    //     }
+    //     
+    //     if (!_passwordValidator.IsValid(newUser.Password))
+    //     {
+    //         _logger.LogWarning("Invalid password provided for email: {Email}", newUser.Email);
+    //         return UserRegistrationResult.InvalidPassword;
+    //     }
+    //
+    //     // Hash the password
+    //     newUser.Password = _passwordHasher.HashPassword(newUser);
+    //
+    //     // Insert new user
+    //     await _userRepository.CreateUserAsync(newUser);
+    //
+    //     _logger.LogInformation("Successfully registered new user with email: {Email}", newUser.Email);
+    //
+    //     return UserRegistrationResult.Successful;
+    // }
 
     public async Task<bool> LogoutAsync(string userId)
     {

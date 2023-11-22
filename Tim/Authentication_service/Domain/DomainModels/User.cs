@@ -5,6 +5,8 @@ namespace Domain.DomainModels
 {
     public class User
     {
+        public const int MinPasswordLength = 6;
+        
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }

@@ -2,6 +2,7 @@ using _CommonLibrary.Patterns._Interfaces;
 using _CommonLibrary.Patterns.ResultPattern;
 using Application.AppServices.V1._Interfaces;
 using Domain.DomainModels;
+using Domain.DomainModels.Messages;
 using Domain.IRepositories;
 using Infrastructure.Utilities._Interfaces;
 
@@ -33,7 +34,7 @@ public class AuthService : IAuthServiceV1
         _logger = logger;
     }
     
-    public async Task<IServiceResult> RefreshTokenAsync(string refreshToken)
+    public async Task<ServiceResult<(string NewToken, string NewRefreshToken)>?> RefreshTokenAsync(string refreshToken)
     {
         var userId = await _userRepository.ValidateRefreshTokenAsync(refreshToken);
 
@@ -53,10 +54,10 @@ public class AuthService : IAuthServiceV1
 
         await _userRepository.UpdateRefreshTokenAsync(userId, newRefreshToken);
 
-        return ServiceResult<(string NewToken, string NewRefreshToken)>.Success((newToken, newRefreshToken), "Token refreshed successfully");
+        return ServiceResult<(string, string)>.Success((newToken, newRefreshToken), "Token refreshed successfully");
     }
     
-    public async Task<IServiceResult> LoginAsync(string email, string password)
+    public async Task<ServiceResult<(string Token, string RefreshToken)>> LoginAsync(string email, string password)
     {
         if (!_emailValidator.IsValid(email))
         {
@@ -75,25 +76,28 @@ public class AuthService : IAuthServiceV1
 
         await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken);
 
-        return ServiceResult<(string AccessToken, string RefreshToken)>.Success((accessToken, refreshToken), "Login successful");
+        return ServiceResult<(string, string)>.Success((accessToken, refreshToken), "Login successful");
     }
 
     public async Task<IServiceResult> RegisterAsync(User newUser)
     {
+        var message = new UserRegistrationResultMessage();
+        
         if (!_emailValidator.IsValid(newUser.Email))
         {
-            return ServiceResult.Failure("Invalid email format", ServiceErrorType.BadRequest);
+            return ServiceResult.Failure(message.InvalidEmail, ServiceErrorType.BadRequest);
         }
 
         var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
+        
         if (existingUser != null)
         {
-            return ServiceResult.Failure("Email already exists", ServiceErrorType.BadRequest);
+            return ServiceResult.Failure(message.EmailAlreadyExists, ServiceErrorType.BadRequest);
         }
 
         if (!_passwordValidator.IsValid(newUser.Password))
         {
-            return ServiceResult.Failure("Invalid password", ServiceErrorType.BadRequest);
+            return ServiceResult.Failure(message.InvalidPassword, ServiceErrorType.BadRequest);
         }
 
         // Hash the password
@@ -102,9 +106,8 @@ public class AuthService : IAuthServiceV1
         // Insert new user
         await _userRepository.CreateUserAsync(newUser);
 
-        return ServiceResult.Success("User successfully registered");
+        return ServiceResult.Success(message.Successful);
     }
-
 
     public async Task<bool> LogoutAsync(string userId)
     {

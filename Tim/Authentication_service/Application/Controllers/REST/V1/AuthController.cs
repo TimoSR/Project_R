@@ -3,7 +3,6 @@ using Application.AppServices.V1._Interfaces;
 using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
 using Domain.DomainModels;
-using Domain.DomainModels.Enums;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -81,13 +80,16 @@ public class AuthController : ControllerBase
 
         var result = await _authServiceV1.RegisterAsync(newUser);
 
-        return result switch
+        if (result.IsSuccess)
         {
-            UserRegistrationResult.Successful => Ok(new { Message = "User successfully registered" }),
-            UserRegistrationResult.InvalidEmail => BadRequest(new { Message = "Invalid email address" }),
-            UserRegistrationResult.EmailAlreadyExists => BadRequest(new { Message = "Email already exists" }),
-            UserRegistrationResult.InvalidPassword => BadRequest(new { Message = "Password must have a minimum length of 6 and include at least one uppercase letter, number, and special symbol (e.g., !@#$%^&*)." }),
-            _ => BadRequest(new { Message = "An unknown error occurred" })
+            return Ok(new { result.Message });
+        }
+
+        return result.ErrorType switch
+        {
+            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Message }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { Message = result.Message }),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = result.Message })
         };
     }
 
@@ -108,7 +110,7 @@ public class AuthController : ControllerBase
         {
             return Ok(new LoginResponseDto
             {
-                AccessToken = result.Data.AccessToken,
+                AccessToken = result.Data.Token,
                 RefreshToken = result.Data.RefreshToken
             });
         }
