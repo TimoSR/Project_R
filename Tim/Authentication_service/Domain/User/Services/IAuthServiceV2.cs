@@ -1,8 +1,8 @@
-using Application.Registrations._Interfaces;
+using Domain._SharedKernel.Services._Interfaces;
 
-namespace Application.AppServices.V2._Interfaces;
+namespace Domain.User.Services;
 
-public interface IAuthServiceV2 : IAppService
+public interface IAuthServiceV2 : IService
 {
     Task<(string NewToken, string NewRefreshToken)?> RefreshTokenAsync(string refreshToken);
     Task<(string Token, string RefreshToken)?> LoginAsync(string email, string password);

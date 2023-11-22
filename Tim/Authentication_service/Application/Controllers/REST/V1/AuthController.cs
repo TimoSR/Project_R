@@ -1,8 +1,8 @@
 using _CommonLibrary.Patterns.ResultPattern;
-using Application.AppServices.V1._Interfaces;
-using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
-using Domain.DomainModels;
+using Application.DTO.Auth;
+using Domain.User.Entities;
+using Domain.User.Services;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +32,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult CheckTokenValidity()
     {
+        // Token Validation happens in the middleware
         // If this point is reached, the token is valid
         return Ok(new { Message = "Token is valid" });
     }

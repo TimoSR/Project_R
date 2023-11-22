@@ -7,12 +7,23 @@
 
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.14" />
     <PackageReference Include="MongoDB.Bson" Version="2.20.0" />
     <PackageReference Include="protobuf-net.Core" Version="3.2.26" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DomainModels\Enums\" />
-    <Folder Include="ValueObject\" />
+    <Folder Include="Product\Entities\" />
+    <Folder Include="Product\Enums\" />
+    <Folder Include="Product\Repositories\" />
+    <Folder Include="Product\Services\" />
+    <Folder Include="Product\ValueObjects\" />
+    <Folder Include="User\Events\" />
+    <Folder Include="User\Enums\" />
+    <Folder Include="User\ValueObjects\" />
+    <Folder Include="_SharedKernel\Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\_CommonLibrary\_CommonLibrary.csproj" />
   </ItemGroup>
 
 </Project>

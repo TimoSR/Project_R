@@ -1,6 +1,6 @@
-using Application.AppServices.V2._Interfaces;
-using Domain.DomainModels;
-using Domain.IRepositories;
+
+using Domain.User.Repositories;
+using Domain.User.Services;
 using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V2;

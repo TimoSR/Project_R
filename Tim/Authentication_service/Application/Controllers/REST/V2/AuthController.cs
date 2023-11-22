@@ -1,6 +1,6 @@
-using Application.AppServices.V2._Interfaces;
-using Application.DataTransferObjects.Auth;
 using Application.DataTransferObjects.UserManagement;
+using Application.DTO.Auth;
+using Domain.User.Services;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;

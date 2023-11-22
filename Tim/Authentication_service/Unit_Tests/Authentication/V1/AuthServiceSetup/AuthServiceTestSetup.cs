@@ -1,5 +1,7 @@
 using Domain.DomainModels;
-using Domain.IRepositories;
+using Domain.User.Entities;
+using Domain.User.Repositories;
+using Domain.User.Services._Interfaces;
 using Infrastructure.Utilities._Interfaces;
 using Moq;
 

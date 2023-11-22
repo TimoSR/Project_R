@@ -1,6 +1,5 @@
-using System.Threading.Tasks;
-using Domain.DomainModels;
-using Domain.IRepositories;
+using Domain.User.Entities;
+using Domain.User.Repositories;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Persistence.MongoDB;
 using Microsoft.Extensions.Logging;

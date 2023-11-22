@@ -1,5 +1,6 @@
 using System.Reflection;
 using Application.Registrations._Interfaces;
+using Domain._SharedKernel.Services._Interfaces;
 
 namespace Application.Registrations.Services;
 
@@ -9,7 +10,7 @@ public static class ServiceRegistration
     {   
         
         // Fetch all types that are classes and implement the IUtilityTool interface.
-        var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IAppService)));
+        var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IService)));
 
         foreach (var type in types)
         {

@@ -1,4 +1,4 @@
-namespace Application.DataTransferObjects.Auth;
+namespace Application.DTO.Auth;
 
 public class AuthRequestDto
 {

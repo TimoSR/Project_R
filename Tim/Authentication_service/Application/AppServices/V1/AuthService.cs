@@ -1,9 +1,8 @@
-using _CommonLibrary.Patterns._Interfaces;
 using _CommonLibrary.Patterns.ResultPattern;
-using Application.AppServices.V1._Interfaces;
-using Domain.DomainModels;
-using Domain.DomainModels.Messages;
-using Domain.IRepositories;
+using Domain.User.Entities;
+using Domain.User.Messages;
+using Domain.User.Repositories;
+using Domain.User.Services;
 using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
@@ -61,7 +60,7 @@ public class AuthService : IAuthServiceV1
     {
         if (!_emailValidator.IsValid(email))
         {
-            return ServiceResult<(string, string)>.Failure("Invalid email format", ServiceErrorType.BadRequest);
+            return ServiceResult<(string, string)>.Failure(_CommonUserMsg.InvalidEmail, ServiceErrorType.BadRequest);
         }
 
         var user = await _userRepository.FindByEmailAsync(email);
@@ -79,25 +78,23 @@ public class AuthService : IAuthServiceV1
         return ServiceResult<(string, string)>.Success((accessToken, refreshToken), "Login successful");
     }
 
-    public async Task<IServiceResult> RegisterAsync(User newUser)
-    {
-        var message = new UserRegistrationResultMessage();
-        
+    public async Task<ServiceResult> RegisterAsync(User newUser)
+    {   
         if (!_emailValidator.IsValid(newUser.Email))
         {
-            return ServiceResult.Failure(message.InvalidEmail, ServiceErrorType.BadRequest);
+            return ServiceResult.Failure(_CommonUserMsg.InvalidEmail, ServiceErrorType.BadRequest);
         }
 
         var existingUser = await _userRepository.FindByEmailAsync(newUser.Email);
         
         if (existingUser != null)
         {
-            return ServiceResult.Failure(message.EmailAlreadyExists, ServiceErrorType.BadRequest);
+            return ServiceResult.Failure(UserRegMsg.EmailAlreadyExists, ServiceErrorType.BadRequest);
         }
 
         if (!_passwordValidator.IsValid(newUser.Password))
         {
-            return ServiceResult.Failure(message.InvalidPassword, ServiceErrorType.BadRequest);
+            return ServiceResult.Failure(_CommonUserMsg.InvalidPassword, ServiceErrorType.BadRequest);
         }
 
         // Hash the password
@@ -106,7 +103,7 @@ public class AuthService : IAuthServiceV1
         // Insert new user
         await _userRepository.CreateUserAsync(newUser);
 
-        return ServiceResult.Success(message.Successful);
+        return ServiceResult.Success(UserRegMsg.Successful);
     }
 
     public async Task<bool> LogoutAsync(string userId)

@@ -1,4 +1,4 @@
-using Domain.DomainModels;
+using Domain.User.Entities;
 
 namespace Infrastructure.Utilities._Interfaces;
 
