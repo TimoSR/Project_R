@@ -1,8 +1,7 @@
-using _CommonLibrary.Patterns.ResultPattern;
-using Application.DataTransferObjects.UserManagement;
+using _CommonLibrary.Patterns._Enums;
+using Application.AppServices._Interfaces;
 using Application.DTO.Auth;
-using Domain.User.Entities;
-using Domain.User.Services;
+using Application.DTO.UserManagement;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +16,11 @@ namespace Application.Controllers.REST.V1;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthServiceV1 _authServiceV1;
+    private readonly IAuthAppServiceV1 _authAppServiceV1;
 
-    public AuthController(IAuthServiceV1 authServiceV1)
+    public AuthController(IAuthAppServiceV1 authAppServiceV1)
     {
-        _authServiceV1 = authServiceV1;
+        _authAppServiceV1 = authAppServiceV1;
     }
     
     /// <summary>
@@ -45,7 +44,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
     {
-        var result = await _authServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
+        var result = await _authAppServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
 
         if (result.IsSuccess)
         {
@@ -65,36 +64,6 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Register a new user
-    /// </summary>
-    [AllowAnonymous]
-    [HttpPost("register")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
-    {
-        var newUser = new User
-        {
-            Email = newUserDto.Email,
-            Password = newUserDto.Password
-        };
-
-        var result = await _authServiceV1.RegisterAsync(newUser);
-
-        if (result.IsSuccess)
-        {
-            return Ok(new { result.Message });
-        }
-
-        return result.ErrorType switch
-        {
-            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Message }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { Message = result.Message }),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = result.Message })
-        };
-    }
-
-    /// <summary>
     /// Authenticate a user
     /// </summary>
     [AllowAnonymous]
@@ -105,7 +74,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
     {
-        var result = await _authServiceV1.LoginAsync(requestDto.Email, requestDto.Password);
+        var result = await _authAppServiceV1.LoginAsync(requestDto.Email, requestDto.Password);
 
         if (result.IsSuccess)
         {
@@ -132,7 +101,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
     {
-        var result = await _authServiceV1.LogoutAsync(requestDto.UserId);
+        var result = await _authAppServiceV1.LogoutAsync(requestDto.UserId);
 
         if (result)
         {
@@ -140,24 +109,6 @@ public class AuthController : ControllerBase
         }
 
         return BadRequest(new { Message = "Failed to logout" });
-    }
-
-    /// <summary>
-    /// Delete a user
-    /// </summary>
-    [HttpDelete("delete")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteUser([FromBody] DeleteRequestDto requestDto)
-    {
-        var result = await _authServiceV1.DeleteUserAsync(requestDto.UserId);
-
-        if (result)
-        {
-            return Ok(new { Message = "User deleted successfully" });
-        }
-
-        return BadRequest(new { Message = "Failed to delete user" });
     }
 }
 

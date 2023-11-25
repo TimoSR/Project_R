@@ -20,7 +20,6 @@
     <Folder Include="User\Events\" />
     <Folder Include="User\Enums\" />
     <Folder Include="User\ValueObjects\" />
-    <Folder Include="_SharedKernel\Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\_CommonLibrary\_CommonLibrary.csproj" />

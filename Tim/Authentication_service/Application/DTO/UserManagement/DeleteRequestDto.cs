@@ -1,4 +1,4 @@
-namespace Application.DataTransferObjects.UserManagement;
+namespace Application.DTO.UserManagement;
 
 public class DeleteRequestDto
 {

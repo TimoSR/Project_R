@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DotNetEnv" Version="2.5.0" />
     <PackageReference Include="Google.Cloud.PubSub.V1" Version="3.6.0" />
     <PackageReference Include="Google.Protobuf" Version="3.23.4" />

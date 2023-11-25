@@ -6,5 +6,4 @@ public interface IServiceResult
 {
     bool IsSuccess { get; }
     string? Message { get; }
-    ServiceErrorType ErrorType { get; } // Consider adding ErrorType if needed
 }

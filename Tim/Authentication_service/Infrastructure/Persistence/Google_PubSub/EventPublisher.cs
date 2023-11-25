@@ -1,5 +1,5 @@
 using System.Reflection;
-using Domain.DomainEvents._Attributes;
+using _CommonLibrary.Patterns.RegistrationHooks.Events._Attributes;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Infrastructure.Persistence._Interfaces;

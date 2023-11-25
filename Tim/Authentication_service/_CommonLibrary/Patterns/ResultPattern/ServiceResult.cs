@@ -1,17 +1,7 @@
+using _CommonLibrary.Patterns._Enums;
 using _CommonLibrary.Patterns._Interfaces;
 
 namespace _CommonLibrary.Patterns.ResultPattern;
-
-// Define the ErrorType enumeration
-public enum ServiceErrorType
-{
-    None,
-    BadRequest,
-    Unauthorized,
-    NotFound,
-    InternalError,
-    // other error types...
-}
 
 public class ServiceResult : IServiceResult
 {

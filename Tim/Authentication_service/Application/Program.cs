@@ -1,16 +1,17 @@
 using System.Security.Cryptography;
-using Application.Registrations.DataSeeder;
-using Application.Registrations.Events;
-using Application.Registrations.GraphQL;
-using Application.Registrations.Services;
+using Application._Registration.DataSeeder;
+using Application._Registration.Events;
+using Application._Registration.GraphQL;
+using Application._Registration.Services;
 using Application.Startup;
 using AspNetCoreRateLimit;
+using Domain._Registration;
+using Infrastructure._Registration.Repositories;
+using Infrastructure._Registration.Utilities;
 using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
 using Infrastructure.Persistence.Redis;
-using Infrastructure.Registrations.Repositories;
-using Infrastructure.Registrations.Utilities;
 using Infrastructure.Swagger;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
@@ -86,9 +87,13 @@ public class Program
 
         // Add this after all project dependencies to register all the services.
         builder.Services.AddApplicationServices();
+        builder.Services.AddDomainServices();
 
         //Adding the Controllers
         builder.Services.AddControllers();
+        
+        //Adding Automapper
+        builder.Services.AddAutoMapper(typeof(Program));
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -144,7 +149,7 @@ public class Program
         {
             app.GenerateSwaggerDocs();
         }
-
+        
         // Enable this for Https only
         //app.UseHttpsRedirection();
     

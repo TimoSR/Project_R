@@ -1,7 +1,7 @@
 using Application.AppServices.V1._Interfaces;
 using Application.Controllers.REST.V1;
-using Application.DataTransferObjects.UserManagement;
 using Application.DTO.Auth;
+using Application.DTO.UserManagement;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
 using Domain.User.Entities;
