@@ -1,4 +1,4 @@
-namespace _CommonLibrary.Patterns._Enums;
+namespace _CommonLibrary.Patterns.ResultPattern._Enums;
 
 // Define the ErrorType enumeration
 public enum ServiceErrorType

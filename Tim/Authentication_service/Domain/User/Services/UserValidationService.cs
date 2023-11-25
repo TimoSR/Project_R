@@ -20,18 +20,11 @@ public class UserValidationService : IDomainService
         _passwordValidator = new PasswordValidator();
     }
 
-    public async Task<ValidationResult> ValidateNewUserAsync(string email, string password)
+    public ValidationResult ValidateNewUserAsync(string email, string password)
     {
         if (!_emailValidator.IsValid(email))
         {
             return ValidationResult.Failure(_CommonUserMsg.InvalidEmail);
-        }
-
-        var existingUser = await _userRepository.FindByEmailAsync(email);
-        
-        if (existingUser != null)
-        {
-            return ValidationResult.Failure(UserRegMsg.EmailAlreadyExists);
         }
 
         if (!_passwordValidator.IsValid(password))
@@ -41,7 +34,4 @@ public class UserValidationService : IDomainService
 
         return ValidationResult.Success();
     }
-    
-    
-
 }

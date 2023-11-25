@@ -1,5 +1,5 @@
-using _CommonLibrary.Patterns._Enums;
 using _CommonLibrary.Patterns._Interfaces;
+using _CommonLibrary.Patterns.ResultPattern._Enums;
 
 namespace _CommonLibrary.Patterns.ResultPattern;
 

@@ -2,6 +2,7 @@ namespace Domain.User.Repositories
 {
     public interface IUserRepository
     {
+        Task<bool> RegisterUserIfNotRegisteredAsync(Entities.User newUser);
         Task<Entities.User> FindByEmailAsync(string email);
         Task<bool> IsUserAuthorized(string id);
         Task<string> ValidateRefreshTokenAsync(string refreshToken);

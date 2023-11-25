@@ -1,7 +1,6 @@
-using _CommonLibrary.Patterns._Enums;
 using _CommonLibrary.Patterns.ResultPattern;
+using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
-using Domain.User.Messages;
 using Domain.User.Repositories;
 using Infrastructure.Utilities._Interfaces;
 

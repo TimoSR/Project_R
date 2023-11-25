@@ -1,5 +1,5 @@
-using _CommonLibrary.Patterns._Enums;
 using _CommonLibrary.Patterns.ResultPattern;
+using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.Auth;
 using Domain.User.Entities;
@@ -14,15 +14,14 @@ public class UserService : IUserService
 {
     private readonly UserValidationService _userValidationService;
     private readonly IUserRepository _userRepository;
-    private readonly ILogger<AuthService> _logger;
+    private readonly ILogger<UserService> _logger;
     private readonly IPasswordHasher _passwordHasher;
 
     public UserService(
         UserValidationService userValidationService,
         IUserRepository userRepository,
-        ILogger<AuthService> logger,
+        ILogger<UserService> logger,
         IPasswordHasher passwordHasher
-        
     )
     {
         _userValidationService = userValidationService;
@@ -33,26 +32,32 @@ public class UserService : IUserService
     
     public async Task<ServiceResult> RegisterAsync(UserRegisterDto userDto)
     {
-        var email = userDto.Email;
-        var password = userDto.Password;
-        
-        var validationResult = await _userValidationService.ValidateNewUserAsync(email, password);
-        
+        _logger.LogInformation("Starting user registration process for Email: {Email}", userDto.Email);
+
+        var validationResult = _userValidationService.ValidateNewUserAsync(userDto.Email, userDto.Password);
         if (!validationResult.IsSuccess)
         {
+            _logger.LogWarning("User registration validation failed for Email: {Email} - Reason: {Reason}", userDto.Email, validationResult.Message);
             return ServiceResult.Failure(validationResult.Message, ServiceErrorType.BadRequest);
         }
-    
+
         var newUser = new User
         {
             Email = userDto.Email,
             Password = _passwordHasher.HashPassword(userDto.Password)
         };
 
-        await _userRepository.CreateUserAsync(newUser);
+        bool registrationSuccess = await _userRepository.RegisterUserIfNotRegisteredAsync(newUser);
+        if (!registrationSuccess)
+        {
+            _logger.LogWarning("User registration failed for Email: {Email} - Email already exists", userDto.Email);
+            return ServiceResult.Failure(UserRegMsg.EmailAlreadyExists, ServiceErrorType.BadRequest);
+        }
 
-        return ServiceResult.Success(UserRegMsg.Successful);
+        _logger.LogInformation("User registration completed successfully for Email: {Email}", newUser.Email);
+        return ServiceResult.Success("User successfully registered.");  
     }
+
     
     public async Task<bool> DeleteUserAsync(string userId)
     {

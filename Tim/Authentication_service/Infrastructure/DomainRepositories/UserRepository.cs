@@ -13,6 +13,32 @@ namespace Infrastructure.DomainRepositories
             : base(dbManager, logger)
         {
         }
+        
+        public async Task<bool> RegisterUserIfNotRegisteredAsync(User newUser)
+        {
+            using var session = await _dbManager.GetClient().StartSessionAsync();
+            session.StartTransaction();
+            try
+            {
+                var collection = GetCollection();
+                var existingUser = await collection.Find(session, u => u.Email == newUser.Email).FirstOrDefaultAsync();
+                if (existingUser != null)
+                {
+                    await session.AbortTransactionAsync();
+                    return false;
+                }
+
+                await collection.InsertOneAsync(session, newUser);
+                await session.CommitTransactionAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await session.AbortTransactionAsync();
+                _logger.LogError($"Error during user registration: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<User> FindByEmailAsync(string email)
         {

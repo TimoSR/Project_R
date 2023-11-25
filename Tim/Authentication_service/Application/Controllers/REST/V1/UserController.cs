@@ -1,4 +1,4 @@
-using _CommonLibrary.Patterns._Enums;
+using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.Auth;
 using Application.DTO.UserManagement;
