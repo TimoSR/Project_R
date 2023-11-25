@@ -41,9 +41,7 @@ public class UserController : ControllerBase
 
         return result.ErrorType switch
         {
-            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { Message = result.Messages }),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = result.Messages })
+            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages })
         };
     }
 
