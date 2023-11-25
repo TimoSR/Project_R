@@ -37,8 +37,8 @@ public class UserService : IUserService
         var validationResult = _userValidationService.ValidateNewUserAsync(userDto.Email, userDto.Password);
         if (!validationResult.IsSuccess)
         {
-            _logger.LogWarning("User registration validation failed for Email: {Email} - Reason: {Reason}", userDto.Email, validationResult.Message);
-            return ServiceResult.Failure(validationResult.Message, ServiceErrorType.BadRequest);
+            _logger.LogWarning("User registration validation failed for Email: {Email} - Reason: {Reason}", userDto.Email, validationResult.Messages);
+            return ServiceResult.Failure(validationResult.Messages, ServiceErrorType.BadRequest);
         }
 
         var newUser = new User
@@ -47,7 +47,7 @@ public class UserService : IUserService
             Password = _passwordHasher.HashPassword(userDto.Password)
         };
 
-        bool registrationSuccess = await _userRepository.RegisterUserIfNotRegisteredAsync(newUser);
+        bool registrationSuccess = await _userRepository.CreateUserIfNotRegisteredAsync(newUser);
         if (!registrationSuccess)
         {
             _logger.LogWarning("User registration failed for Email: {Email} - Email already exists", userDto.Email);

@@ -22,16 +22,20 @@ public class UserValidationService : IDomainService
 
     public ValidationResult ValidateNewUserAsync(string email, string password)
     {
+        var validationResult = new ValidationResult();
+
         if (!_emailValidator.IsValid(email))
         {
-            return ValidationResult.Failure(_CommonUserMsg.InvalidEmail);
+            validationResult.AddError(_CommonUserMsg.InvalidEmail);
         }
 
         if (!_passwordValidator.IsValid(password))
         {
-            return ValidationResult.Failure(_CommonUserMsg.InvalidPassword);
+            validationResult.AddError(_CommonUserMsg.InvalidPassword);
         }
 
-        return ValidationResult.Success();
+        // If there are no errors, validationResult.IsSuccess will be true.
+        // If there are errors, validationResult.IsSuccess will be false and Messages will contain the errors.
+        return validationResult;
     }
 }

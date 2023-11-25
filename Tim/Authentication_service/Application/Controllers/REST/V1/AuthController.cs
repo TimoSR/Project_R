@@ -57,9 +57,9 @@ public class AuthController : ControllerBase
 
         return result.ErrorType switch
         {
-            ServiceErrorType.BadRequest => BadRequest(new { result.Message }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { result.Message }),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, new { result.Message })
+            ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages }),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, new { result.Messages })
         };
     }
 
@@ -87,8 +87,8 @@ public class AuthController : ControllerBase
 
         return result.ErrorType switch
         {
-            ServiceErrorType.BadRequest => BadRequest(new { result.Message }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { result.Message }),
+            ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages }),
             _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
     }

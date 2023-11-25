@@ -36,14 +36,14 @@ public class UserController : ControllerBase
 
         if (result.IsSuccess)
         {
-            return Ok(new { result.Message });
+            return Ok(new { result.Messages });
         }
 
         return result.ErrorType switch
         {
-            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Message }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { Message = result.Message }),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = result.Message })
+            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { Message = result.Messages }),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = result.Messages })
         };
     }
 

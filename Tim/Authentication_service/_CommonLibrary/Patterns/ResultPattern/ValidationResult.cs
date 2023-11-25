@@ -1,20 +1,29 @@
 using _CommonLibrary.Patterns._Interfaces;
 using _CommonLibrary.Patterns.ResultPattern._Enums;
+using System.Collections.Generic;
 
 namespace _CommonLibrary.Patterns.ResultPattern;
 
-public class ValidationResult : IServiceResult
+public class ValidationResult
 {
-    public bool IsSuccess { get; protected set; }
-    public string? Message { get; protected set; }
-    
-    public static ValidationResult Success(string? message = null)
+    public bool IsSuccess { get; private set; }
+    public List<string> Messages { get; private set; } = new List<string>();
+
+    // Constructor to set the default success state.
+    public ValidationResult(bool isSuccess = true)
     {
-        return new ValidationResult { IsSuccess = true, Message = message };
+        IsSuccess = isSuccess;
     }
 
-    public static ValidationResult Failure(string message, ServiceErrorType errorType = ServiceErrorType.InternalError)
+    // Method to add an error message.
+    public void AddError(string message)
     {
-        return new ValidationResult { IsSuccess = false, Message = message};
+        // When the first error is added, set IsSuccess to false.
+        if (IsSuccess && Messages.Count == 0)
+        {
+            IsSuccess = false;
+        }
+
+        Messages.Add(message);
     }
 }

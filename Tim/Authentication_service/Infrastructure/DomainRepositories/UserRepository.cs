@@ -14,7 +14,7 @@ namespace Infrastructure.DomainRepositories
         {
         }
         
-        public async Task<bool> RegisterUserIfNotRegisteredAsync(User newUser)
+        public async Task<bool> CreateUserIfNotRegisteredAsync(User newUser)
         {
             using var session = await _dbManager.GetClient().StartSessionAsync();
             session.StartTransaction();
@@ -24,16 +24,19 @@ namespace Infrastructure.DomainRepositories
                 var existingUser = await collection.Find(session, u => u.Email == newUser.Email).FirstOrDefaultAsync();
                 if (existingUser != null)
                 {
+                    // User already exists, no need to proceed further. Rollback any changes.
                     await session.AbortTransactionAsync();
                     return false;
                 }
 
                 await collection.InsertOneAsync(session, newUser);
+                // Commit the transaction. If an error occurs during commit, it will throw an exception.
                 await session.CommitTransactionAsync();
                 return true;
             }
             catch (Exception ex)
             {
+                // If any exception occurs during the transaction, rollback changes.
                 await session.AbortTransactionAsync();
                 _logger.LogError($"Error during user registration: {ex.Message}");
                 throw;
@@ -100,12 +103,6 @@ namespace Infrastructure.DomainRepositories
                 _logger.LogError($"Error validating refresh token: {ex.Message}");
                 throw;
             }
-        }
-
-
-        public async Task CreateUserAsync(User user)
-        {
-            await InsertAsync(user);
         }
         
         public async Task UpdateRefreshTokenAsync(string userId, string refreshToken)
