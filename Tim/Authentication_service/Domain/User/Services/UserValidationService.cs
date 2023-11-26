@@ -20,7 +20,7 @@ public class UserValidationService : IDomainService
         _passwordValidator = new PasswordValidator();
     }
 
-    public ValidationResult ValidateNewUserAsync(string email, string password)
+    public ValidationResult ValidateNewUser(string email, string password)
     {
         var validationResult = new ValidationResult();
 

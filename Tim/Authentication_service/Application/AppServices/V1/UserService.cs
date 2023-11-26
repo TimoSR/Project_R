@@ -33,29 +33,37 @@ public class UserService : IUserService
     public async Task<ServiceResult> RegisterAsync(UserRegisterDto userDto)
     {
         _logger.LogInformation("Starting user registration process for Email: {Email}", userDto.Email);
-
-        var validationResult = _userValidationService.ValidateNewUserAsync(userDto.Email, userDto.Password);
-        if (!validationResult.IsSuccess)
+        
+        try
         {
-            _logger.LogWarning("User registration validation failed for Email: {Email} - Reason: {Reason}", userDto.Email, validationResult.Messages);
-            return ServiceResult.Failure(validationResult.Messages, ServiceErrorType.BadRequest);
+            var validationResult = _userValidationService.ValidateNewUser(userDto.Email, userDto.Password);
+            if (!validationResult.IsSuccess)
+            {
+                _logger.LogWarning("User registration validation failed for Email: {Email} - Reasons: {Reasons}", userDto.Email, string.Join(", ", validationResult.Messages));
+                return ServiceResult.Failure(validationResult.Messages, ServiceErrorType.BadRequest);
+            }
+
+            var newUser = new User
+            {
+                Email = userDto.Email,
+                Password = _passwordHasher.HashPassword(userDto.Password)
+            };
+
+            bool registrationSuccess = await _userRepository.CreateUserIfNotRegisteredAsync(newUser);
+            if (!registrationSuccess)
+            {
+                _logger.LogWarning("User registration failed for Email: {Email} - Email already exists", userDto.Email);
+                return ServiceResult.Failure(UserRegMsg.EmailAlreadyExists, ServiceErrorType.BadRequest);
+            }
+
+            _logger.LogInformation("User registration completed successfully for Email: {Email}", newUser.Email);
+            return ServiceResult.Success("User successfully registered.");
         }
-
-        var newUser = new User
+        catch (Exception ex)
         {
-            Email = userDto.Email,
-            Password = _passwordHasher.HashPassword(userDto.Password)
-        };
-
-        bool registrationSuccess = await _userRepository.CreateUserIfNotRegisteredAsync(newUser);
-        if (!registrationSuccess)
-        {
-            _logger.LogWarning("User registration failed for Email: {Email} - Email already exists", userDto.Email);
-            return ServiceResult.Failure(UserRegMsg.EmailAlreadyExists, ServiceErrorType.BadRequest);
+            _logger.LogError(ex, "An unexpected error occurred during the user registration process for Email: {Email}", userDto.Email);
+            return ServiceResult.Failure( "An unexpected error occurred.");
         }
-
-        _logger.LogInformation("User registration completed successfully for Email: {Email}", newUser.Email);
-        return ServiceResult.Success("User successfully registered.");  
     }
 
     
