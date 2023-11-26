@@ -30,7 +30,7 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
+    public async Task<IActionResult> Register(UserRegisterDto newUserDto)
     {
         var result = await _userService.RegisterAsync(newUserDto);
 
@@ -51,7 +51,7 @@ public class UserController : ControllerBase
     [HttpDelete("delete")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteUser([FromBody] DeleteRequestDto requestDto)
+    public async Task<IActionResult> DeleteUser(DeleteRequestDto requestDto)
     {
         var result = await _userService.DeleteUserAsync(requestDto.UserId);
 

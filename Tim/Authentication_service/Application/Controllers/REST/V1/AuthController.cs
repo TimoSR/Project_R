@@ -16,11 +16,11 @@ namespace Application.Controllers.REST.V1;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthAppServiceV1 _authAppServiceV1;
+    private readonly IAuthAppServiceV1 _authAppService;
 
-    public AuthController(IAuthAppServiceV1 authAppServiceV1)
+    public AuthController(IAuthAppServiceV1 authAppService)
     {
-        _authAppServiceV1 = authAppServiceV1;
+        _authAppService = authAppService;
     }
     
     /// <summary>
@@ -42,9 +42,9 @@ public class AuthController : ControllerBase
     [HttpPost("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
+    public async Task<IActionResult> RefreshToken(AuthRequestDto authRequestDto)
     {
-        var result = await _authAppServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
+        var result = await _authAppService.RefreshTokenAsync(authRequestDto.RefreshToken);
 
         if (result.IsSuccess)
         {
@@ -58,8 +58,7 @@ public class AuthController : ControllerBase
         return result.ErrorType switch
         {
             ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages }),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, new { result.Messages })
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages })
         };
     }
 
@@ -71,10 +70,9 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
+    public async Task<IActionResult> Login(LoginRequestDto requestDto)
     {
-        var result = await _authAppServiceV1.LoginAsync(requestDto.Email, requestDto.Password);
+        var result = await _authAppService.LoginAsync(requestDto.Email, requestDto.Password);
 
         if (result.IsSuccess)
         {
@@ -88,8 +86,7 @@ public class AuthController : ControllerBase
         return result.ErrorType switch
         {
             ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages }),
-            _ => StatusCode(StatusCodes.Status500InternalServerError)
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages })
         };
     }
 
@@ -99,9 +96,9 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
+    public async Task<IActionResult> Logout(LogoutRequestDto requestDto)
     {
-        var result = await _authAppServiceV1.LogoutAsync(requestDto.UserId);
+        var result = await _authAppService.LogoutAsync(requestDto.UserId);
 
         if (result)
         {

@@ -36,6 +36,7 @@ public class UserService : IUserService
         
         try
         {
+            //
             var validationResult = _userValidationService.ValidateNewUser(userDto.Email, userDto.Password);
             if (!validationResult.IsSuccess)
             {
@@ -48,13 +49,15 @@ public class UserService : IUserService
                 Email = userDto.Email,
                 Password = _passwordHasher.HashPassword(userDto.Password)
             };
-
+            
+            //
             bool registrationSuccess = await _userRepository.CreateUserIfNotRegisteredAsync(newUser);
             if (!registrationSuccess)
             {
                 _logger.LogWarning("User registration failed for Email: {Email} - Email already exists", userDto.Email);
                 return ServiceResult.Failure(UserRegMsg.EmailAlreadyExists, ServiceErrorType.BadRequest);
             }
+            //
 
             _logger.LogInformation("User registration completed successfully for Email: {Email}", newUser.Email);
             return ServiceResult.Success("User successfully registered.");
