@@ -9,18 +9,15 @@ namespace Infrastructure.Middleware;
 
 public class ErrorResponse
 {
-    public int StatusCode { get; set; }
     public string Message { get; set; }
 
-    public ErrorResponse(int statusCode, string message)
+    public ErrorResponse(string message)
     {
-        StatusCode = statusCode;
         Message = message;
     }
 
     public string ToJson() => JsonSerializer.Serialize(this);
 }
-
 
 public class JwtMiddleware
 {
@@ -37,9 +34,7 @@ public class JwtMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Skip middleware for endpoints marked with [AllowAnonymous]
         var endpoint = context.GetEndpoint();
-        
         if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
         {
             await _next(context);
@@ -69,7 +64,7 @@ public class JwtMiddleware
         try
         {
             var principal = _tokenHandler.DecodeJwtToken(token);
-            context.User = principal; // Setting the user if token is valid.
+            context.User = principal;
             await _next(context);
         }
         catch (SecurityTokenExpiredException)
@@ -87,32 +82,30 @@ public class JwtMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred during token validation.");
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsync("An unexpected error occurred.");
+            await RespondWithInternalServerError(context, "An unexpected error occurred.");
         }
     }
 
-    private async Task RespondWithBadRequest(HttpContext context, string message)
+    private async Task RespondWithError(HttpContext context, int statusCode, string message)
     {
-        var errorResponse = new ErrorResponse(StatusCodes.Status400BadRequest, message);
-        context.Response.StatusCode = errorResponse.StatusCode;
+        var errorResponse = new ErrorResponse(message);
+        context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsync(errorResponse.ToJson());
     }
 
-    private async Task RespondWithUnauthorized(HttpContext context, string message)
+    private Task RespondWithBadRequest(HttpContext context, string message)
     {
-        var errorResponse = new ErrorResponse(StatusCodes.Status401Unauthorized, message);
-        context.Response.StatusCode = errorResponse.StatusCode;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync(errorResponse.ToJson());
+        return RespondWithError(context, StatusCodes.Status400BadRequest, message);
     }
 
-    private async Task RespondWithInternalServerError(HttpContext context, string message)
+    private Task RespondWithUnauthorized(HttpContext context, string message)
     {
-        var errorResponse = new ErrorResponse(StatusCodes.Status500InternalServerError, message);
-        context.Response.StatusCode = errorResponse.StatusCode;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync(errorResponse.ToJson());
+        return RespondWithError(context, StatusCodes.Status401Unauthorized, message);
+    }
+
+    private Task RespondWithInternalServerError(HttpContext context, string message)
+    {
+        return RespondWithError(context, StatusCodes.Status500InternalServerError, message);
     }
 }

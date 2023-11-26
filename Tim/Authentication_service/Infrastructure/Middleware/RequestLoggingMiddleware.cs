@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -18,11 +19,15 @@ public class RequestLoggingMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var watch = Stopwatch.StartNew();
-        _logger.LogWarning("Incoming request: {Method} {Path}", context.Request.Method, context.Request.Path);
+        _logger.LogInformation("Incoming request: {Method} {Path}", context.Request.Method, context.Request.Path);
 
         await _next(context);
 
         watch.Stop();
-        _logger.LogWarning("Request completed with status code: {StatusCode}, in {ElapsedMilliseconds}ms", context.Response.StatusCode, watch.ElapsedMilliseconds);
+        var statusCode = context.Response.StatusCode;
+        var statusCodeName = ((HttpStatusCode)statusCode).ToString();
+
+        _logger.LogInformation("Request completed with status code: {StatusCode}:{StatusCodeName}, in {ElapsedMilliseconds}ms", 
+            statusCode, statusCodeName, watch.ElapsedMilliseconds);
     }
 }
