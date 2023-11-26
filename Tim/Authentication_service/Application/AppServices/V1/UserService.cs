@@ -2,6 +2,7 @@ using _CommonLibrary.Patterns.ResultPattern;
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.Auth;
+using Application.DTO.UserManagement;
 using Domain.User.Entities;
 using Domain.User.Messages;
 using Domain.User.Repositories;
@@ -67,6 +68,24 @@ public class UserService : IUserService
             _logger.LogError(ex, "An unexpected error occurred during the user registration process for Email: {Email}", userDto.Email);
             return ServiceResult.Failure( "An unexpected error occurred.");
         }
+    }
+
+    public async Task<ServiceResult<UserDto>> GetUserByIdAsync(string userId)
+    {
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        if (user == null)
+        {
+            _logger.LogWarning("User with ID: {UserId} not found.", userId);
+            return ServiceResult<UserDto>.Failure("User not found.", ServiceErrorType.NotFound);
+        }
+
+        var userDto = new UserDto()
+        {
+            Id = user.Id,
+            Email = user.Email
+        };
+        
+        return ServiceResult<UserDto>.Success(userDto);
     }
 
     

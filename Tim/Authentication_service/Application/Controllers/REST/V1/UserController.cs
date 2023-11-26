@@ -44,6 +44,24 @@ public class UserController : ControllerBase
             ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages })
         };
     }
+    
+    /// <summary>
+    /// Register a new user
+    /// </summary>
+    [HttpGet("getById")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetById(string id)
+    {
+        var result = await _userService.GetUserByIdAsync(id);
+
+        if (result.IsSuccess)
+        {
+            return Ok(new { result.Data });
+        }   
+        
+        return BadRequest(new { Message = result.Messages});
+    }
 
     /// <summary>
     /// Delete a user

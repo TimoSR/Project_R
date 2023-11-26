@@ -13,7 +13,12 @@ namespace Infrastructure.DomainRepositories
             : base(dbManager, logger)
         {
         }
-        
+
+        public Task<User> GetUserByIdAsync(string id)
+        {
+            return GetByIdAsync(id);
+        }
+
         public async Task<bool> CreateUserIfNotRegisteredAsync(User newUser)
         {
             using var session = await _dbManager.GetClient().StartSessionAsync();
