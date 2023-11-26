@@ -1,7 +1,6 @@
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.Auth;
-using Application.DTO.UserManagement;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -96,9 +95,9 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Logout(LogoutRequestDto requestDto)
+    public async Task<IActionResult> Logout(string userId)
     {
-        var result = await _authAppService.LogoutAsync(requestDto.UserId);
+        var result = await _authAppService.LogoutAsync(userId);
 
         if (result)
         {

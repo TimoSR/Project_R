@@ -1,6 +1,5 @@
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
-using Application.DTO.Auth;
 using Application.DTO.UserManagement;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
@@ -69,9 +68,9 @@ public class UserController : ControllerBase
     [HttpDelete("delete")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteUser(DeleteRequestDto requestDto)
+    public async Task<IActionResult> DeleteUser(string userId)
     {
-        var result = await _userService.DeleteUserAsync(requestDto.UserId);
+        var result = await _userService.DeleteUserAsync(userId);
 
         if (result)
         {

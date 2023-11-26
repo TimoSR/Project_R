@@ -124,9 +124,9 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
+    public async Task<IActionResult> Logout(string userId)
     {
-        var result = await _authAppService.LogoutAsync(requestDto.UserId);
+        var result = await _authAppService.LogoutAsync(userId);
 
         if (result)
         {
@@ -142,9 +142,9 @@ public class AuthController : ControllerBase
     [HttpDelete("delete")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteUser([FromBody] DeleteRequestDto requestDto)
+    public async Task<IActionResult> DeleteUser(string userId)
     {
-        var result = await _authAppService.DeleteUserAsync(requestDto.UserId);
+        var result = await _authAppService.DeleteUserAsync(userId);
 
         if (result)
         {

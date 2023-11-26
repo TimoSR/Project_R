@@ -15,7 +15,6 @@ using Infrastructure.Persistence.Redis;
 using Infrastructure.Swagger;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
-using Microsoft.IdentityModel.Tokens;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;
 
 namespace Application;
