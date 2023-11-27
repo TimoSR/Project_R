@@ -1,3 +1,4 @@
+using Domain.UserAuthentication.Entities;
 using Domain.UserAuthentication.Repositories;
 using Domain.UserManagement.Entities;
 using Infrastructure.Persistence._Interfaces;
@@ -7,13 +8,23 @@ using MongoDB.Driver;
 
 namespace Infrastructure.DomainRepositories;
 
-public class AuthRepository : MongoRepository<User>, IAuthRepository
+public class AuthRepository : MongoRepository<AuthUser>, IAuthRepository
 {
     public AuthRepository(IMongoDbManager dbManager, ILogger<AuthRepository> logger) : base(dbManager, logger)
     {
     }
-    
-    public async Task<User> FindByEmailAsync(string email)
+
+    public Task SetUserDetails(string userId, string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SetPasswordAsync(string userId, string plainTextPassword)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<AuthUser> FindByEmailAsync(string email)
     {
         try
         {
@@ -27,7 +38,7 @@ public class AuthRepository : MongoRepository<User>, IAuthRepository
         }
     }
     
-    public async Task<User> GetUserByRefreshTokenAsync(string refreshToken)
+    public async Task<AuthUser> GetUserByRefreshTokenAsync(string refreshToken)
     {
         try
         {
@@ -93,8 +104,8 @@ public class AuthRepository : MongoRepository<User>, IAuthRepository
         try
         {
             var collection = GetCollection();
-            var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
-            var update = Builders<User>.Update
+            var filter = Builders<AuthUser>.Filter.Eq(u => u.Id, userId);
+            var update = Builders<AuthUser>.Update
                 .Set(u => u.RefreshToken, refreshToken);
                 
             await collection.UpdateOneAsync(filter, update);

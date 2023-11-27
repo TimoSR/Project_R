@@ -21,10 +21,4 @@ public class User
 
     [BsonElement("UserName")]
     public string UserName { get; set; }
-
-    [BsonElement("Password")]
-    public string Password { get; set; }
-
-    [BsonElement("RefreshToken")]
-    public string RefreshToken { get; set; }
 }

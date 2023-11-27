@@ -15,6 +15,7 @@
     <Folder Include="UserAuthentication\Enums\" />
     <Folder Include="UserAuthentication\Events\" />
     <Folder Include="UserAuthentication\Services\" />
+    <Folder Include="UserAuthentication\Utilities\" />
     <Folder Include="UserAuthentication\ValueObjects\" />
     <Folder Include="Product\Entities\" />
     <Folder Include="Product\Enums\" />

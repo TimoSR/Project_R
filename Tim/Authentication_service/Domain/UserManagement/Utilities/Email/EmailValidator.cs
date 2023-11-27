@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Domain.UserManagement.Validators.Email;
+namespace Domain.UserManagement.Utilities.Email;
 
 public class EmailValidator
 {

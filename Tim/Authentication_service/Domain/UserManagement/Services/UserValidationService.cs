@@ -2,8 +2,8 @@ using _CommonLibrary.Patterns.RegistrationHooks.Services._Interfaces;
 using _CommonLibrary.Patterns.ResultPattern;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
-using Domain.UserManagement.Validators.Email;
-using Domain.UserManagement.Validators.Password;
+using Domain.UserManagement.Utilities.Email;
+using Domain.UserManagement.Utilities.Password;
 
 namespace Domain.UserManagement.Services;
 

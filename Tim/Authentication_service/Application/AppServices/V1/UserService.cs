@@ -46,8 +46,7 @@ public class UserService : IUserService
             var newUser = new User
             {
                 Email = userDto.Email,
-                UserName = userDto.UserName,
-                Password = _passwordHasher.HashPassword(userDto.Password)
+                UserName = userDto.UserName
             };
             
             bool registrationSuccess = await _userRepository.CreateUserIfNotRegisteredAsync(newUser);

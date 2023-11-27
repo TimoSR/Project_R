@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Domain.UserManagement.Validators.Password;
+namespace Domain.UserManagement.Utilities.Password;
 
 public class PasswordValidator 
 {
