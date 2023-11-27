@@ -36,27 +36,8 @@ public class EventHandler : IEventHandler
         _protobufSerializer = protobufSerializer;
     }
 
-    /*
-     * This Design Enables the method to react on the Input Type.
-     */
-    public async Task PublishJsonEventAsync<TEvent>(TEvent eventMessage)
-    {
-        var eventType = typeof(TEvent);
-        var serializedMessage = _jsonSerializer.Serialize(eventMessage);
-        string topicId = GenerateTopicID(eventType);
-        await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
-    }
-
-    public async Task PublishProtobufEventAsync<TEvent>(TEvent eventMessage)
-    {
-        var eventType = typeof(TEvent);
-        var serializedMessage = _protobufSerializer.Serialize(eventMessage);
-        string topicId = GenerateTopicID(eventType);
-        await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
-    }
-
     public TEvent? ProcessReceivedEvent<TEvent>(string receivedEvent) where TEvent : class
-    {
+    {   
         var pubSubEvent = JsonConvert.DeserializeObject<PubSubEvent>(receivedEvent);
         if (pubSubEvent == null)
         {
@@ -66,15 +47,17 @@ public class EventHandler : IEventHandler
 
         byte[] data = Convert.FromBase64String(pubSubEvent.Message.Data);
         string decodedString = Encoding.UTF8.GetString(data);
-
-        TEvent? deserializedEvent = TryDeserialize(decodedString, JsonConvert.DeserializeObject<TEvent>);
+        
+        _logger.LogInformation("Received {EventType}", pubSubEvent.Message.Attributes.EventType);
+        
+        TEvent? deserializedEvent = TryDeserialize(decodedString, _protobufSerializer.Deserialize<TEvent>);
         if (deserializedEvent != null)
         {
             LogEventProcessed(pubSubEvent);
             return deserializedEvent;
         }
-
-        deserializedEvent = TryDeserialize(decodedString, _protobufSerializer.Deserialize<TEvent>);
+        
+        deserializedEvent = TryDeserialize(decodedString, JsonConvert.DeserializeObject<TEvent>);
         if (deserializedEvent != null)
         {
             LogEventProcessed(pubSubEvent);
@@ -106,6 +89,22 @@ public class EventHandler : IEventHandler
             return null;
         }
     }
+    
+    public async Task PublishJsonEventAsync<TEvent>(TEvent eventMessage)
+    {
+        var eventType = typeof(TEvent);
+        var serializedMessage = _jsonSerializer.Serialize(eventMessage);
+        string topicId = GenerateTopicID(eventType);
+        await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
+    }
+
+    public async Task PublishProtobufEventAsync<TEvent>(TEvent eventMessage)
+    {
+        var eventType = typeof(TEvent);
+        var serializedMessage = _protobufSerializer.Serialize(eventMessage);
+        string topicId = GenerateTopicID(eventType);
+        await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
+    }
 
     private string GenerateTopicID(Type eventType)
     {
@@ -121,17 +120,29 @@ public class EventHandler : IEventHandler
     private async Task PublishMessageAsync(string topicId, string eventType, string formattedMessage)
     {
         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
-
-        PubsubMessage pubsubMessage = new PubsubMessage
+        
+        try
         {
-            Data = ByteString.CopyFromUtf8(formattedMessage),
-            Attributes =
-            {
-                { "description", $"Message for event type: {eventType}" },
-                { "eventType", eventType }
-            }
-        };
+            _logger.LogInformation("Publishing message to {TopicName} with event type {EventType}", topicName, eventType);
 
-        await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
+            PubsubMessage pubsubMessage = new PubsubMessage
+            {
+                Data = ByteString.CopyFromUtf8(formattedMessage),
+                Attributes =
+                {
+                    { "description", $"Message for event type: {eventType}" },
+                    { "eventType", eventType }
+                }
+            };
+
+            await _publisherService.PublishAsync(topicName, new[] { pubsubMessage });
+
+            _logger.LogInformation("Message published successfully to {TopicName} with event type {EventType}", topicName, eventType);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while publishing message to {TopicName} with event type {EventType}", topicName, eventType);
+            throw; // Re-throw the exception to maintain the original stack trace
+        }
     }
 }

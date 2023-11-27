@@ -9,9 +9,7 @@ public class JsonSerializer : IJsonSerializer
     {
         try
         {
-            Console.WriteLine("\nCreated Json Message!");
             string encodedString = ConvertToJson(content);
-            Console.WriteLine(encodedString);
             return encodedString;
         }
         catch (JsonException ex)
@@ -32,9 +30,7 @@ public class JsonSerializer : IJsonSerializer
     {
         try
         {
-            Console.WriteLine("\nDeserializing Json Message!");
             var payload = ConvertToModel<TModel>(content);
-            Console.WriteLine($"Deserialized object of type {typeof(TModel).Name} successfully!");
             return payload;
         }
         catch (JsonException ex)

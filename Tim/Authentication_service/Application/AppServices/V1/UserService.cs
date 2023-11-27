@@ -2,14 +2,12 @@ using _CommonLibrary.Patterns.ResultPattern;
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
-using Domain.UserAuthentication.Entities;
 using Domain.UserManagement.Entities;
 using Domain.UserManagement.Events;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
 using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
 
@@ -70,7 +68,6 @@ public class UserService : IUserService
                 Password = userDto.Password
             };
 
-            await _eventHandler.PublishJsonEventAsync(userCreatedEvent);
             await _eventHandler.PublishProtobufEventAsync(userCreatedEvent);
             return ServiceResult.Success("User successfully registered.");
         }
