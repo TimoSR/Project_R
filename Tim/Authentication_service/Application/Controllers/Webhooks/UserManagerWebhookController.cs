@@ -39,7 +39,7 @@ public class UserManagerWebhookController : ControllerBase
     {
         using StreamReader reader = new StreamReader(Request.Body);
         var receivedEvent = await reader.ReadToEndAsync();
-        _eventHandler.ProcessReceivedEvent<UserCreatedEvent>(receivedEvent);
-        return Ok();
+        var data = _eventHandler.ProcessReceivedEvent<UserCreatedEvent>(receivedEvent);
+        return Ok(data);
     }
 }
