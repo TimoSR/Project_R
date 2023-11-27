@@ -2,6 +2,7 @@ using _CommonLibrary.Patterns.ResultPattern;
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
+using Domain.UserAuthentication.Entities;
 using Domain.UserManagement.Entities;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;

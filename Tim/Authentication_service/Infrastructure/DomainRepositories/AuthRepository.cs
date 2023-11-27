@@ -14,12 +14,7 @@ public class AuthRepository : MongoRepository<AuthUser>, IAuthRepository
     {
     }
 
-    public Task SetUserDetails(string userId, string email)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task SetPasswordAsync(string userId, string plainTextPassword)
+    public Task SetUserDetails(string userId, string email, string password)
     {
         throw new NotImplementedException();
     }
