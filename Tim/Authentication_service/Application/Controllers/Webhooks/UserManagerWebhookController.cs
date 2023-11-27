@@ -38,8 +38,8 @@ public class UserManagerWebhookController : ControllerBase
     public async Task<IActionResult> HandleUserCreatedEvent()
     {
         using StreamReader reader = new StreamReader(Request.Body);
-        var body = await reader.ReadToEndAsync();
-        _eventHandler.ProcessReceivedEvent<UserCreatedEvent>(body);
+        var receivedEvent = await reader.ReadToEndAsync();
+        _eventHandler.ProcessReceivedEvent<UserCreatedEvent>(receivedEvent);
         return Ok();
     }
 }
