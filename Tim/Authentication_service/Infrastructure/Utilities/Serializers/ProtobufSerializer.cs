@@ -36,11 +36,8 @@ public class ProtobufSerializer : IProtobufSerializer
     {
         try
         {
-            Console.WriteLine("\nDeserializing Protobuf Message:");
                 
             var payload = ConvertToModel<TModel>(content);
-                
-            Console.WriteLine($"Deserialized object of type {typeof(TModel).Name} successfully!");
                 
             return payload;
         }

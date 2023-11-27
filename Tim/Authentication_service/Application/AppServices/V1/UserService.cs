@@ -4,9 +4,11 @@ using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
 using Domain.UserAuthentication.Entities;
 using Domain.UserManagement.Entities;
+using Domain.UserManagement.Events;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
+using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
@@ -16,19 +18,22 @@ public class UserService : IUserService
     private readonly UserValidationService _userValidationService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
-    private readonly IPasswordHasher _passwordHasher;
+    private readonly IEventHandler _eventHandler;
+    private readonly ICacheManager _cacheManager;
 
     public UserService(
         UserValidationService userValidationService,
         IUserRepository userRepository,
         ILogger<UserService> logger,
-        IPasswordHasher passwordHasher
+        IEventHandler eventHandler,
+        ICacheManager cacheManager
     )
     {
         _userValidationService = userValidationService;
         _userRepository = userRepository;
         _logger = logger;
-        _passwordHasher = passwordHasher;
+        _eventHandler = eventHandler;
+        _cacheManager = cacheManager;
     }
     
     public async Task<ServiceResult> RegisterAsync(UserRegisterDto userDto)
@@ -58,6 +63,15 @@ public class UserService : IUserService
             }
 
             _logger.LogInformation("User registration completed successfully for Email: {Email}", newUser.Email);
+
+            var userCreatedEvent = new UserCreatedEvent
+            {
+                Email = userDto.Email,
+                Password = userDto.Password
+            };
+
+            await _eventHandler.PublishJsonEventAsync(userCreatedEvent);
+            await _eventHandler.PublishProtobufEventAsync(userCreatedEvent);
             return ServiceResult.Success("User successfully registered.");
         }
         catch (Exception ex)

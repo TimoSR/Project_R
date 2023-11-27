@@ -3,28 +3,35 @@ using _CommonLibrary.Patterns.RegistrationHooks.Events._Attributes;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities;
 using Infrastructure.Utilities._Interfaces;
+using _CommonLibrary.Patterns.Events;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Encoding = System.Text.Encoding;
 
 namespace Infrastructure.Persistence.Google_PubSub;
 
-public class EventPublisher : IEventPublisher
+public class EventHandler : IEventHandler
 {
     private readonly IJsonSerializer _jsonSerializer;
     private readonly IProtobufSerializer _protobufSerializer;
     private readonly PublisherServiceApiClient _publisherService;
+    private readonly ILogger<EventHandler> _logger;
     private readonly string _projectId;
     private readonly string _serviceName;
 
-    public EventPublisher(
+    public EventHandler(
         IConfiguration config,
         PublisherServiceApiClient publisherService,
         IJsonSerializer jsonSerializer,
-        IProtobufSerializer protobufSerializer)
+        IProtobufSerializer protobufSerializer,
+        ILogger<EventHandler> logger
+        )
     {
         _projectId = config.ProjectId;
         _serviceName = config.ServiceName;
         _publisherService = publisherService;
+        _logger = logger;
         _jsonSerializer = jsonSerializer;
         _protobufSerializer = protobufSerializer;
     }
@@ -46,6 +53,58 @@ public class EventPublisher : IEventPublisher
         var serializedMessage = _protobufSerializer.Serialize(eventMessage);
         string topicId = GenerateTopicID(eventType);
         await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
+    }
+
+    public TEvent? ProcessReceivedEvent<TEvent>(string receivedEvent) where TEvent : class
+    {
+        var pubSubEvent = JsonConvert.DeserializeObject<PubSubEvent>(receivedEvent);
+        if (pubSubEvent == null)
+        {
+            _logger.LogWarning("Received event is null or not in expected format.");
+            return null;
+        }
+
+        byte[] data = Convert.FromBase64String(pubSubEvent.Message.Data);
+        string decodedString = Encoding.UTF8.GetString(data);
+
+        TEvent? deserializedEvent = TryDeserialize(decodedString, JsonConvert.DeserializeObject<TEvent>);
+        if (deserializedEvent != null)
+        {
+            LogEventProcessed(pubSubEvent);
+            return deserializedEvent;
+        }
+
+        deserializedEvent = TryDeserialize(decodedString, _protobufSerializer.Deserialize<TEvent>);
+        if (deserializedEvent != null)
+        {
+            LogEventProcessed(pubSubEvent);
+            return deserializedEvent;
+        }
+    
+        _logger.LogError("Both JSON and Protobuf Deserialization failed for event data: {EventData}", decodedString);
+        return null;
+    }
+
+    private void LogEventProcessed(PubSubEvent pubSubEvent)
+    {
+        _logger.LogInformation("Event Processed: Description: {Description}, Event Type: {EventType}, Message ID: {MessageID}, Publish Time: {PublishTime}",
+            pubSubEvent.Message.Attributes.Description,
+            pubSubEvent.Message.Attributes.EventType,
+            pubSubEvent.Message.MessageId,
+            pubSubEvent.Message.PublishTime);
+    }
+    
+    private TEvent? TryDeserialize<TEvent>(string data, Func<string, TEvent?> deserializeFunc) where TEvent : class
+    {
+        try
+        {
+            return deserializeFunc(data);
+        }
+        catch
+        {
+            // Not logging here as we only want to log if both deserialization methods fail
+            return null;
+        }
     }
 
     private string GenerateTopicID(Type eventType)

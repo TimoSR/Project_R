@@ -28,7 +28,7 @@ public class JsonSerializer : IJsonSerializer
         }
     }
     
-    public TModel Deserialize<TModel>(string content)
+    public TModel? Deserialize<TModel>(string content)
     {
         try
         {
@@ -54,7 +54,7 @@ public class JsonSerializer : IJsonSerializer
         return JsonConvert.SerializeObject(message);
     }
 
-    private TModel ConvertToModel<TModel>(string content)
+    private TModel? ConvertToModel<TModel>(string content)
     {
         return JsonConvert.DeserializeObject<TModel>(content);
     }

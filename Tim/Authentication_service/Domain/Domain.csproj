@@ -22,7 +22,6 @@
     <Folder Include="Product\Repositories\" />
     <Folder Include="Product\Services\" />
     <Folder Include="Product\ValueObjects\" />
-    <Folder Include="UserManagement\Events\" />
     <Folder Include="UserManagement\Enums\" />
     <Folder Include="UserManagement\ValueObjects\" />
   </ItemGroup>
