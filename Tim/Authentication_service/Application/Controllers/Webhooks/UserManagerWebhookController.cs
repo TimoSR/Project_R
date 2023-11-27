@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.UserManagement.Events;
 using Infrastructure.Persistence._Interfaces;
 
-
 namespace Application.Controllers.Webhooks;
 
 [ApiController]
