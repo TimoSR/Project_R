@@ -1,11 +1,11 @@
 using _CommonLibrary.Patterns.RegistrationHooks.Services._Interfaces;
 using _CommonLibrary.Patterns.ResultPattern;
-using Domain.User.Messages;
-using Domain.User.Repositories;
-using Domain.User.Validators.Email;
-using Domain.User.Validators.Password;
+using Domain.UserManagement.Messages;
+using Domain.UserManagement.Repositories;
+using Domain.UserManagement.Validators.Email;
+using Domain.UserManagement.Validators.Password;
 
-namespace Domain.User.Services;
+namespace Domain.UserManagement.Services;
 
 public class UserValidationService : IDomainService
 {
@@ -26,12 +26,12 @@ public class UserValidationService : IDomainService
 
         if (!_emailValidator.IsValid(email))
         {
-            validationResult.AddError(_CommonUserMsg.InvalidEmail);
+            validationResult.AddError(UserRegMsg.InvalidEmail);
         }
 
         if (!_passwordValidator.IsValid(password))
         {
-            validationResult.AddError(_CommonUserMsg.InvalidPassword);
+            validationResult.AddError(UserRegMsg.InvalidPassword);
         }
 
         // If there are no errors, validationResult.IsSuccess will be true.

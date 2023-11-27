@@ -1,20 +1,20 @@
 using _CommonLibrary.Patterns.ResultPattern;
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
-using Domain.User.Repositories;
+using Domain.UserAuthentication.Repositories;
 using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
 
 public class AuthService : IAuthAppServiceV1
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IAuthRepository _userRepository;
     private readonly ITokenHandler _tokenHandler;
     private readonly ILogger<AuthService> _logger;
     private readonly IPasswordHasher _passwordHasher;
 
     public AuthService(
-        IUserRepository userRepository,
+        IAuthRepository userRepository,
         ITokenHandler tokenHandler,
         ILogger<AuthService> logger,
         IPasswordHasher passwordHasher

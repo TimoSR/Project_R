@@ -12,14 +12,18 @@
     <PackageReference Include="protobuf-net.Core" Version="3.2.26" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="UserAuthentication\Enums\" />
+    <Folder Include="UserAuthentication\Events\" />
+    <Folder Include="UserAuthentication\Services\" />
+    <Folder Include="UserAuthentication\ValueObjects\" />
     <Folder Include="Product\Entities\" />
     <Folder Include="Product\Enums\" />
     <Folder Include="Product\Repositories\" />
     <Folder Include="Product\Services\" />
     <Folder Include="Product\ValueObjects\" />
-    <Folder Include="User\Events\" />
-    <Folder Include="User\Enums\" />
-    <Folder Include="User\ValueObjects\" />
+    <Folder Include="UserManagement\Events\" />
+    <Folder Include="UserManagement\Enums\" />
+    <Folder Include="UserManagement\ValueObjects\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\_CommonLibrary\_CommonLibrary.csproj" />

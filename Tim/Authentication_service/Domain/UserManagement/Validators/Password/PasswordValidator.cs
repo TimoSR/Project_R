@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Domain.User.Validators.Password;
+namespace Domain.UserManagement.Validators.Password;
 
 public class PasswordValidator 
 {
@@ -17,6 +17,12 @@ public class PasswordValidator
     {
         // Check minimum length
         if (string.IsNullOrEmpty(password) || password.Length < MinimumLength)
+        {
+            return false;
+        }
+        
+        // Check for lower-case letters
+        if (!_lowerCase.IsMatch(password))
         {
             return false;
         }

@@ -1,7 +1,7 @@
 using Domain.DomainModels;
-using Domain.User.Entities;
-using Domain.User.Repositories;
 using Domain.User.Services._Interfaces;
+using Domain.UserManagement.Entities;
+using Domain.UserManagement.Repositories;
 using Infrastructure.Utilities._Interfaces;
 using Moq;
 

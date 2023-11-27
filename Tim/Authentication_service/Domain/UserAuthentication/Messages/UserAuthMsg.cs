@@ -1,4 +1,4 @@
-namespace Domain.User.Messages;
+namespace Domain.UserAuthentication.Messages;
 
 public static class UserAuthMsg
 {

@@ -2,10 +2,10 @@ using _CommonLibrary.Patterns.ResultPattern;
 using _CommonLibrary.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
-using Domain.User.Entities;
-using Domain.User.Messages;
-using Domain.User.Repositories;
-using Domain.User.Services;
+using Domain.UserManagement.Entities;
+using Domain.UserManagement.Messages;
+using Domain.UserManagement.Repositories;
+using Domain.UserManagement.Services;
 using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
@@ -46,6 +46,7 @@ public class UserService : IUserService
             var newUser = new User
             {
                 Email = userDto.Email,
+                UserName = userDto.UserName,
                 Password = _passwordHasher.HashPassword(userDto.Password)
             };
             

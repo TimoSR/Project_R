@@ -39,5 +39,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\_CommonLibrary\_CommonLibrary.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppServices\V2\" />
+    <Folder Include="Controllers\REST\V2\" />
+  </ItemGroup>
   
 </Project>

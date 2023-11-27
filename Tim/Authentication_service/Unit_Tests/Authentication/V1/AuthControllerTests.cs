@@ -4,7 +4,7 @@ using Application.DTO.Auth;
 using Application.DTO.UserManagement;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
-using Domain.User.Entities;
+using Domain.UserManagement.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

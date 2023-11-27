@@ -1,4 +1,4 @@
-namespace Domain.User.Services;
+namespace Domain.UserManagement.Services;
 
 public class AuthenticationService
 {
