@@ -19,6 +19,34 @@ public class AuthRepository : MongoRepository<AuthUser>, IAuthRepository
         var existingUser = await collection.Find(u => u.Email == email).FirstOrDefaultAsync();
         return existingUser != null;
     }
+    
+    public async Task<bool> DeleteUserByEmailAsync(string email)
+    {
+        using var session = await _dbManager.GetClient().StartSessionAsync();
+        session.StartTransaction();
+        try
+        {
+            var collection = GetCollection();
+            var filter = Builders<AuthUser>.Filter.Eq(u => u.Email, email);
+            var result = await collection.DeleteOneAsync(session, filter);
+
+            if (result.DeletedCount == 0)
+            {
+                _logger.LogWarning($"No user found with email: {email}");
+                await session.AbortTransactionAsync();
+                return false;
+            }
+
+            await session.CommitTransactionAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await session.AbortTransactionAsync();
+            _logger.LogError($"Error during deleting user by email {email}: {ex.Message}");
+            throw;
+        }
+    }
 
     public async Task<bool> SetUserAuthDetails(AuthUser userDetails)
     {

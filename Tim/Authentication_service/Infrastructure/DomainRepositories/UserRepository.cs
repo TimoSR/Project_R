@@ -96,7 +96,7 @@ namespace Infrastructure.DomainRepositories
             return existingUser != null;
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             try
             {

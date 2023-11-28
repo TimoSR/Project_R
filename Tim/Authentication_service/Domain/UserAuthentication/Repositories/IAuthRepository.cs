@@ -12,7 +12,10 @@ public interface IAuthRepository
     Task<bool> IsUserAuthorized(string id);
     Task<string> ValidateRefreshTokenAsync(string refreshToken);
     Task<AuthUser> GetUserByRefreshTokenAsync(string refreshToken);
-    
-    // Update Operation
+
+    // Update Operations
     Task UpdateRefreshTokenAsync(string userId, string refreshToken);
+    
+    // Delete Operations
+    Task<bool> DeleteUserByEmailAsync(string email);
 }

@@ -52,7 +52,7 @@ public class UserManagementController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetById(string id)
     {
-        var result = await _userService.GetUserByIdAsync(id);
+        var result = await _userService.GetUserByEmailAsync(id);
 
         if (result.IsSuccess)
         {
@@ -70,9 +70,9 @@ public class UserManagementController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteUser(string userId)
     {
-        var result = await _userService.DeleteUserAsync(userId);
+        var result = await _userService.DeleteUserByEmailAsync(userId);
 
-        if (result)
+        if (result.IsSuccess)
         {
             return Ok(new { Message = "User deleted successfully" });
         }

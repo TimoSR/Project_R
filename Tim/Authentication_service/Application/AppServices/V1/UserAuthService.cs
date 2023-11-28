@@ -38,6 +38,13 @@ public class UserAuthService : IAuthAppServiceV1
         _passwordHasher = passwordHasher;
     }
     
+    private async Task<ServiceResult> LogAndPublishFailure(string email, string reason)
+    {
+        _logger.LogWarning("Failed to set authentication details for user with Email: {Email}", email);
+        await _eventHandler.PublishProtobufEventAsync(new UserAuthDetailsSetFailedEvent { Email = email, Reason = reason });
+        return ServiceResult.Failure(reason, ServiceErrorType.InternalError);
+    }
+    
     public async Task<ServiceResult<(string NewToken, string NewRefreshToken)>?> RefreshTokenAsync(string refreshToken)
     {
         var userId = await _authRepository.ValidateRefreshTokenAsync(refreshToken);
@@ -116,12 +123,28 @@ public class UserAuthService : IAuthAppServiceV1
             return ServiceResult.Failure("An unexpected error occurred while setting authentication details.", ServiceErrorType.InternalError);
         }
     }
-
-    private async Task<ServiceResult> LogAndPublishFailure(string email, string reason)
+    
+    public async Task<ServiceResult> DeleteUserAsync(UserDeletionInitEvent deletionEvent)
     {
-        _logger.LogWarning("Failed to set authentication details for user with Email: {Email}", email);
-        await _eventHandler.PublishProtobufEventAsync(new UserAuthDetailsSetFailedEvent { Email = email, Reason = reason });
-        return ServiceResult.Failure(reason, ServiceErrorType.InternalError);
+        try
+        {
+            _logger.LogInformation("Attempting to delete user with Email: {Email}", deletionEvent.Email);
+
+            if (!await _authRepository.DeleteUserByEmailAsync(deletionEvent.Email))
+            {
+                return await LogAndPublishFailure(deletionEvent.Email, "Failed to delete user from the repository.");
+            }
+
+            _logger.LogInformation("User deleted successfully with Email: {Email}", deletionEvent.Email);
+            await _eventHandler.PublishProtobufEventAsync(new UserDeletionSuccessEvent { Email = deletionEvent.Email });
+
+            return ServiceResult.Success("User deleted successfully.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while deleting user with Email: {Email}", deletionEvent.Email);
+            return ServiceResult.Failure("An unexpected error occurred while deleting user.", ServiceErrorType.InternalError);
+        }
     }
 
     public async Task<bool> LogoutAsync(string userId)
