@@ -5,7 +5,7 @@ namespace Application.Controllers.Webhooks._Abstract
 {
     public abstract class BaseWebhookController : ControllerBase
     {
-        protected readonly IEventHandler _eventHandler;
+        private readonly IEventHandler _eventHandler;
 
         protected BaseWebhookController(IEventHandler eventHandler)
         {
