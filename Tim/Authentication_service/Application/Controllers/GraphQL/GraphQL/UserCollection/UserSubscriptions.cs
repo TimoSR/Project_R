@@ -1,7 +1,7 @@
 using _SharedKernel.Patterns.ResultPattern;
 using Application.Controllers.GraphQL.GraphQL._Interfaces;
 
-namespace Application.Controllers.GraphQL.GraphQL.ProductCollection;
+namespace Application.Controllers.GraphQL.GraphQL.UserCollection;
 
 public class UserSubscriptions : ISubscription
 {
