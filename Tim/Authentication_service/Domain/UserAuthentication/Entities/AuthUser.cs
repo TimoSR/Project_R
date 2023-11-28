@@ -21,4 +21,7 @@ public class AuthUser
 
     [BsonElement("EmailValidated")] 
     public bool EmailValidated { get; set; }
+    
+    [BsonElement("LastModified")] 
+    public DateTime LastModified { get; set; }
 }

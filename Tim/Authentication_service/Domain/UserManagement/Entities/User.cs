@@ -24,5 +24,8 @@ public class User
     public string UserName { get; set; }
 
     [BsonElement("Status")] 
-    public UserStatus Status { get; set; } = UserStatus.Pending;
+    public string Status { get; set; } = UserStatus.Pending.ToString();
+    
+    [BsonElement("LastModified")] 
+    public DateTime LastModified { get; set; }
 }

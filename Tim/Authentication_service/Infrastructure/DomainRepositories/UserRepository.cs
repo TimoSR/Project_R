@@ -39,8 +39,10 @@ namespace Infrastructure.DomainRepositories
             {
                 var collection = GetCollection();
                 var filter = Builders<User>.Filter.Eq(u => u.Email, email);
-                var update = Builders<User>.Update.Set(u => u.Status, newStatus); // If you have a field for tracking the last modification time
-
+                var update = Builders<User>.Update
+                    .Set(u => u.Status, newStatus.ToString()) // If you have a field for tracking the last modification time
+                    .Set(u => u.LastModified, DateTime.UtcNow);
+                
                 var updateResult = await collection.UpdateOneAsync(filter, update);
 
                 return updateResult.ModifiedCount > 0;
