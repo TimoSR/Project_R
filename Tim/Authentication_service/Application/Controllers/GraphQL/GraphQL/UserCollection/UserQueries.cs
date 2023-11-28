@@ -3,7 +3,7 @@ using Application.AppServices._Interfaces;
 using Application.Controllers.GraphQL.GraphQL._Interfaces;
 using Application.DTO.UserManagement;
 
-namespace Application.Controllers.GraphQL.GraphQL.ProductCollection;
+namespace Application.Controllers.GraphQL.GraphQL.UserCollection;
 
 public class UserQueries : IQuery
 {
