@@ -8,9 +8,12 @@ namespace Domain.UserManagement.Events;
 [TopicName("UserCreatedTopic")]
 public class UserCreatedEvent : IPubEvent
 {
+    public string Message { get; } = "User Created!";
+    
     [ProtoMember(1)]
     public string Email { get; set; }
     
     [ProtoMember(2)]
     public string Password { get; set; }
+    
 }

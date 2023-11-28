@@ -5,6 +5,7 @@ using Google.Protobuf;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities._Interfaces;
 using _CommonLibrary.Patterns.Events;
+using _CommonLibrary.Patterns.RegistrationHooks.Events._Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Encoding = System.Text.Encoding;
@@ -90,20 +91,20 @@ public class EventHandler : IEventHandler
         }
     }
     
-    public async Task PublishJsonEventAsync<TEvent>(TEvent eventMessage)
+    public async Task PublishJsonEventAsync<TEvent>(TEvent eventMessage) where TEvent : IPubEvent
     {
         var eventType = typeof(TEvent);
         var serializedMessage = _jsonSerializer.Serialize(eventMessage);
         string topicId = GenerateTopicID(eventType);
-        await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
+        await PublishMessageAsync(eventMessage, topicId, eventType.Name, serializedMessage);
     }
 
-    public async Task PublishProtobufEventAsync<TEvent>(TEvent eventMessage)
+    public async Task PublishProtobufEventAsync<TEvent>(TEvent eventMessage) where TEvent : IPubEvent
     {
         var eventType = typeof(TEvent);
         var serializedMessage = _protobufSerializer.Serialize(eventMessage);
         string topicId = GenerateTopicID(eventType);
-        await PublishMessageAsync(topicId, eventType.Name, serializedMessage);
+        await PublishMessageAsync(eventMessage, topicId, eventType.Name, serializedMessage);
     }
 
     private string GenerateTopicID(Type eventType)
@@ -117,7 +118,7 @@ public class EventHandler : IEventHandler
     }
 
 
-    private async Task PublishMessageAsync(string topicId, string eventType, string formattedMessage)
+    private async Task PublishMessageAsync<TEvent>(TEvent @event, string topicId, string eventType, string formattedMessage) where TEvent : IPubEvent
     {
         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
         
@@ -130,8 +131,8 @@ public class EventHandler : IEventHandler
                 Data = ByteString.CopyFromUtf8(formattedMessage),
                 Attributes =
                 {
-                    { "description", $"Message for event type: {eventType}" },
-                    { "eventType", eventType }
+                    { "eventType", eventType },
+                    { "description", $"{@event.Message}" }
                 }
             };
 
