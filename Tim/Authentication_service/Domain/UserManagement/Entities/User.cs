@@ -1,3 +1,4 @@
+using Domain.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -21,4 +22,7 @@ public class User
 
     [BsonElement("UserName")]
     public string UserName { get; set; }
+
+    [BsonElement("Status")] 
+    public UserStatus Status { get; set; } = UserStatus.Pending;
 }

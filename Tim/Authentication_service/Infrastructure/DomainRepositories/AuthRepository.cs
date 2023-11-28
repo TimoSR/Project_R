@@ -1,6 +1,5 @@
 using Domain.UserAuthentication.Entities;
 using Domain.UserAuthentication.Repositories;
-using Domain.UserManagement.Entities;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Persistence.MongoDB;
 using Microsoft.Extensions.Logging;
@@ -13,10 +12,42 @@ public class AuthRepository : MongoRepository<AuthUser>, IAuthRepository
     public AuthRepository(IMongoDbManager dbManager, ILogger<AuthRepository> logger) : base(dbManager, logger)
     {
     }
-
-    public Task SetUserDetails(string userId, string email, string password)
+    
+    private async Task<bool> CheckUserExistsAsync(string email)
     {
-        throw new NotImplementedException();
+        var collection = GetCollection();
+        var existingUser = await collection.Find(u => u.Email == email).FirstOrDefaultAsync();
+        return existingUser != null;
+    }
+
+    public async Task<bool> SetUserAuthDetails(AuthUser userDetails)
+    {
+        using var session = await _dbManager.GetClient().StartSessionAsync();
+        session.StartTransaction();
+        try
+        {
+            // Use CheckUserExistsAsync to check if the user already exists
+            if (await CheckUserExistsAsync(userDetails.Email))
+            {
+                // User already exists, no need to proceed further. Rollback any changes.
+                await session.AbortTransactionAsync();
+                return false;
+            }
+
+            var collection = GetCollection();
+            await collection.InsertOneAsync(session, userDetails);
+                
+            // Commit the transaction. If an error occurs during commit, it will throw an exception.
+            await session.CommitTransactionAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // If any exception occurs during the transaction, rollback changes.
+            await session.AbortTransactionAsync();
+            _logger.LogError($"Error during user registration: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<AuthUser> FindByEmailAsync(string email)

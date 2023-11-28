@@ -2,18 +2,17 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using ProtoBuf;
 
-namespace Domain.Events.UserManagement;
+namespace Domain.Events;
 
 [ProtoContract]
-[TopicName("UserCreatedTopic")]
-public class UserCreatedEvent : IPubEvent
+[TopicName("UserAuthDetailsSetFailedTopic")]
+public class UserAuthDetailsSetFailedEvent : IPubEvent
 {
-    public string Message => "User Created!";
-
+    public string Message => "User Auth Details Set Failed";
+    
     [ProtoMember(1)]
     public string Email { get; set; }
     
     [ProtoMember(2)]
-    public string Password { get; set; }
-    
+    public string Reason { get; set; }
 }

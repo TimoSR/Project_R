@@ -5,7 +5,7 @@ namespace Domain.UserAuthentication.Repositories;
 public interface IAuthRepository
 {
     // Create Operations
-    Task SetUserDetails(string userId, string email, string password);
+    Task<bool> SetUserAuthDetails(AuthUser userDetails);
     
     // Read Operations
     Task<AuthUser> FindByEmailAsync(string email);

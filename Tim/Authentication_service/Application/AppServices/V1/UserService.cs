@@ -62,13 +62,13 @@ public class UserService : IUserService
 
             _logger.LogInformation("User registration completed successfully for Email: {Email}", newUser.Email);
 
-            var userCreatedEvent = new UserCreatedEvent
+            var userRegInit = new UserRegInitEvent()
             {
                 Email = userDto.Email,
                 Password = userDto.Password
             };
 
-            await _eventHandler.PublishProtobufEventAsync(userCreatedEvent);
+            await _eventHandler.PublishProtobufEventAsync(userRegInit);
             return ServiceResult.Success("User successfully registered.");
         }
         catch (Exception ex)

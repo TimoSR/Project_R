@@ -1,4 +1,5 @@
 using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
+using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.Controllers.Webhooks._Abstract;
 using Domain.Events.UserManagement;
@@ -32,11 +33,22 @@ namespace Application.Controllers.Webhooks
         
         [AllowAnonymous]
         [HttpPost("HandleUserCreatedEvent")]
-        [EventSubscription("Auth-service-UserCreatedTopic")]
+        [EventSubscription("Auth-service-UserRegInitTopic")]
         public async Task<IActionResult> HandleUserCreatedEvent()
         {
-            var data = await OnEvent<UserCreatedEvent>();
-            return Ok(data);
+            var data = await OnEvent<UserRegInitEvent>();
+            var result = await _authAppService.SetUserAuthDetailsAsync(data);
+
+            if (result.IsSuccess)
+            {
+                return Ok(new { result.Messages });
+            }
+
+            return result.ErrorType switch
+            {
+                ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages }),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
     }
 }
