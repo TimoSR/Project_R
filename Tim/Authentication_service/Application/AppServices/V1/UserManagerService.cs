@@ -12,19 +12,19 @@ using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
 
-public class UserService : IUserService
+public class UserManagerService : IUserService
 {
     private readonly UserValidationService _userValidationService;
     private readonly IUserRepository _userRepository;
-    private readonly ILogger<UserService> _logger;
+    private readonly ILogger<UserManagerService> _logger;
     private readonly IEventHandler _eventHandler;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ICacheManager _cacheManager;
 
-    public UserService(
+    public UserManagerService(
         UserValidationService userValidationService,
         IUserRepository userRepository,
-        ILogger<UserService> logger,
+        ILogger<UserManagerService> logger,
         IEventHandler eventHandler,
         ICacheManager cacheManager,
         IPasswordHasher passwordHasher

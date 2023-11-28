@@ -10,19 +10,19 @@ using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
 
-public class AuthService : IAuthAppServiceV1
+public class UserAuthService : IAuthAppServiceV1
 {
     private readonly IAuthRepository _authRepository;
     private readonly ITokenHandler _tokenHandler;
-    private readonly ILogger<AuthService> _logger;
+    private readonly ILogger<UserAuthService> _logger;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IEventHandler _eventHandler;
     private readonly ICacheManager _cacheManager;
 
-    public AuthService(
+    public UserAuthService(
         IAuthRepository authRepository,
         ITokenHandler tokenHandler,
-        ILogger<AuthService> logger,
+        ILogger<UserAuthService> logger,
         IPasswordHasher passwordHasher,
         IEventHandler eventHandler,
         ICacheManager cacheManager
