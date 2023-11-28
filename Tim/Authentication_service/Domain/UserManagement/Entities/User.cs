@@ -1,4 +1,4 @@
-using Domain.Enums;
+using Domain.UserManagement.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

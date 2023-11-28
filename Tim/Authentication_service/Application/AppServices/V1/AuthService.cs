@@ -1,8 +1,8 @@
 using _SharedKernel.Patterns.ResultPattern;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
-using Domain.Events;
-using Domain.Events.UserManagement;
+using Domain._Shared.Events.UserAuthentication;
+using Domain._Shared.Events.UserManagement;
 using Domain.UserAuthentication.Entities;
 using Domain.UserAuthentication.Repositories;
 using Infrastructure.Persistence._Interfaces;

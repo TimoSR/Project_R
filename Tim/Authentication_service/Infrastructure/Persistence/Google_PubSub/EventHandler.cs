@@ -121,8 +121,6 @@ public class EventHandler : IEventHandler
         
         try
         {
-            _logger.LogInformation("Publishing message to {TopicName} with event type {EventType}", topicName, eventType);
-
             PubsubMessage pubsubMessage = new PubsubMessage
             {
                 Data = ByteString.CopyFromUtf8(formattedMessage),

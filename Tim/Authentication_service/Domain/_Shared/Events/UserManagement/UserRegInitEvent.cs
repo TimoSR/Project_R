@@ -2,7 +2,7 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using ProtoBuf;
 
-namespace Domain.Events.UserManagement;
+namespace Domain._Shared.Events.UserManagement;
 
 [ProtoContract]
 [TopicName("UserRegInitTopic")]
@@ -11,9 +11,12 @@ public class UserRegInitEvent : IPubEvent
     public string Message => "User registration Initiated";
 
     [ProtoMember(1)]
-    public string Email { get; set; }
+    public string Id { get; set; }
     
     [ProtoMember(2)]
+    public string Email { get; set; }
+    
+    [ProtoMember(3)]
     public string Password { get; set; }
     
 }

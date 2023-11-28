@@ -2,7 +2,7 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.Controllers.Webhooks._Abstract;
-using Domain.Events.UserManagement;
+using Domain._Shared.Events.UserManagement;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;

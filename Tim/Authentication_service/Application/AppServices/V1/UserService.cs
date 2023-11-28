@@ -2,12 +2,13 @@ using _SharedKernel.Patterns.ResultPattern;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
-using Domain.Events.UserManagement;
+using Domain._Shared.Events.UserManagement;
 using Domain.UserManagement.Entities;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
 using Infrastructure.Persistence._Interfaces;
+using Infrastructure.Utilities._Interfaces;
 
 namespace Application.AppServices.V1;
 
@@ -17,6 +18,7 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
     private readonly IEventHandler _eventHandler;
+    private readonly IPasswordHasher _passwordHasher;
     private readonly ICacheManager _cacheManager;
 
     public UserService(
@@ -24,7 +26,8 @@ public class UserService : IUserService
         IUserRepository userRepository,
         ILogger<UserService> logger,
         IEventHandler eventHandler,
-        ICacheManager cacheManager
+        ICacheManager cacheManager,
+        IPasswordHasher passwordHasher
     )
     {
         _userValidationService = userValidationService;
@@ -32,6 +35,7 @@ public class UserService : IUserService
         _logger = logger;
         _eventHandler = eventHandler;
         _cacheManager = cacheManager;
+        _passwordHasher = passwordHasher;
     }
     
     public async Task<ServiceResult> RegisterAsync(UserRegisterDto userDto)
@@ -65,7 +69,7 @@ public class UserService : IUserService
             var userRegInit = new UserRegInitEvent()
             {
                 Email = userDto.Email,
-                Password = userDto.Password
+                Password = _passwordHasher.HashPassword(userDto.Password)
             };
 
             await _eventHandler.PublishProtobufEventAsync(userRegInit);

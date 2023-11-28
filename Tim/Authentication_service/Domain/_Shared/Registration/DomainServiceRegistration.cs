@@ -2,7 +2,7 @@ using System.Reflection;
 using _SharedKernel.Patterns.RegistrationHooks.Services._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Domain._Registration;
+namespace Domain._Shared.Registration;
 
 public static class DomainServiceRegistration
 {

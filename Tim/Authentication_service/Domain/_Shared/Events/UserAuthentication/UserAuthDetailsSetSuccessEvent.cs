@@ -2,7 +2,7 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using ProtoBuf;
 
-namespace Domain.Events;
+namespace Domain._Shared.Events.UserAuthentication;
 
 [ProtoContract]
 [TopicName("UserAuthDetailsSetSuccessTopic")]

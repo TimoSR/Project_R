@@ -5,7 +5,7 @@ using Application._Registration.GraphQL;
 using Application._Registration.Services;
 using Application.Startup;
 using AspNetCoreRateLimit;
-using Domain._Registration;
+using Domain._Shared.Registration;
 using Infrastructure._Registration.Repositories;
 using Infrastructure._Registration.Utilities;
 using Infrastructure.Middleware;
