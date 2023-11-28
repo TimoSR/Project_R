@@ -54,7 +54,7 @@ public class UserManagerWebhooks : BaseWebhookController
     public async Task<IActionResult> HandleUserDeletionInitEvent()
     {
         var data = await OnEvent<UserDeletionInitEvent>();
-        var result = await _authAppService.SetUserAuthDetailsAsync(data);
+        var result = await _authAppService.DeleteUserAuthDetailsAsync(data);
 
         if (result.IsSuccess)
         {

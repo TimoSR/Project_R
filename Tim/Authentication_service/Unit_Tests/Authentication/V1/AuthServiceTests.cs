@@ -97,7 +97,7 @@ namespace Unit_Tests.Authentication.V1
             var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await authService.DeleteUserAsync("userId");
+            var result = await authService.DeleteUserAuthDetailsAsync("userId");
 
             // Assert
             result.Should().BeTrue();
