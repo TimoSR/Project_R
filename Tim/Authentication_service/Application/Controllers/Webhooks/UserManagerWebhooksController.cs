@@ -12,7 +12,7 @@ namespace Application.Controllers.Webhooks
 {
     [ApiController]
     [Route("api/[controller]")]
-    [SwaggerDoc("UserManagerWebhook")]
+    [SwaggerDoc("UserManagerWebhooks")]
     [ApiVersion("1.0")]
     [Authorize]
     public class UserManagerWebhooksController : BaseWebhookController
