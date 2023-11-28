@@ -80,7 +80,7 @@ public class UserAuthService : IAuthAppServiceV1
         var user = await _authRepository.FindByEmailAsync(email);
         if (user == null)
         {
-            return ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.NotFound);
+            return ServiceResult<(string, string)>.Failure("User not found", ServiceErrorType.NotFound);
         }
         
         if (!_passwordHasher.VerifyHashedPassword(user.HashedPassword, password))
