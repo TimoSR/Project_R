@@ -8,7 +8,7 @@ namespace Domain._Shared.Events.UserAuthentication;
 [TopicName("UserDeletionSuccessTopic")]
 public class UserDeletionSuccessEvent : IPubEvent
 {
-    public string Message => "User Deletion Initiated";
+    public string Message => "User Auth Details Deleted Successfully";
 
     [ProtoMember(1)]
     public string Email { get; set; }

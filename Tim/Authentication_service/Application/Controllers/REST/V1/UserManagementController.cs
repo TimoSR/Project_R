@@ -50,9 +50,9 @@ public class UserManagementController : ControllerBase
     [HttpGet("GetUserByEmail")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetUserByEmail(string id)
+    public async Task<IActionResult> GetUserByEmail(string email)
     {
-        var result = await _userService.GetUserByEmailAsync(id);
+        var result = await _userService.GetUserByEmailAsync(email);
 
         if (result.IsSuccess)
         {
