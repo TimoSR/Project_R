@@ -1,5 +1,5 @@
-using _CommonLibrary.Patterns.RegistrationHooks.Services._Interfaces;
-using _CommonLibrary.Patterns.ResultPattern;
+using _SharedKernel.Patterns.RegistrationHooks.Services._Interfaces;
+using _SharedKernel.Patterns.ResultPattern;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Utilities.Email;

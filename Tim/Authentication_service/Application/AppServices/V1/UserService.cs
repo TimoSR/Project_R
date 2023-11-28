@@ -1,9 +1,9 @@
-using _CommonLibrary.Patterns.ResultPattern;
-using _CommonLibrary.Patterns.ResultPattern._Enums;
+using _SharedKernel.Patterns.ResultPattern;
+using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
+using Domain.Events.UserManagement;
 using Domain.UserManagement.Entities;
-using Domain.UserManagement.Events;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;

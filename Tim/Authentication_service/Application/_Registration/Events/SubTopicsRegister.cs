@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Reflection;
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Attributes;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using Microsoft.AspNetCore.Mvc;

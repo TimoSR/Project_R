@@ -1,4 +1,4 @@
-using _CommonLibrary.Patterns.ResultPattern._Enums;
+using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.Auth;
 using Infrastructure.Swagger;
