@@ -100,8 +100,8 @@ public class UserManagerService : IUserService
         }
 
         // Cache the retrieved user
-        var userDto = new UserDto() { Email = user.Email };
-        await _cacheManager.SetValueAsync(cacheKey, JsonConvert.SerializeObject(userDto), TimeSpan.FromMinutes(30)); // Set an appropriate expiration
+        var userDto = new UserDto() { Email = user.Email, UserName = user.UserName};
+        await _cacheManager.SetValueAsync(cacheKey, JsonConvert.SerializeObject(userDto), TimeSpan.FromSeconds(4)); // Set an appropriate expiration
 
         return ServiceResult<UserDto>.Success(userDto);
     }

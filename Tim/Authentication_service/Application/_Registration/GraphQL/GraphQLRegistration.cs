@@ -1,4 +1,4 @@
-using _SharedKernel.Patterns.RegistrationHooks.GraphQL._Interfaces;
+using Application.Controllers.GraphQL.GraphQL._Interfaces;
 
 namespace Application._Registration.GraphQL;
 

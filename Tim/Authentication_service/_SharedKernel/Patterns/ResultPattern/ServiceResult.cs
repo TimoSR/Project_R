@@ -5,7 +5,7 @@ namespace _SharedKernel.Patterns.ResultPattern;
 public class ServiceResult
 {
     public bool IsSuccess { get; protected set; }
-    public List<string> Messages { get; protected set; } = new List<string>();
+    public List<string?> Messages { get; protected set; } = new();
     public ServiceErrorType ErrorType { get; protected set; } = ServiceErrorType.None;
 
     // Factory methods with ErrorType
@@ -32,7 +32,7 @@ public class ServiceResult
 
 public class ServiceResult<T> : ServiceResult
 {
-    public T Data { get; private set; }
+    public T? Data { get; private set; }
 
     private ServiceResult(T data, string? message, bool isSuccess, ServiceErrorType errorType = ServiceErrorType.None): base()
     {
