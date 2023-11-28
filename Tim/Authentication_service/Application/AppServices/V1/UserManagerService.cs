@@ -10,7 +10,6 @@ using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
 using Infrastructure.Persistence._Interfaces;
-using Infrastructure.Utilities._Interfaces;
 using Newtonsoft.Json;
 
 namespace Application.AppServices.V1;
@@ -21,7 +20,6 @@ public class UserManagerService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserManagerService> _logger;
     private readonly IEventHandler _eventHandler;
-    private readonly IPasswordHasher _passwordHasher;
     private readonly ICacheManager _cacheManager;
 
     public UserManagerService(
@@ -29,8 +27,7 @@ public class UserManagerService : IUserService
         IUserRepository userRepository,
         ILogger<UserManagerService> logger,
         IEventHandler eventHandler,
-        ICacheManager cacheManager,
-        IPasswordHasher passwordHasher
+        ICacheManager cacheManager
     )
     {
         _userValidationService = userValidationService;
@@ -38,7 +35,6 @@ public class UserManagerService : IUserService
         _logger = logger;
         _eventHandler = eventHandler;
         _cacheManager = cacheManager;
-        _passwordHasher = passwordHasher;
     }
     
     public async Task<ServiceResult> RegisterAsync(UserRegisterDto userDto)
@@ -85,10 +81,10 @@ public class UserManagerService : IUserService
         }
     }
 
-    public async Task<ServiceResult<UserDto>> GetUserByIdAsync(string userId)
+    public async Task<ServiceResult<UserDto>> GetUserByEmailAsync(string email)
     {
         // First, try to get the user from cache
-        var cacheKey = $"user_{userId}";
+        var cacheKey = $"user_{email}";
         var cachedUser = await _cacheManager.GetValueAsync(cacheKey);
         if (cachedUser.IsSuccess && cachedUser.Value != null)
         {
@@ -96,34 +92,52 @@ public class UserManagerService : IUserService
         }
 
         // If not in cache, retrieve from the database
-        var user = await _userRepository.GetUserByIdAsync(userId);
+        var user = await _userRepository.GetUserByEmailAsync(email);
         if (user == null)
         {
-            _logger.LogWarning("User with ID: {UserId} not found.", userId);
+            _logger.LogWarning("User with Email: {email} not found.", email);
             return ServiceResult<UserDto>.Failure("User not found.", ServiceErrorType.NotFound);
         }
 
         // Cache the retrieved user
-        var userDto = new UserDto() { Email = user.Email };
-        await _cacheManager.SetValueAsync(cacheKey, JsonConvert.SerializeObject(userDto), TimeSpan.FromMinutes(30)); // Set an appropriate expiration
+        var userDto = new UserDto() { Email = user.Email, UserName = user.UserName};
+        await _cacheManager.SetValueAsync(cacheKey, JsonConvert.SerializeObject(userDto), TimeSpan.FromSeconds(4)); // Set an appropriate expiration
 
         return ServiceResult<UserDto>.Success(userDto);
     }
     
-    public async Task<bool> DeleteUserAsync(string userId)
+    public async Task<ServiceResult> DeleteUserByEmailAsync(string email)
     {
-        _logger.LogInformation("Attempting to delete user with ID: {UserId}", userId);
+        _logger.LogInformation("Attempting to delete user with Email: {Email}", email);
 
-        // Deleting the user
-        await _userRepository.DeleteUserAsync(userId);
+        try
+        {
+            // Deleting the user
+            bool deleteSuccess = await _userRepository.DeleteUserByEmailAsync(email);
+            if (!deleteSuccess)
+            {
+                _logger.LogWarning("Deletion failed for user with Email: {Email}", email);
+                return ServiceResult.Failure("User not found or deletion failed.", ServiceErrorType.NotFound);
+            }
 
-        // Invalidate the cache
-        var cacheKey = $"user_{userId}";
-        await _cacheManager.RemoveValueAsync(cacheKey);
+            // Invalidate the cache
+            var cacheKey = $"user_{email}";
+            await _cacheManager.RemoveValueAsync(cacheKey);
 
-        _logger.LogInformation("Successfully deleted user with ID: {UserId}", userId);
-        return true;
+            var userDeletionInitEvent = new UserDeletionInitEvent { Email = email };
+            
+            await _eventHandler.PublishProtobufEventAsync(userDeletionInitEvent);
+            
+            _logger.LogInformation("Successfully deleted user with Email: {email}", email);
+            return ServiceResult.Success("User deleted successfully.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred during the deletion process for user with Email: {email}", email);
+            return ServiceResult.Failure("An unexpected error occurred during deletion.");
+        }
     }
+
     
     public async Task<ServiceResult> UpdateUserStatusByEmailAsync(UserAuthDetailsSetSuccessEvent @event, UserStatus status)
     {
@@ -140,7 +154,7 @@ public class UserManagerService : IUserService
             }
             
             // Update cache if necessary
-            var user = await _userRepository.GetUserByEmail(@event.Email);
+            var user = await _userRepository.GetUserByEmailAsync(@event.Email);
             if (user != null)
             {
                 var cacheKey = $"user_{user.Id}";

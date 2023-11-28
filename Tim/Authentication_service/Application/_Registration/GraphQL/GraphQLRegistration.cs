@@ -1,4 +1,4 @@
-using _SharedKernel.Patterns.RegistrationHooks.GraphQL._Interfaces;
+using Application.Controllers.GraphQL.GraphQL._Interfaces;
 
 namespace Application._Registration.GraphQL;
 
@@ -10,7 +10,9 @@ public static class GraphQlRegistration
         var mutationTypes = GetTypes<IMutation>();
         var subscriptionTypes = GetTypes<ISubscription>();
 
-        var server = services.AddGraphQLServer();
+        var server = services
+            .AddGraphQLServer()
+            .AddInMemorySubscriptions();
 
         // Dynamically register queries
         foreach (var type in queryTypes)

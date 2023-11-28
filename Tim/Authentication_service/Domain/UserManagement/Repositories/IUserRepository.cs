@@ -8,7 +8,7 @@ public interface IUserRepository
     // Read Operations
     Task<User> GetUserByIdAsync(string id);
     Task<IEnumerable<User>> GetAllUsersAsync();
-    Task<User> GetUserByEmail(string email);
+    Task<User> GetUserByEmailAsync(string email);
 
     // Create Operation
     Task<bool> CreateUserIfNotRegisteredAsync(User newUser);

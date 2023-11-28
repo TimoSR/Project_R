@@ -41,6 +41,13 @@ public class JwtMiddleware
             return;
         }
         
+        // Add the route you want to allow without JWT here
+        if (context.Request.Path.Value.StartsWith("/graphql", StringComparison.OrdinalIgnoreCase))
+        {
+            await _next(context);
+            return;
+        }
+        
         if (!context.Request.Headers.TryGetValue(AuthConstants.AuthorizationHeader, out var authHeader))
         {
             await RespondWithUnauthorized(context, "Missing Authorization header.");

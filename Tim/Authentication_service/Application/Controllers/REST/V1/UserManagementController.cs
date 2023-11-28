@@ -26,10 +26,10 @@ public class UserManagementController : ControllerBase
     /// Register a new user
     /// </summary>
     [AllowAnonymous]
-    [HttpPost("register")]
+    [HttpPost("RegisterUser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register(UserRegisterDto newUserDto)
+    public async Task<IActionResult> RegisterUser(UserRegisterDto newUserDto)
     {
         var result = await _userService.RegisterAsync(newUserDto);
 
@@ -47,12 +47,12 @@ public class UserManagementController : ControllerBase
     /// <summary>
     /// Register a new user
     /// </summary>
-    [HttpGet("getById")]
+    [HttpGet("GetUserByEmail")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetById(string id)
+    public async Task<IActionResult> GetUserByEmail(string email)
     {
-        var result = await _userService.GetUserByIdAsync(id);
+        var result = await _userService.GetUserByEmailAsync(email);
 
         if (result.IsSuccess)
         {
@@ -65,14 +65,14 @@ public class UserManagementController : ControllerBase
     /// <summary>
     /// Delete a user
     /// </summary>
-    [HttpDelete("delete")]
+    [HttpDelete("DeleteUserByEmail")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteUser(string userId)
+    public async Task<IActionResult> DeleteUserByEmail(string email)
     {
-        var result = await _userService.DeleteUserAsync(userId);
+        var result = await _userService.DeleteUserByEmailAsync(email);
 
-        if (result)
+        if (result.IsSuccess)
         {
             return Ok(new { Message = "User deleted successfully" });
         }

@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Application._Registration.DataSeeder;
 using Application._Registration.Events;
 using Application._Registration.GraphQL;
@@ -59,9 +58,7 @@ public class Program
 
         // Custom Tools written tools to simplify development
         builder.Services.RegisterUtilityServices();
-
-        // Add / Disable GraphQL (MapGraphQL should be out-commented too)
-        builder.Services.AddGraphQlServices(); 
+        
         // Add / Disable MongoDB
         builder.Services.AddMongoDbServices(config);
         // Add / Disable Publisher
@@ -88,6 +85,9 @@ public class Program
         builder.Services.AddApplicationServices();
         builder.Services.AddDomainServices();
 
+        // Add / Disable GraphQL (MapGraphQL should be out-commented too)
+        builder.Services.AddGraphQlServices();
+        
         //Adding the Controllers
         builder.Services.AddControllers();
         

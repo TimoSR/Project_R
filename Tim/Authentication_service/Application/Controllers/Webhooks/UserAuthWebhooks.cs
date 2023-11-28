@@ -3,6 +3,7 @@ using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.Controllers.Webhooks._Abstract;
 using Domain._Shared.Events.UserAuthentication;
+using Domain._Shared.Events.UserManagement;
 using Domain.UserManagement.Enums;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Swagger;
@@ -21,6 +22,7 @@ public class UserAuthWebhooks : BaseWebhookController
 {
     
     private readonly IUserService _userService;
+    private readonly IEventHandler _eventHandler;
     
     public UserAuthWebhooks(
         IUserService userService,
@@ -28,6 +30,7 @@ public class UserAuthWebhooks : BaseWebhookController
         ) : base(eventHandler)
     {
         _userService = userService;
+        _eventHandler = eventHandler;
     }
     
     [AllowAnonymous]
@@ -70,4 +73,19 @@ public class UserAuthWebhooks : BaseWebhookController
         };
     }
     
+    [AllowAnonymous]
+    [HttpPost("HandleUserDeletionSuccessEvent")]
+    [EventSubscription("Auth-service-UserDeletionSuccessTopic")]
+    public async Task<IActionResult> HandleUserDeletionSuccessEvent()
+    {
+        var data = await OnEvent<UserDeletionSuccessEvent>();
+
+        if (data != null)
+        {
+            await _eventHandler.PublishProtobufEventAsync(new UserDeletionCompleted { Email = data.Email });
+            return Ok();
+        }
+
+        return BadRequest();
+    }
 }

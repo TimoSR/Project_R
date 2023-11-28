@@ -85,7 +85,9 @@ public class AuthController : ControllerBase
         return result.ErrorType switch
         {
             ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
-            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages })
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages }),
+            ServiceErrorType.NotFound => NotFound(new {result.Messages}),
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 

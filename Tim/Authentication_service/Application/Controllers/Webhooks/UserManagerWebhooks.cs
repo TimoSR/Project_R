@@ -47,4 +47,24 @@ public class UserManagerWebhooks : BaseWebhookController
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+    
+    [AllowAnonymous]
+    [HttpPost("HandleUserDeletionInitEvent")]
+    [EventSubscription("Auth-service-UserDeletionInitTopic")]
+    public async Task<IActionResult> HandleUserDeletionInitEvent()
+    {
+        var data = await OnEvent<UserDeletionInitEvent>();
+        var result = await _authAppService.DeleteUserAuthDetailsAsync(data);
+
+        if (result.IsSuccess)
+        {
+            return Ok(new { result.Messages });
+        }
+
+        return result.ErrorType switch
+        {
+            ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages }),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
 }

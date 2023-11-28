@@ -1,4 +1,3 @@
-using Application.AppServices.V1._Interfaces;
 using Application.Controllers.REST.V1;
 using Application.DTO.Auth;
 using Application.DTO.UserManagement;
