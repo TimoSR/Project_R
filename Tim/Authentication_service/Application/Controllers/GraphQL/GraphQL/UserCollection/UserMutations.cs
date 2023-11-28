@@ -17,17 +17,13 @@ public class UserMutations : IMutation
         _sender = sender;
     }
     
-    // Assuming UserRegisterDto and User are your domain models
     public async Task<ServiceResult> RegisterUser(UserRegisterDto newUserDto)
     {
         var result = await _userService.RegisterAsync(newUserDto);
 
-        if (result.IsSuccess)
-        {
-            await _sender.SendAsync(nameof(UserSubscriptions.UserAdded), result);
-
-            return result;
-        }
+        if (!result.IsSuccess) return result;
+        
+        await _sender.SendAsync(nameof(UserSubscriptions.UserAdded), result);
 
         return result;
     }
