@@ -54,7 +54,7 @@ namespace Infrastructure.DomainRepositories
             }
         }
         
-        public async Task<bool> RollbackUserByEmailAsync(string email)
+        public async Task<bool> DeleteUserByEmailAsync(string email)
         {
             try
             {
@@ -94,6 +94,21 @@ namespace Infrastructure.DomainRepositories
             var collection = GetCollection();
             var existingUser = await collection.Find(u => u.Email == email).FirstOrDefaultAsync();
             return existingUser != null;
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            try
+            {
+                var collection = GetCollection();
+                return await collection.Find(u => u.Email == email).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                var collectionName = nameof(User) + "s";
+                _logger.LogError($"Error retrieving user by email {email} from {collectionName}: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<bool> CreateUserIfNotRegisteredAsync(User newUser)

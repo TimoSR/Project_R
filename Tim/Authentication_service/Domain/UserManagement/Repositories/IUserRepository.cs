@@ -8,7 +8,7 @@ public interface IUserRepository
     // Read Operations
     Task<User> GetUserByIdAsync(string id);
     Task<IEnumerable<User>> GetAllUsersAsync();
-    Task<User> FindByEmailAsync(string email);
+    Task<User> GetUserByEmail(string email);
 
     // Create Operation
     Task<bool> CreateUserIfNotRegisteredAsync(User newUser);
@@ -21,5 +21,5 @@ public interface IUserRepository
 
     // Delete Operation
     Task<bool> DeleteUserAsync(string id);
-    Task<bool> RollbackUserByEmailAsync(string email);
+    Task<bool> DeleteUserByEmailAsync(string email);
 }

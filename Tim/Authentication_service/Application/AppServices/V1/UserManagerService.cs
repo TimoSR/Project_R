@@ -11,6 +11,7 @@ using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities._Interfaces;
+using Newtonsoft.Json;
 
 namespace Application.AppServices.V1;
 
@@ -71,7 +72,7 @@ public class UserManagerService : IUserService
             var userRegInit = new UserRegInitEvent()
             {
                 Email = userDto.Email,
-                Password = _passwordHasher.HashPassword(userDto.Password)
+                Password = userDto.Password
             };
 
             await _eventHandler.PublishProtobufEventAsync(userRegInit);
@@ -86,6 +87,15 @@ public class UserManagerService : IUserService
 
     public async Task<ServiceResult<UserDto>> GetUserByIdAsync(string userId)
     {
+        // First, try to get the user from cache
+        var cacheKey = $"user_{userId}";
+        var cachedUser = await _cacheManager.GetValueAsync(cacheKey);
+        if (cachedUser.IsSuccess && cachedUser.Value != null)
+        {
+            return ServiceResult<UserDto>.Success(JsonConvert.DeserializeObject<UserDto>(cachedUser.Value));
+        }
+
+        // If not in cache, retrieve from the database
         var user = await _userRepository.GetUserByIdAsync(userId);
         if (user == null)
         {
@@ -93,11 +103,10 @@ public class UserManagerService : IUserService
             return ServiceResult<UserDto>.Failure("User not found.", ServiceErrorType.NotFound);
         }
 
-        var userDto = new UserDto()
-        {
-            Email = user.Email
-        };
-        
+        // Cache the retrieved user
+        var userDto = new UserDto() { Email = user.Email };
+        await _cacheManager.SetValueAsync(cacheKey, JsonConvert.SerializeObject(userDto), TimeSpan.FromMinutes(30)); // Set an appropriate expiration
+
         return ServiceResult<UserDto>.Success(userDto);
     }
     
@@ -108,8 +117,11 @@ public class UserManagerService : IUserService
         // Deleting the user
         await _userRepository.DeleteUserAsync(userId);
 
-        _logger.LogInformation("Successfully deleted user with ID: {UserId}", userId);
+        // Invalidate the cache
+        var cacheKey = $"user_{userId}";
+        await _cacheManager.RemoveValueAsync(cacheKey);
 
+        _logger.LogInformation("Successfully deleted user with ID: {UserId}", userId);
         return true;
     }
     
@@ -125,6 +137,15 @@ public class UserManagerService : IUserService
             {
                 _logger.LogWarning("Update of user status failed for email: {Email}", @event.Email);
                 return ServiceResult.Failure("User not found or update failed.", ServiceErrorType.NotFound);
+            }
+            
+            // Update cache if necessary
+            var user = await _userRepository.GetUserByEmail(@event.Email);
+            if (user != null)
+            {
+                var cacheKey = $"user_{user.Id}";
+                var userDto = new UserDto() { Email = user.Email };
+                await _cacheManager.SetValueAsync(cacheKey, JsonConvert.SerializeObject(userDto), TimeSpan.FromMinutes(30));
             }
 
             _logger.LogInformation("Status of user with email: {Email} updated successfully to {Status}", @event.Email, status);
@@ -144,7 +165,7 @@ public class UserManagerService : IUserService
 
         try
         {
-            bool rollbackSuccess = await _userRepository.RollbackUserByEmailAsync(@event.Email);
+            bool rollbackSuccess = await _userRepository.DeleteUserByEmailAsync(@event.Email);
 
             if (!rollbackSuccess)
             {

@@ -18,6 +18,8 @@ public class UserAuthService : IAuthAppServiceV1
     private readonly IPasswordHasher _passwordHasher;
     private readonly IEventHandler _eventHandler;
     private readonly ICacheManager _cacheManager;
+    
+    private const string TokenCachePrefix = "authToken_";
 
     public UserAuthService(
         IAuthRepository authRepository,
@@ -62,14 +64,24 @@ public class UserAuthService : IAuthAppServiceV1
     public async Task<ServiceResult<(string Token, string RefreshToken)>> LoginAsync(string email, string password)
     {
         var user = await _authRepository.FindByEmailAsync(email);
-        
         if (user == null || !_passwordHasher.VerifyHashedPassword(user.HashedPassword, password))
         {
             return ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.Unauthorized);
         }
 
+        // Check if tokens are already cached
+        var cachedTokens = await _cacheManager.GetValueAsync(TokenCachePrefix + user.Id);
+        if (cachedTokens.IsSuccess && cachedTokens.Value != null)
+        {
+            return ServiceResult<(string, string)>.Success((cachedTokens.Value, null), "Cached login successful");
+        }
+
+        // Generate new tokens
         var accessToken = _tokenHandler.GenerateJwtToken(user.Id);
         var refreshToken = _tokenHandler.GenerateRefreshToken();
+
+        // Cache the new tokens
+        await _cacheManager.SetValueAsync(TokenCachePrefix + user.Id, accessToken, TimeSpan.FromMinutes(60)); // Set appropriate expiration
 
         await _authRepository.UpdateRefreshTokenAsync(user.Id, refreshToken);
 
@@ -112,13 +124,15 @@ public class UserAuthService : IAuthAppServiceV1
         return ServiceResult.Failure(reason, ServiceErrorType.InternalError);
     }
 
-
     public async Task<bool> LogoutAsync(string userId)
     {
         _logger.LogInformation("Attempting to logout user with ID: {UserId}", userId);
 
         // Invalidate the refresh token (optional)
         await _authRepository.UpdateRefreshTokenAsync(userId, null);
+
+        // Remove tokens from cache
+        await _cacheManager.RemoveValueAsync(TokenCachePrefix + userId);
 
         _logger.LogInformation("Successfully logged out user with ID: {UserId}", userId);
 
