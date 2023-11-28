@@ -23,7 +23,7 @@ public class UserMutations : IMutation
 
         if (!result.IsSuccess) return result;
         
-        await _sender.SendAsync(nameof(UserSubscriptions.UserAdded), result);
+        await _sender.SendAsync(nameof(UserSubscriptions.OnUserRegistered), result);
 
         return result;
     }

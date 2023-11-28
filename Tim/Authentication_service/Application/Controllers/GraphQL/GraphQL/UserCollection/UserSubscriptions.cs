@@ -7,5 +7,5 @@ public class UserSubscriptions : ISubscription
 {
     [Subscribe]
     [Topic]
-    public ServiceResult UserAdded([EventMessage] ServiceResult registeredUser) => registeredUser;
+    public ServiceResult OnUserRegistered([EventMessage] ServiceResult registeredUser) => registeredUser;
 }
