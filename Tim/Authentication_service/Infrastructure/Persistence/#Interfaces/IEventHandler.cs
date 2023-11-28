@@ -1,4 +1,4 @@
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Interfaces;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 
 namespace Infrastructure.Persistence._Interfaces;
 

@@ -1,5 +1,5 @@
 using System.Reflection;
-using _CommonLibrary.Patterns.RegistrationHooks.Utilities;
+using _SharedKernel.Patterns.RegistrationHooks.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure._Registration.Utilities;

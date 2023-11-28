@@ -1,5 +1,5 @@
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Attributes;
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Interfaces;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.PubSub.V1;
 using IConfiguration = Infrastructure.Utilities._Interfaces.IConfiguration;

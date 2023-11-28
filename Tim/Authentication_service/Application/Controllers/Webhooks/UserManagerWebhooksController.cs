@@ -1,7 +1,7 @@
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Attributes;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using Application.AppServices._Interfaces;
 using Application.Controllers.Webhooks._Abstract;
-using Domain.UserManagement.Events;
+using Domain.Events.UserManagement;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;

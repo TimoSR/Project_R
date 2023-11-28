@@ -1,11 +1,11 @@
 using System.Reflection;
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Attributes;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities._Interfaces;
-using _CommonLibrary.Patterns.Events;
-using _CommonLibrary.Patterns.RegistrationHooks.Events._Interfaces;
+using _SharedKernel.Patterns.Events;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
+using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Encoding = System.Text.Encoding;
@@ -48,8 +48,6 @@ public class EventHandler : IEventHandler
 
         byte[] data = Convert.FromBase64String(pubSubEvent.Message.Data);
         string decodedString = Encoding.UTF8.GetString(data);
-        
-        _logger.LogInformation("Received {EventType}", pubSubEvent.Message.Attributes.EventType);
         
         TEvent? deserializedEvent = TryDeserialize(decodedString, _protobufSerializer.Deserialize<TEvent>);
         if (deserializedEvent != null)
@@ -116,7 +114,6 @@ public class EventHandler : IEventHandler
 
         return $"{_serviceName}-{eventName}";
     }
-
 
     private async Task PublishMessageAsync<TEvent>(TEvent @event, string topicId, string eventType, string formattedMessage) where TEvent : IPubEvent
     {

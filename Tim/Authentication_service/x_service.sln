@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration_Tests", "Integr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit_Tests", "Unit_Tests\Unit_Tests.csproj", "{286B53BA-3B0F-4341-AB06-78B57D0863F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_CommonLibrary", "_CommonLibrary\_CommonLibrary.csproj", "{0EC42D7D-A2D8-4253-BD43-D8B8613BCEE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_SharedKernel", "_SharedKernel\_SharedKernel.csproj", "{0EC42D7D-A2D8-4253-BD43-D8B8613BCEE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,5 @@
-using _CommonLibrary.Patterns.ResultPattern;
-using _CommonLibrary.Patterns.ResultPattern._Enums;
+using _SharedKernel.Patterns.ResultPattern;
+using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Domain.UserAuthentication.Repositories;
 using Infrastructure.Utilities._Interfaces;

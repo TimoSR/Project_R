@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using _CommonLibrary.Patterns.RegistrationHooks.Utilities;
+using _SharedKernel.Patterns.RegistrationHooks.Utilities;
 using Domain._Registration;
 
 namespace Infrastructure.Utilities._Interfaces;
