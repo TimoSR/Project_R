@@ -9,7 +9,6 @@ using Domain.UserManagement.Enums;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
-using Grpc.Core;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities._Interfaces;
 
@@ -128,7 +127,7 @@ public class UserManagerService : IUserService
                 return ServiceResult.Failure("User not found or update failed.", ServiceErrorType.NotFound);
             }
 
-            _logger.LogInformation("Status of user with email: {Email} updated successfully", @event.Email);
+            _logger.LogInformation("Status of user with email: {Email} updated successfully to {Status}", @event.Email, status);
             return ServiceResult.Success("User status updated successfully.");
         }
         catch (Exception ex)
