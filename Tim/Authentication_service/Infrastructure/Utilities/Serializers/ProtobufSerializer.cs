@@ -12,11 +12,7 @@ public class ProtobufSerializer : IProtobufSerializer
     {
         try
         {
-            Console.WriteLine("\nCreated Protobuf Message:");
-        
             string encodedString = ConvertToProtobuf(content);
- 
-            Console.WriteLine(encodedString); // This will print the Base64 string to the console
         
             return encodedString;
         }
@@ -36,11 +32,8 @@ public class ProtobufSerializer : IProtobufSerializer
     {
         try
         {
-            Console.WriteLine("\nDeserializing Protobuf Message:");
                 
             var payload = ConvertToModel<TModel>(content);
-                
-            Console.WriteLine($"Deserialized object of type {typeof(TModel).Name} successfully!");
                 
             return payload;
         }

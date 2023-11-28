@@ -1,5 +1,6 @@
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities;
+using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
@@ -7,7 +8,7 @@ namespace Infrastructure.Persistence.Redis;
 
 public static class RedisRegistration
 {
-    public static IServiceCollection AddRedisServices(this IServiceCollection services, Configuration config)
+    public static IServiceCollection AddRedisServices(this IServiceCollection services, IConfiguration config)
     {
 
         var redisConnectionString = config.RedisConnectionString;
@@ -36,6 +37,8 @@ public static class RedisRegistration
             {
                 throw new InvalidOperationException("Unexpected response from Redis.");
             }
+            
+            Console.WriteLine("\n###################################");
 
             return client;
         });

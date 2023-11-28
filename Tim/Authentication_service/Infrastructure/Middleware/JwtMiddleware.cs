@@ -1,9 +1,23 @@
+using System.Text.Json;
 using Infrastructure.Utilities._Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Middleware;
+
+public class ErrorResponse
+{
+    public string Message { get; set; }
+
+    public ErrorResponse(string message)
+    {
+        Message = message;
+    }
+
+    public string ToJson() => JsonSerializer.Serialize(this);
+}
 
 public class JwtMiddleware
 {
@@ -20,9 +34,7 @@ public class JwtMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Skip middleware for endpoints marked with [AllowAnonymous]
         var endpoint = context.GetEndpoint();
-        
         if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
         {
             await _next(context);
@@ -31,56 +43,69 @@ public class JwtMiddleware
         
         if (!context.Request.Headers.TryGetValue(AuthConstants.AuthorizationHeader, out var authHeader))
         {
-            await ProceedToNextMiddleware(context).ConfigureAwait(false);
+            await RespondWithUnauthorized(context, "Missing Authorization header.");
             return;
         }
 
         var header = authHeader.ToString();
         if (!header.StartsWith(AuthConstants.BearerPrefix, StringComparison.OrdinalIgnoreCase))
         {
-            await RespondWithBadRequest(context, "Authorization header does not contain a Bearer token.").ConfigureAwait(false);
+            await RespondWithBadRequest(context, "Authorization header must start with 'Bearer'.");
             return;
         }
 
         var token = header.Substring(AuthConstants.BearerPrefix.Length).Trim();
         if (string.IsNullOrEmpty(token))
         {
-            await ProceedToNextMiddleware(context).ConfigureAwait(false);
+            await RespondWithBadRequest(context, "Bearer token is empty.");
             return;
         }
 
         try
         {
-            using (_logger.BeginScope($"JWT Validation for Token: {token}"))
-            {
-                var principal = _tokenHandler.DecodeJwtToken(token);
-                context.User = principal; // Setting the user.
-            }
+            var principal = _tokenHandler.DecodeJwtToken(token);
+            context.User = principal;
+            await _next(context);
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            await RespondWithUnauthorized(context, "Token is expired.");
+        }
+        catch (SecurityTokenInvalidSignatureException)
+        {
+            await RespondWithUnauthorized(context, "Invalid token signature.");
+        }
+        catch (SecurityTokenException)
+        {
+            await RespondWithUnauthorized(context, "Token validation failed.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Token validation failed");
-            await RespondWithUnauthorized(context, "Unauthorized").ConfigureAwait(false);
-            return;
+            _logger.LogError(ex, "An unexpected error occurred during token validation.");
+            await RespondWithInternalServerError(context, "An unexpected error occurred.");
         }
-
-        await ProceedToNextMiddleware(context).ConfigureAwait(false);
     }
 
-    private async Task ProceedToNextMiddleware(HttpContext context)
+    private async Task RespondWithError(HttpContext context, int statusCode, string message)
     {
-        await _next(context).ConfigureAwait(false);
+        var errorResponse = new ErrorResponse(message);
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(errorResponse.ToJson());
     }
 
-    private async Task RespondWithBadRequest(HttpContext context, string message)
+    private Task RespondWithBadRequest(HttpContext context, string message)
     {
-        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        await context.Response.WriteAsync(message).ConfigureAwait(false);
+        return RespondWithError(context, StatusCodes.Status400BadRequest, message);
     }
 
-    private async Task RespondWithUnauthorized(HttpContext context, string message)
+    private Task RespondWithUnauthorized(HttpContext context, string message)
     {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        await context.Response.WriteAsync(message).ConfigureAwait(false);
+        return RespondWithError(context, StatusCodes.Status401Unauthorized, message);
+    }
+
+    private Task RespondWithInternalServerError(HttpContext context, string message)
+    {
+        return RespondWithError(context, StatusCodes.Status500InternalServerError, message);
     }
 }

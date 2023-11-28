@@ -7,6 +7,7 @@ using AspNetCoreRateLimit;
 using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
+using Infrastructure.Persistence.Redis;
 using Infrastructure.Registrations.Repositories;
 using Infrastructure.Registrations.Utilities;
 using Infrastructure.Swagger;

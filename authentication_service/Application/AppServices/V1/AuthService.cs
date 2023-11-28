@@ -64,7 +64,6 @@ public class AuthService : IAuthServiceV1
         }
     }
 
-
     public async Task<(string Token, string RefreshToken)?> LoginAsync(string email, string password)
     {
         _logger.LogInformation("Attempting to authenticate user with email: {Email}", email);

@@ -1,7 +1,10 @@
+using _CommonLibrary.Patterns.ResultPattern;
 using Application.AppServices.V1;
 using Domain.DomainModels;
 using Domain.DomainModels.Enums;
-using Domain.IRepositories;
+using Domain.User.Services._Interfaces;
+using Domain.UserManagement.Entities;
+using Domain.UserManagement.Repositories;
 using FluentAssertions;
 using Infrastructure.Utilities._Interfaces;
 using Microsoft.Extensions.Logging;

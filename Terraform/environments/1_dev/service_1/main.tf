@@ -17,6 +17,8 @@ resource "google_project_service" "secret_manager" {
   disable_on_destroy = false
 }
 
+# This is used to register the keys for the secrets
+# I need to all the secrect variable names here to target them
 # Getting the references to secrets
 data "google_secret_manager_secret_version" "secrets" {
   for_each = toset(["MONGODB_CONNECTION_STRING"])
@@ -136,6 +138,7 @@ resource "google_project_service_identity" "pubsub_agent" {
   project  = data.google_project.project.project_id
   service  = "pubsub.googleapis.com"
 }
+
 resource "google_project_iam_binding" "project_token_creator" {
   project = data.google_project.project.project_id
   role    = "roles/iam.serviceAccountTokenCreator"
