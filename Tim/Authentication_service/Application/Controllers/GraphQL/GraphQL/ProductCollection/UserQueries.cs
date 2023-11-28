@@ -5,25 +5,18 @@ using Application.DTO.UserManagement;
 
 namespace Application.Controllers.GraphQL.GraphQL.ProductCollection;
 
-public class ProductMutation : IMutation
+public class UserQueries : IQuery
 {
     private readonly IUserService _userService;
     
-    public ProductMutation(IUserService userService)
+    public UserQueries(IUserService userService)
     {
         _userService = userService;
     }
     
-    // Assuming UserRegisterDto and User are your domain models
-    public async Task<ServiceResult> RegisterUser(UserRegisterDto newUserDto)
+    public async Task<ServiceResult<UserDto>> GetUserByEmail(string email)
     {
-        var result = await _userService.RegisterAsync(newUserDto);
-
-        if (result.IsSuccess)
-        {
-            return result;
-        }
-
+        var result = await _userService.GetUserByEmailAsync(email);
         return result;
     }
 }

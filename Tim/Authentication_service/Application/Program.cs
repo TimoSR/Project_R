@@ -86,7 +86,7 @@ public class Program
         builder.Services.AddDomainServices();
 
         // Add / Disable GraphQL (MapGraphQL should be out-commented too)
-        builder.Services.AddGraphQlServices(); 
+        builder.Services.AddGraphQlServices();
         
         //Adding the Controllers
         builder.Services.AddControllers();
