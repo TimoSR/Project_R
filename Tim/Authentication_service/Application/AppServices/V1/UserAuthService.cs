@@ -78,7 +78,12 @@ public class UserAuthService : IAuthAppServiceV1
     public async Task<ServiceResult<(string Token, string RefreshToken)>> LoginAsync(string email, string password)
     {
         var user = await _authRepository.FindByEmailAsync(email);
-        if (user == null || !_passwordHasher.VerifyHashedPassword(user.HashedPassword, password))
+        if (user == null)
+        {
+            return ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.NotFound);
+        }
+        
+        if (!_passwordHasher.VerifyHashedPassword(user.HashedPassword, password))
         {
             return ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.Unauthorized);
         }
