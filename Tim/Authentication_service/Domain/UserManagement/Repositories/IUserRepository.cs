@@ -1,4 +1,5 @@
 using Domain.UserManagement.Entities;
+using Domain.UserManagement.Enums;
 
 namespace Domain.UserManagement.Repositories;
 
@@ -16,7 +17,9 @@ public interface IUserRepository
     Task UpdateUserAsync(User user);
     Task UpdateUserEmailAsync(string userId, string newEmail);
     Task UpdateUserPasswordAsync(string userId, string newPassword);
+    Task<bool> UpdateUserStatusByEmailAsync(string email, UserStatus newStatus);
 
     // Delete Operation
     Task<bool> DeleteUserAsync(string id);
+    Task<bool> RollbackUserByEmailAsync(string email);
 }

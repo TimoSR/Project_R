@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Application.Controllers.Webhooks;
 
 [ApiController]
-[Route("api/")]
+[Route("api/[controller]")]
 [SwaggerDoc("UserManagerWebhooks")]
 [ApiVersion("1.0")]
 [Authorize]
@@ -29,9 +29,9 @@ public class UserManagerWebhooks : BaseWebhookController
     }
     
     [AllowAnonymous]
-    [HttpPost("HandleUserCreatedEvent")]
+    [HttpPost("HandleUserRegInitEvent")]
     [EventSubscription("Auth-service-UserRegInitTopic")]
-    public async Task<IActionResult> HandleUserCreatedEvent()
+    public async Task<IActionResult> HandleUserRegInitEvent()
     {
         var data = await OnEvent<UserRegInitEvent>();
         var result = await _authAppService.SetUserAuthDetailsAsync(data);

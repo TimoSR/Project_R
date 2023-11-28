@@ -2,11 +2,14 @@ using _SharedKernel.Patterns.ResultPattern;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.DTO.UserManagement;
+using Domain._Shared.Events.UserAuthentication;
 using Domain._Shared.Events.UserManagement;
 using Domain.UserManagement.Entities;
+using Domain.UserManagement.Enums;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services;
+using Grpc.Core;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Utilities._Interfaces;
 
@@ -98,7 +101,6 @@ public class UserManagerService : IUserService
         
         return ServiceResult<UserDto>.Success(userDto);
     }
-
     
     public async Task<bool> DeleteUserAsync(string userId)
     {
@@ -110,5 +112,54 @@ public class UserManagerService : IUserService
         _logger.LogInformation("Successfully deleted user with ID: {UserId}", userId);
 
         return true;
+    }
+    
+    public async Task<ServiceResult> UpdateUserStatusByEmailAsync(UserAuthDetailsSetSuccessEvent @event, UserStatus status)
+    {
+        _logger.LogInformation("Attempting to update status of user with email: {Email}", @event.Email);
+
+        try
+        {
+            bool updateSuccess = await _userRepository.UpdateUserStatusByEmailAsync(@event.Email, status);
+
+            if (!updateSuccess)
+            {
+                _logger.LogWarning("Update of user status failed for email: {Email}", @event.Email);
+                return ServiceResult.Failure("User not found or update failed.", ServiceErrorType.NotFound);
+            }
+
+            _logger.LogInformation("Status of user with email: {Email} updated successfully", @event.Email);
+            return ServiceResult.Success("User status updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred during the update process for user status with email: {Email}", @event.Email);
+            return ServiceResult.Failure("An unexpected error occurred during update.");
+        }
+    }
+    
+    // In UserManagerService class
+    public async Task<ServiceResult> RollBackUserAsync(UserAuthDetailsSetFailedEvent @event)
+    {
+        _logger.LogInformation("Attempting to rollback user with email: {Email}", @event.Email);
+
+        try
+        {
+            bool rollbackSuccess = await _userRepository.RollbackUserByEmailAsync(@event.Email);
+
+            if (!rollbackSuccess)
+            {
+                _logger.LogWarning("Rollback failed for user with email: {Email}", @event.Email);
+                return ServiceResult.Failure("Rollback failed.");
+            }
+
+            _logger.LogInformation("Rollback was successful for user with email: {Email}", @event.Email);
+            return ServiceResult.Success("Rollback successful.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred during the rollback process for user with email: {Email}", @event.Email);
+            return ServiceResult.Failure("An unexpected error occurred during rollback.");
+        }
     }
 }
