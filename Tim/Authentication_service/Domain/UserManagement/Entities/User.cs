@@ -1,3 +1,4 @@
+using Domain.UserManagement.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -21,4 +22,10 @@ public class User
 
     [BsonElement("UserName")]
     public string UserName { get; set; }
+
+    [BsonElement("Status")] 
+    public string Status { get; set; } = UserStatus.Pending.ToString();
+    
+    [BsonElement("LastModified")] 
+    public DateTime LastModified { get; set; }
 }

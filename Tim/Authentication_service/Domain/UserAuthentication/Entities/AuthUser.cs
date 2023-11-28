@@ -5,26 +5,23 @@ namespace Domain.UserAuthentication.Entities;
 
 public class AuthUser
 {
-    public const int MinPasswordLength = 6;
-    
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)] 
     public string Id { get; set; }
 
     private string _email;
     [BsonElement("Email")]
-    public string Email 
-    { 
-        get => _email; 
-        set => _email = value?.ToLowerInvariant(); 
-    }
+    public string Email { get; set; }
 
-    [BsonElement("Password")] 
-    public string Password { get; set; }
+    [BsonElement("HashedPassword")] 
+    public string HashedPassword { get; set; }
 
     [BsonElement("RefreshToken")] 
-    public string RefreshToken { get; set; }
+    public string? RefreshToken { get; set; }
 
     [BsonElement("EmailValidated")] 
     public bool EmailValidated { get; set; }
+    
+    [BsonElement("LastModified")] 
+    public DateTime LastModified { get; set; }
 }

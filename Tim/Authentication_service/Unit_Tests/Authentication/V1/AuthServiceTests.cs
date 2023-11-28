@@ -14,7 +14,7 @@ namespace Unit_Tests.Authentication.V1
 {
     public class AuthServiceTests
     {
-        private readonly AuthService _authService;
+        private readonly UserAuthService _userAuthService;
         private readonly AuthServiceTestSetup _testSetup;
         
         private readonly Mock<IUserRepository> _userRepositoryMock;
@@ -22,7 +22,7 @@ namespace Unit_Tests.Authentication.V1
         private readonly Mock<IEmailValidator> _emailValidatorMock;
         private readonly Mock<IPasswordValidator> _passwordValidatorMock;
         private readonly Mock<ITokenHandler> _tokenGeneratorMock;
-        private readonly Mock<ILogger<AuthService>> _loggerMock;
+        private readonly Mock<ILogger<UserAuthService>> _loggerMock;
         
         public AuthServiceTests()
         {
@@ -32,9 +32,9 @@ namespace Unit_Tests.Authentication.V1
             _emailValidatorMock = new Mock<IEmailValidator>();
             _passwordValidatorMock = new Mock<IPasswordValidator>();
             _tokenGeneratorMock = new Mock<ITokenHandler>();
-            _loggerMock = new Mock<ILogger<AuthService>>();
+            _loggerMock = new Mock<ILogger<UserAuthService>>();
 
-            _authService = new AuthService(
+            _userAuthService = new UserAuthService(
                 _userRepositoryMock.Object, 
                 _passwordHasherMock.Object, 
                 _emailValidatorMock.Object, 
@@ -53,7 +53,7 @@ namespace Unit_Tests.Authentication.V1
             _testSetup.SetupTokenGeneratorMock(_tokenGeneratorMock, testCase);
 
             // Act
-            var result = await _authService.LoginAsync(testCase.Email, testCase.Password);
+            var result = await _userAuthService.LoginAsync(testCase.Email, testCase.Password);
 
             // Assert
             result.Should().NotBeNull();
@@ -68,7 +68,7 @@ namespace Unit_Tests.Authentication.V1
             // Arrange
             var newUser = new User { Email = testCase.Email, Password = testCase.Password };
             _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.RegisterAsync(newUser);
@@ -81,7 +81,7 @@ namespace Unit_Tests.Authentication.V1
         public async Task LogoutAsync_ReturnsTrue()
         {
             // Arrange
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.LogoutAsync("userId");
@@ -94,7 +94,7 @@ namespace Unit_Tests.Authentication.V1
         public async Task DeleteUserAsync_ReturnsTrue()
         {
             // Arrange
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.DeleteUserAsync("userId");
@@ -108,7 +108,7 @@ namespace Unit_Tests.Authentication.V1
         {
             // Arrange
             _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.LoginAsync("invalidemail", "ValidPassword");
@@ -122,7 +122,7 @@ namespace Unit_Tests.Authentication.V1
         {
             // Arrange
             _passwordHasherMock.Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), It.IsAny<string>())).Returns(false);
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.LoginAsync("validemail@example.com", "InvalidPassword");
@@ -137,7 +137,7 @@ namespace Unit_Tests.Authentication.V1
             // Arrange
             _emailValidatorMock.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
             var newUser = new User { Email = "invalidemail", Password = "ValidPassword" };
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.RegisterAsync(newUser);
@@ -152,7 +152,7 @@ namespace Unit_Tests.Authentication.V1
             // Arrange
             _userRepositoryMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User()));
             var newUser = new User { Email = "existingemail@example.com", Password = "ValidPassword" };
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.RegisterAsync(newUser);
@@ -169,7 +169,7 @@ namespace Unit_Tests.Authentication.V1
             _userRepositoryMock.Setup(x => x.FindByEmailAsync("newuser@example.com")).Returns(Task.FromResult<User>(null)); // Add this line
     
             var newUser = new User { Email = "newuser@example.com", Password = "InvalidPassword" };
-            var authService = new AuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
+            var authService = new UserAuthService(_userRepositoryMock.Object, _passwordHasherMock.Object, _emailValidatorMock.Object, _passwordValidatorMock.Object, _tokenGeneratorMock.Object, _loggerMock.Object);
 
             // Act
             var result = await authService.RegisterAsync(newUser);
