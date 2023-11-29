@@ -20,7 +20,7 @@ namespace Application.Controllers.Webhooks;
 [Authorize]
 public class UserAuthWebhooks : BaseWebhookController
 {
-    private const string UserService = "UserManagement-service"; 
+    private const string UserService = "Auth-service"; 
     private readonly IUserService _userService;
     private readonly IEventHandler _eventHandler;
     
@@ -43,9 +43,10 @@ public class UserAuthWebhooks : BaseWebhookController
 
         if (result.IsSuccess)
         {
+            await _eventHandler.PublishProtobufEventAsync(new UserRegCompletedEvent{Email = data.Email});
             return Ok(new { result.Messages });
         }
-
+        
         return result.ErrorType switch
         {
             ServiceErrorType.BadRequest => BadRequest(new { Message = result.Messages }),

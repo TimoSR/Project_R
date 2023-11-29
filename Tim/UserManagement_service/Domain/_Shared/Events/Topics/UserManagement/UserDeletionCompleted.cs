@@ -8,7 +8,6 @@ namespace Domain._Shared.Events.Topics.UserManagement;
 [TopicName("UserDeletionCompletedTopic")]
 public class UserDeletionCompleted : IPubEvent
 {
-    
     public string Email { get; set; }
     public string Message => $"User {Email} Deletion Completed!";
 }

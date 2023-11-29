@@ -18,6 +18,8 @@
     <Folder Include="UserAuthentication\Utilities\" />
     <Folder Include="UserAuthentication\ValueObjects\" />
     <Folder Include="_Shared\" />
+    <Folder Include="_Shared\Events\Subscribed\" />
+    <Folder Include="_Shared\Events\Topics\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\_SharedKernel\_SharedKernel.csproj" />
