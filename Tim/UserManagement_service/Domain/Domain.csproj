@@ -12,11 +12,6 @@
     <PackageReference Include="protobuf-net.Core" Version="3.2.26" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UserAuthentication\Enums\" />
-    <Folder Include="UserAuthentication\Events\" />
-    <Folder Include="UserAuthentication\Services\" />
-    <Folder Include="UserAuthentication\Utilities\" />
-    <Folder Include="UserAuthentication\ValueObjects\" />
     <Folder Include="UserManagement\ValueObjects\" />
     <Folder Include="_Shared\" />
   </ItemGroup>
