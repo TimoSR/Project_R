@@ -100,7 +100,7 @@ public class UserAuthService : IAuthAppServiceV1
         var refreshToken = _tokenHandler.GenerateRefreshToken();
 
         // Cache the new tokens
-        await _cacheManager.SetValueAsync(TokenCachePrefix + user.Id, accessToken, TimeSpan.FromMinutes(60)); // Set appropriate expiration
+        await _cacheManager.SetValueAsync(TokenCachePrefix + user.Id, accessToken, TimeSpan.FromSeconds(60)); // Set appropriate expiration
 
         await _authRepository.UpdateRefreshTokenAsync(user.Id, refreshToken);
 
