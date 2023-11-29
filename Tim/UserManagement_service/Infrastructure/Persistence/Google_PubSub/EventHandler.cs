@@ -115,7 +115,7 @@ public class EventHandler : IEventHandler
         return $"{_serviceName}-{eventName}";
     }
 
-    private async Task PublishMessageAsync<TEvent>(TEvent @event, string topicId, string eventType, string formattedMessage) where TEvent : IPubEvent
+    private async Task PublishMessageAsync<TEvent>(TEvent @event, string topicId, string eventType, string formattedMessage)
     {
         var topicName = TopicName.FromProjectTopic(_projectId, topicId);
         
@@ -126,8 +126,7 @@ public class EventHandler : IEventHandler
                 Data = ByteString.CopyFromUtf8(formattedMessage),
                 Attributes =
                 {
-                    { "eventType", eventType },
-                    { "description", $"{@event.Message}" }
+                    { "eventType", eventType }
                 }
             };
 

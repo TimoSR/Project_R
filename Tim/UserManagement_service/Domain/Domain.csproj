@@ -14,6 +14,8 @@
   <ItemGroup>
     <Folder Include="UserManagement\ValueObjects\" />
     <Folder Include="_Shared\" />
+    <Folder Include="_Shared\Events\Subscribed\" />
+    <Folder Include="_Shared\Events\Topics\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\_SharedKernel\_SharedKernel.csproj" />

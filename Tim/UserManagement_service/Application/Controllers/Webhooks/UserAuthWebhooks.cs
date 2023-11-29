@@ -2,8 +2,8 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.Controllers.Webhooks._Abstract;
-using Domain._Shared.Events.UserAuthentication;
-using Domain._Shared.Events.UserManagement;
+using Domain._Shared.Events.Subscribed.UserAuthentication;
+using Domain._Shared.Events.Topics.UserManagement;
 using Domain.UserManagement.Enums;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Swagger;
@@ -20,7 +20,7 @@ namespace Application.Controllers.Webhooks;
 [Authorize]
 public class UserAuthWebhooks : BaseWebhookController
 {
-    
+    private const string UserService = "UserManagement-service"; 
     private readonly IUserService _userService;
     private readonly IEventHandler _eventHandler;
     
@@ -35,7 +35,7 @@ public class UserAuthWebhooks : BaseWebhookController
     
     [AllowAnonymous]
     [HttpPost("HandleUserAuthDetailsSetSuccessEvent")]
-    [EventSubscription("Auth-service-UserAuthDetailsSetSuccessTopic")]
+    [EventSubscription($"{UserService}-UserAuthDetailsSetSuccessTopic")]
     public async Task<IActionResult> HandleUserAuthDetailsSetSuccessEvent()
     {
         var data = await OnEvent<UserAuthDetailsSetSuccessEvent>();
@@ -55,7 +55,7 @@ public class UserAuthWebhooks : BaseWebhookController
     
     [AllowAnonymous]
     [HttpPost("HandleUserAuthDetailsSetFailedEvent")]
-    [EventSubscription("Auth-service-UserAuthDetailsSetFailedTopic")]
+    [EventSubscription($"{UserService}-UserAuthDetailsSetFailedTopic")]
     public async Task<IActionResult> HandleUserAuthDetailsSetFailedEvent()
     {
         var data = await OnEvent<UserAuthDetailsSetFailedEvent>();
@@ -75,7 +75,7 @@ public class UserAuthWebhooks : BaseWebhookController
     
     [AllowAnonymous]
     [HttpPost("HandleUserDeletionSuccessEvent")]
-    [EventSubscription("Auth-service-UserDeletionSuccessTopic")]
+    [EventSubscription($"{UserService}-UserDeletionSuccessTopic")]
     public async Task<IActionResult> HandleUserDeletionSuccessEvent()
     {
         var data = await OnEvent<UserDeletionSuccessEvent>();
