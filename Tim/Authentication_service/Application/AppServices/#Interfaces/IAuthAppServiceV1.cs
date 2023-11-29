@@ -1,6 +1,6 @@
 using _SharedKernel.Patterns.RegistrationHooks.Services._Interfaces;
 using _SharedKernel.Patterns.ResultPattern;
-using Domain._Shared.Events.UserManagement;
+using Domain._Shared.Events.Subscribed.UserManagement;
 
 namespace Application.AppServices._Interfaces;
 

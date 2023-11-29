@@ -2,7 +2,7 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices._Interfaces;
 using Application.Controllers.Webhooks._Abstract;
-using Domain._Shared.Events.UserManagement;
+using Domain._Shared.Events.Subscribed.UserManagement;
 using Infrastructure.Persistence._Interfaces;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
@@ -18,6 +18,7 @@ namespace Application.Controllers.Webhooks;
 [Authorize]
 public class UserManagerWebhooks : BaseWebhookController
 {
+    private const string UserManagerService = "UserManagement-service"; 
     private readonly IAuthAppServiceV1 _authAppService;
     
     public UserManagerWebhooks(
@@ -30,7 +31,7 @@ public class UserManagerWebhooks : BaseWebhookController
     
     [AllowAnonymous]
     [HttpPost("HandleUserRegInitEvent")]
-    [EventSubscription("Auth-service-UserRegInitTopic")]
+    [EventSubscription($"{UserManagerService}-UserRegInitTopic")]
     public async Task<IActionResult> HandleUserRegInitEvent()
     {
         var data = await OnEvent<UserRegInitEvent>();
@@ -50,7 +51,7 @@ public class UserManagerWebhooks : BaseWebhookController
     
     [AllowAnonymous]
     [HttpPost("HandleUserDeletionInitEvent")]
-    [EventSubscription("Auth-service-UserDeletionInitTopic")]
+    [EventSubscription($"{UserManagerService}-UserDeletionInitTopic")]
     public async Task<IActionResult> HandleUserDeletionInitEvent()
     {
         var data = await OnEvent<UserDeletionInitEvent>();

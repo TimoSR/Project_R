@@ -2,11 +2,11 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using ProtoBuf;
 
-namespace Domain._Shared.Events.UserManagement;
+namespace Domain._Shared.Events.Subscribed.UserManagement;
 
 [ProtoContract]
 [TopicName("UserRegInitTopic")]
-public class UserRegInitEvent : IPubEvent
+public class UserRegInitEvent
 {
     public string Message => "User registration Initiated";
 

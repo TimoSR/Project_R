@@ -2,11 +2,11 @@ using _SharedKernel.Patterns.RegistrationHooks.Events._Attributes;
 using _SharedKernel.Patterns.RegistrationHooks.Events._Interfaces;
 using ProtoBuf;
 
-namespace Domain._Shared.Events.UserManagement;
+namespace Domain._Shared.Events.Subscribed.UserManagement;
 
 [ProtoContract]
 [TopicName("UserDeletionInitTopic")]
-public class UserDeletionInitEvent : IPubEvent
+public class UserDeletionInitEvent
 {
     public string Message => "User Deletion Initiated";
     

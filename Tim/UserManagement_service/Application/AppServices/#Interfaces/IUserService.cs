@@ -1,7 +1,7 @@
 using _SharedKernel.Patterns.RegistrationHooks.Services._Interfaces;
 using _SharedKernel.Patterns.ResultPattern;
 using Application.DTO.UserManagement;
-using Domain._Shared.Events.UserAuthentication;
+using Domain._Shared.Events.Subscribed.UserAuthentication;
 using Domain.UserManagement.Enums;
 
 namespace Application.AppServices._Interfaces;
