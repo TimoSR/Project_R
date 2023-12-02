@@ -1,15 +1,15 @@
 # Service name and the Folder name should be the same on git!
 # Remember to update Service name on yaml file aswell.
 
-# Update the marked areas with x_service to eg. leaderboard_service...
+# Update the marked areas with x_service to eg. leaderboard_service... (The name needs to be small)
 
 ############################
-name: DEV CI for gameServer_service 
+name: DEV CI for game_cms_service 
 ############################
 
 ############################
 env:
-  SERVICE_NAME: gameServer_service
+  SERVICE_NAME: game_cms_service
 ############################
 
 on:
@@ -20,7 +20,7 @@ on:
     paths:
     # Path needs to be changed to fit Service Folder (As it does not support env)
     ############################
-    - 'gameServer_service/**'
+    - 'game_cms_service/**'
     ############################
 
 jobs:
