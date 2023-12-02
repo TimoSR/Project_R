@@ -2,14 +2,17 @@ using _SharedKernel.Patterns.ResultPattern;
 using _SharedKernel.Patterns.ResultPattern._Enums;
 using Application.AppServices.V1;
 using Application.DTO.UserManagement;
+using Domain._Shared.Events.Subscribed.UserAuthentication;
 using Domain._Shared.Events.Topics.UserManagement;
 using Domain.UserManagement.Entities;
+using Domain.UserManagement.Enums;
 using Domain.UserManagement.Repositories;
 using Domain.UserManagement.Services._Interfaces;
 using FluentAssertions;
 using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json;
 using Unit_Tests.UserManagement.Application.TestSetup;
 
 namespace Unit_Tests.UserManagement.Application;
@@ -57,5 +60,57 @@ public class UserManagerServiceTests
         // Assert
         result.IsSuccess.Should().Be(expectedResult);
         _mockEventHandler.Verify(e => e.PublishProtobufEventAsync(It.IsAny<UserRegInitEvent>()), Times.Exactly(eventPublishTimes));
+    }
+
+    
+    [Fact]
+    public async Task DeleteUserByEmailAsync_UserExists_DeletesSuccessfully()
+    {
+        // Arrange
+        var email = "test@example.com";
+        _mockUserRepository.Setup(r => r.DeleteUserByEmailAsync(email)).ReturnsAsync(true);
+
+        // Act
+        var result = await _userManagerService.DeleteUserByEmailAsync(email);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        _mockCacheManager.Verify(c => c.RemoveValueAsync(It.IsAny<string>()), Times.Once);
+        _mockEventHandler.Verify(e => e.PublishProtobufEventAsync(It.IsAny<UserDeletionInitEvent>()), Times.Once);
+        // Additional
+        //
+        // assertions...
+    }
+    
+    [Fact]
+    public async Task UpdateUserStatusByEmailAsync_ValidUser_UpdatesSuccessfully()
+    {
+        // Arrange
+        var email = "test@example.com";
+        var statusEvent = new UserAuthDetailsSetSuccessEvent { Email = email };
+        _mockUserRepository.Setup(r => r.UpdateUserStatusByEmailAsync(email, It.IsAny<UserStatus>())).ReturnsAsync(true);
+
+        // Act
+        var result = await _userManagerService.UpdateUserStatusByEmailAsync(statusEvent, UserStatus.Active);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        // Additional assertions...
+    }
+
+    [Fact]
+    public async Task RollBackUserAsync_ValidUser_RollsBackSuccessfully()
+    {
+        // Arrange
+        var email = "test@example.com";
+        var failedEvent = new UserAuthDetailsSetFailedEvent { Email = email };
+        _mockUserRepository.Setup(r => r.DeleteUserByEmailAsync(email)).ReturnsAsync(true);
+
+        // Act
+        var result = await _userManagerService.RollBackUserAsync(failedEvent);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        // Additional assertions...
     }
 }
