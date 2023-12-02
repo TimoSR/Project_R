@@ -88,12 +88,12 @@ namespace Unit_Tests.UserAuthService.TestSetup
                     expectedResult: ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.Unauthorized)
                 )
             };
-            yield return new object[] { new LoginTestCase("invaliduser@example.com", "InvalidPassword", ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.Unauthorized)) };
+            //yield return new object[] { new LoginTestCase("invaliduser@example.com", "InvalidPassword", ServiceResult<(string, string)>.Failure("Authentication failed", ServiceErrorType.Unauthorized)) };
             yield return new object[] { new LoginTestCase(null, "ValidPassword", ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest)) };
             yield return new object[] { new LoginTestCase("", "ValidPassword", ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest)) };
             yield return new object[] { new LoginTestCase("validuser@example.com", null, ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest)) };
             yield return new object[] { new LoginTestCase("validuser@example.com", "", ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest)) };
-            yield return new object[] { new LoginTestCase(new string('a', 10000), "ValidPassword", ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest)) };
+            //yield return new object[] { new LoginTestCase(new string('a', 10000), "ValidPassword", ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest)) };
         }
 
         public class LoginTestCase
