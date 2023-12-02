@@ -77,6 +77,11 @@ public class UserAuthService : IAuthAppServiceV1
     
     public async Task<ServiceResult<(string Token, string RefreshToken)>> LoginAsync(string email, string password)
     {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            return ServiceResult<(string, string)>.Failure("Invalid input", ServiceErrorType.BadRequest);
+        }
+        
         var user = await _authRepository.FindByEmailAsync(email);
         if (user == null)
         {
