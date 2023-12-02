@@ -11,7 +11,7 @@ RUN dotnet restore
 
 # copy everything else and build
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish "x_endpoints/x_endpoints.csproj" -c Release -o out
 
 # Runtime image
 FROM mcr.microsoft.com/dotnet/sdk:7.0
