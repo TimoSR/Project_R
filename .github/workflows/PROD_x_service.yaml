@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet: ['7.x.x']
+        dotnet: ['7.x.x', '8.x.x']
     steps:
     
     - uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ matrix.dotnet }}
-        
+
     - name: Run Tests
       run: |
         cd ${{ env.SERVICE_NAME }}
