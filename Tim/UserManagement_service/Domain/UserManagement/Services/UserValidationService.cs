@@ -2,12 +2,13 @@ using _SharedKernel.Patterns.RegistrationHooks.Services._Interfaces;
 using _SharedKernel.Patterns.ResultPattern;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
+using Domain.UserManagement.Services._Interfaces;
 using Domain.UserManagement.Utilities.Email;
 using Domain.UserManagement.Utilities.Password;
 
 namespace Domain.UserManagement.Services;
 
-public class UserValidationService : IDomainService
+public class UserValidationService : IUserValidationService, IDomainService
 {
     private readonly EmailValidator _emailValidator;
     private readonly PasswordValidator _passwordValidator;

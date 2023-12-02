@@ -8,7 +8,7 @@ using Domain.UserManagement.Entities;
 using Domain.UserManagement.Enums;
 using Domain.UserManagement.Messages;
 using Domain.UserManagement.Repositories;
-using Domain.UserManagement.Services;
+using Domain.UserManagement.Services._Interfaces;
 using Infrastructure.Persistence._Interfaces;
 using Newtonsoft.Json;
 
@@ -16,14 +16,14 @@ namespace Application.AppServices.V1;
 
 public class UserManagerService : IUserService
 {
-    private readonly UserValidationService _userValidationService;
+    private readonly IUserValidationService _userValidationService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserManagerService> _logger;
     private readonly IEventHandler _eventHandler;
     private readonly ICacheManager _cacheManager;
 
     public UserManagerService(
-        UserValidationService userValidationService,
+        IUserValidationService userValidationService,
         IUserRepository userRepository,
         ILogger<UserManagerService> logger,
         IEventHandler eventHandler,

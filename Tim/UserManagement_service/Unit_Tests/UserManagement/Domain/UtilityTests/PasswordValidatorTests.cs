@@ -1,4 +1,4 @@
-using Domain.User.Services.Password;
+using Domain.UserManagement.Utilities.Password;
 
 namespace Unit_Tests.UtilityTests;
 

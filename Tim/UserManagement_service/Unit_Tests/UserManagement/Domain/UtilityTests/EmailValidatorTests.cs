@@ -1,4 +1,4 @@
-using Domain.User.DomainServices.Email;
+using Domain.UserManagement.Utilities.Email;
 
 namespace Unit_Tests.UtilityTests;
 
