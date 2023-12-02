@@ -10,6 +10,7 @@ using FluentAssertions;
 using Infrastructure.Persistence._Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Unit_Tests.UserManagement.Application.TestSetup;
 
 namespace Unit_Tests.UserManagement.Application;
 
@@ -38,26 +39,23 @@ public class UserManagerServiceTests
             _mockCacheManager.Object
         );
     }
-
-    [Fact]
-    public async Task RegisterAsync_SuccessfulRegistration_ReturnsSuccessResult()
+    
+    [Theory]
+    [MemberData(nameof(UserManagerServiceTestCases.RegistrationTestCases), MemberType = typeof(UserManagerServiceTestCases))]
+    public async Task RegisterAsync_VariousScenarios_ReturnsExpectedResult(UserRegisterDto userDto, bool expectedResult, int eventPublishTimes)
     {
         // Arrange
-        var userDto = new UserRegisterDto { Email = "test@example.com", UserName = "testUser", Password = "password" };
-    
-        // Create a successful ValidationResult instance
-        var validationResult = new ValidationResult(); // By default, it's successful
-
-        _mockUserValidationService.Setup(s => s.ValidateNewUser(It.IsAny<string>(), It.IsAny<string>()))
+        var validationResult = new ValidationResult();
+        _mockUserValidationService.Setup(s => s.ValidateNewUser(userDto.Email, userDto.Password))
             .Returns(validationResult);
-        _mockUserRepository.Setup(r => r.CreateUserIfNotRegisteredAsync(It.IsAny<User>()))
-            .ReturnsAsync(true);
+        _mockUserRepository.Setup(r => r.CreateUserIfNotRegisteredAsync(It.Is<User>(u => u.Email == userDto.Email)))
+            .ReturnsAsync(expectedResult);
 
         // Act
         var result = await _userManagerService.RegisterAsync(userDto);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        _mockEventHandler.Verify(e => e.PublishProtobufEventAsync(It.IsAny<UserRegInitEvent>()), Times.Once);
+        result.IsSuccess.Should().Be(expectedResult);
+        _mockEventHandler.Verify(e => e.PublishProtobufEventAsync(It.IsAny<UserRegInitEvent>()), Times.Exactly(eventPublishTimes));
     }
 }
