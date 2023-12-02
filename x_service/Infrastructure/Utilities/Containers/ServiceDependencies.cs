@@ -5,15 +5,15 @@ namespace Infrastructure.Utilities.Containers;
 
 public class ServiceDependencies : IServiceDependencies
 {
-    public IEventPublisher EventPublisher { get; }
+    public IEventHandler EventHandler { get; }
     public ICacheManager CacheManager { get; }
     
     public ServiceDependencies(
-        IEventPublisher eventPublisher = null,
+        IEventHandler eventHandler = null,
         ICacheManager cacheManager = null
     )
     {
-        EventPublisher = eventPublisher;
+        EventHandler = eventHandler;
         CacheManager = cacheManager;
     }
 }

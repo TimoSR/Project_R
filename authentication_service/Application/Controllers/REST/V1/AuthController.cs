@@ -1,8 +1,6 @@
-using Application.AppServices.V1._Interfaces;
-using Application.DataTransferObjects.Auth;
-using Application.DataTransferObjects.UserManagement;
-using Domain.DomainModels;
-using Domain.DomainModels.Enums;
+using _SharedKernel.Patterns.ResultPattern._Enums;
+using Application.AppServices._Interfaces;
+using Application.DTO.Auth;
 using Infrastructure.Swagger;
 using Infrastructure.Swagger.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +15,11 @@ namespace Application.Controllers.REST.V1;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthServiceV1 _authServiceV1;
+    private readonly IAuthAppServiceV1 _authAppService;
 
-    public AuthController(IAuthServiceV1 authServiceV1)
+    public AuthController(IAuthAppServiceV1 authAppService)
     {
-        _authServiceV1 = authServiceV1;
+        _authAppService = authAppService;
     }
     
     /// <summary>
@@ -32,6 +30,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult CheckTokenValidity()
     {
+        // Token Validation happens in the middleware
         // If this point is reached, the token is valid
         return Ok(new { Message = "Token is valid" });
     }
@@ -42,52 +41,23 @@ public class AuthController : ControllerBase
     [HttpPost("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> RefreshToken([FromBody] AuthRequestDto authRequestDto)
+    public async Task<IActionResult> RefreshToken(AuthRequestDto authRequestDto)
     {
-        var refreshedTokens = await _authServiceV1.RefreshTokenAsync(authRequestDto.RefreshToken);
+        var result = await _authAppService.RefreshTokenAsync(authRequestDto.RefreshToken);
 
-        if (refreshedTokens != null)
+        if (result.IsSuccess)
         {
             return Ok(new 
-            { 
-                Message = "Token refreshed",
-                refreshedTokens.Value.NewToken,
-                refreshedTokens.Value.NewRefreshToken 
+            {
+                AccessToken = result.Data.NewToken,
+                RefreshToken = result.Data.NewRefreshToken 
             });
         }
 
-        return Unauthorized(new { Message = "Invalid token or unauthorized" });
-    }
-
-    /// <summary>
-    /// Register a new user
-    /// </summary>
-    [AllowAnonymous]
-    [HttpPost("register")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] UserRegisterDto newUserDto)
-    {
-        if (!ModelState.IsValid)
+        return result.ErrorType switch
         {
-            return BadRequest(ModelState);
-        }
-        
-        var newUser = new User
-        {
-            Email = newUserDto.Email,
-            Password = newUserDto.Password
-        };
-
-        var result = await _authServiceV1.RegisterAsync(newUser);
-
-        return result switch
-        {
-            UserRegistrationResult.Successful => Ok(new { Message = "User successfully registered" }),
-            UserRegistrationResult.InvalidEmail => BadRequest(new { Message = "Invalid email address" }),
-            UserRegistrationResult.EmailAlreadyExists => BadRequest(new { Message = "Email already exists" }),
-            UserRegistrationResult.InvalidPassword => BadRequest(new { Message = "Password must have a minimum length of 6 and include at least one uppercase letter, number, and special symbol (e.g., !@#$%^&*)." }),
-            _ => BadRequest(new { Message = "An unknown error occurred" })
+            ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages })
         };
     }
 
@@ -97,23 +67,28 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
+    public async Task<IActionResult> Login(LoginRequestDto requestDto)
     {
-        var result = await _authServiceV1.LoginAsync(requestDto.Email, requestDto.Password);
+        var result = await _authAppService.LoginAsync(requestDto.Email, requestDto.Password);
 
-        if (result != null)
+        if (result.IsSuccess)
         {
-            var (token, refreshToken) = result.Value;  // Use Value to get the underlying non-nullable tuple
-            
             return Ok(new LoginResponseDto
             {
-                AccessToken = token,
-                RefreshToken = refreshToken  // Assuming you've added this to LoginResponseDto
+                AccessToken = result.Data.Token,
+                RefreshToken = result.Data.RefreshToken
             });
         }
 
-        return Unauthorized(new { Message = "Invalid email or password" });
+        return result.ErrorType switch
+        {
+            ServiceErrorType.BadRequest => BadRequest(new { result.Messages }),
+            ServiceErrorType.Unauthorized => Unauthorized(new { result.Messages }),
+            ServiceErrorType.NotFound => NotFound(new {result.Messages}),
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     /// <summary>
@@ -122,9 +97,9 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
+    public async Task<IActionResult> Logout(string userId)
     {
-        var result = await _authServiceV1.LogoutAsync(requestDto.UserId);
+        var result = await _authAppService.LogoutAsync(userId);
 
         if (result)
         {
@@ -132,24 +107,6 @@ public class AuthController : ControllerBase
         }
 
         return BadRequest(new { Message = "Failed to logout" });
-    }
-
-    /// <summary>
-    /// Delete a user
-    /// </summary>
-    [HttpDelete("delete")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteUser([FromBody] DeleteRequestDto requestDto)
-    {
-        var result = await _authServiceV1.DeleteUserAsync(requestDto.UserId);
-
-        if (result)
-        {
-            return Ok(new { Message = "User deleted successfully" });
-        }
-
-        return BadRequest(new { Message = "Failed to delete user" });
     }
 }
 

@@ -9,9 +9,7 @@ public class JsonSerializer : IJsonSerializer
     {
         try
         {
-            Console.WriteLine("\nCreated Json Message!");
             string encodedString = ConvertToJson(content);
-            Console.WriteLine(encodedString);
             return encodedString;
         }
         catch (JsonException ex)
@@ -28,13 +26,11 @@ public class JsonSerializer : IJsonSerializer
         }
     }
     
-    public TModel Deserialize<TModel>(string content)
+    public TModel? Deserialize<TModel>(string content)
     {
         try
         {
-            Console.WriteLine("\nDeserializing Json Message!");
             var payload = ConvertToModel<TModel>(content);
-            Console.WriteLine($"Deserialized object of type {typeof(TModel).Name} successfully!");
             return payload;
         }
         catch (JsonException ex)
@@ -54,7 +50,7 @@ public class JsonSerializer : IJsonSerializer
         return JsonConvert.SerializeObject(message);
     }
 
-    private TModel ConvertToModel<TModel>(string content)
+    private TModel? ConvertToModel<TModel>(string content)
     {
         return JsonConvert.DeserializeObject<TModel>(content);
     }

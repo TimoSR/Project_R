@@ -9,7 +9,7 @@ public abstract class MongoRepository<T> : IRepository<T>
 {
     protected virtual string CollectionName => typeof(T).Name + "s";
 
-    private readonly IMongoDbManager _dbManager;
+    protected readonly IMongoDbManager _dbManager;
     protected readonly ILogger _logger;
 
     protected MongoRepository(IMongoDbManager dbManager, ILogger logger)
@@ -36,7 +36,7 @@ public abstract class MongoRepository<T> : IRepository<T>
         }
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<List<T>> GetAllAsync()
     {
         try
         {

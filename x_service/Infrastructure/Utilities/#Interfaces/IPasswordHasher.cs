@@ -1,9 +1,9 @@
-using Domain.DomainModels;
+using _SharedKernel.Patterns.RegistrationHooks.Utilities;
 
 namespace Infrastructure.Utilities._Interfaces;
 
 public interface IPasswordHasher : IUtilityTool
 {
-    string HashPassword(User user);
-    bool VerifyHashedPassword(User user, string password);
+    string HashPassword(string password);
+    bool VerifyHashedPassword(string hashedPassword, string providedPassword);
 }

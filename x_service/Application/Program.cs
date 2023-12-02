@@ -1,15 +1,16 @@
-using Application.Registrations.DataSeeder;
-using Application.Registrations.Events;
-using Application.Registrations.GraphQL;
-using Application.Registrations.Services;
+using Application._Registration.DataSeeder;
+using Application._Registration.Events;
+using Application._Registration.GraphQL;
+using Application._Registration.Services;
 using Application.Startup;
 using AspNetCoreRateLimit;
+using Domain._Shared.Registration;
+using Infrastructure._Registration.Repositories;
+using Infrastructure._Registration.Utilities;
 using Infrastructure.Middleware;
 using Infrastructure.Persistence.Google_PubSub;
 using Infrastructure.Persistence.MongoDB;
 using Infrastructure.Persistence.Redis;
-using Infrastructure.Registrations.Repositories;
-using Infrastructure.Registrations.Utilities;
 using Infrastructure.Swagger;
 using Infrastructure.Utilities;
 using Infrastructure.Utilities.Containers;
@@ -34,6 +35,8 @@ public class Program
         var jwtKey = DotNetEnv.Env.GetString("JWT_KEY");
         var jwtAudience = DotNetEnv.Env.GetString("JWT_AUDIENCE");
         var envVars = Environment.GetEnvironmentVariables();
+        
+        //Adding all settings to the config
 
         IConfiguration config = new Configuration()
         {
@@ -55,9 +58,7 @@ public class Program
 
         // Custom Tools written tools to simplify development
         builder.Services.RegisterUtilityServices();
-
-        // Add / Disable GraphQL (MapGraphQL should be out-commented too)
-        builder.Services.AddGraphQlServices(); 
+        
         // Add / Disable MongoDB
         builder.Services.AddMongoDbServices(config);
         // Add / Disable Publisher
@@ -65,7 +66,7 @@ public class Program
         // Add / Disable Subscriber 
         builder.Services.AddSubscriberClient();
         // Add / Disable Redis
-        //builder.Services.AddRedisServices(config);
+        builder.Services.AddRedisServices(config);
 
         // Adding All Pub & Sub Events with reflection
         builder.Services.AddSingleton<SubTopicsRegister>();
@@ -82,9 +83,16 @@ public class Program
 
         // Add this after all project dependencies to register all the services.
         builder.Services.AddApplicationServices();
+        builder.Services.AddDomainServices();
 
+        // Add / Disable GraphQL (MapGraphQL should be out-commented too)
+        builder.Services.AddGraphQlServices();
+        
         //Adding the Controllers
         builder.Services.AddControllers();
+        
+        //Adding Automapper
+        builder.Services.AddAutoMapper(typeof(Program));
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -140,15 +148,18 @@ public class Program
         {
             app.GenerateSwaggerDocs();
         }
-
+        
         // Enable this for Https only
         //app.UseHttpsRedirection();
-        
+    
         // Controller Middlewares
         app.UseCors("MyCorsPolicy");
+        app.UseMiddleware<RequestLoggingMiddleware>();
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseIpRateLimiting();
         // Jwt Authentication
         app.UseMiddleware<JwtMiddleware>();
+        
         app.UseAuthorization();
 
         app.MapControllers();
@@ -161,3 +172,22 @@ public class Program
         await app.RunAsync();
     }
 }
+
+        // The standard way of implementing jwt auth in dotnet
+        // Tried to implement my own method of handling it.
+        // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //     .AddJwtBearer(options =>
+        //     {
+        //         options.TokenValidationParameters = new TokenValidationParameters
+        //         {
+        //             ValidateIssuer = true,
+        //             ValidateAudience = true,
+        //             ValidateLifetime = true,
+        //             ValidateIssuerSigningKey = true,
+        //             ValidIssuer = config.JwtIssuer,
+        //             ValidAudience = config.JwtAudience,
+        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JwtKey))
+        //         };
+        //     });
+
+        //app.UseAuthentication(); // This is the disabled auth.

@@ -70,7 +70,20 @@ public class Program
         }
         else
         {
-            Console.WriteLine("Failed to create user.");
+            // Read the response content which contains the error message
+            var responseContent = await response.Content.ReadAsStringAsync();
+            
+            // Get the numeric status code (e.g., 400, 401, 500)
+            int statusCode = (int)response.StatusCode;
+
+            try
+            {
+                Console.WriteLine($"Failed to create user (HTTP Status Code {statusCode}): {responseContent}");
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine($"Failed to create user (HTTP Status Code {statusCode}): An unknown error occurred.");
+            }
         }
     }
 
