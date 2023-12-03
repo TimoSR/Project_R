@@ -7,8 +7,8 @@ variable "env_vars" {
     # HOST_URL should be URL without ending '/'
     ########################################################################################
     "HOST_URL"                    = "https://authentication-service-s4qgcf5egq-ew.a.run.app"
-    "SERVICE_NAME"                = "authentication-service"
-    "ENVIRONMENT"                 = "Development"
+    "SERVICE_NAME"                = "Auth-service"
+    "ENVIRONMENT"                 = "Production"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"
 
     ########################################################################################

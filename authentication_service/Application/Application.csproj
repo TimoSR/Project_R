@@ -42,7 +42,6 @@
 
   <ItemGroup>
     <Folder Include="AppServices\V2\" />
-    <Folder Include="Controllers\GraphQL\GraphQL\" />
     <Folder Include="Controllers\REST\V2\" />
   </ItemGroup>
   
