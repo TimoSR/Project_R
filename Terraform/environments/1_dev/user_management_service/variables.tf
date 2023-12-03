@@ -6,9 +6,9 @@ variable "env_vars" {
     ########################################################################################
     # HOST_URL should be URL without ending '/'
     ########################################################################################
-    "HOST_URL"                    = "https://7c9d17569ffb.ngrok.app"
-    "SERVICE_NAME"                = "user-management-service"
-    "ENVIRONMENT"                 = "Development"
+    "HOST_URL"                    = "https://user-management-service-s4qgcf5egq-ew.a.run.app"
+    "SERVICE_NAME"                = "UserManagement-service"
+    "ENVIRONMENT"                 = "Production"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"
 
     ########################################################################################
