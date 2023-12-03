@@ -14,10 +14,22 @@ public class AuthMutations : IMutation
         _authAppService = authAppService;
     }
 
-    public async Task<ServiceResult> LoginAsync(LoginRequestDto requestDto)
+    public async Task<ServiceResult<LoginResponseDto>> LoginAsync(LoginRequestDto requestDto)
     {
         var result = await _authAppService.LoginAsync(requestDto.Email, requestDto.Password);
-            
-        return !result.IsSuccess ? result : result;
+
+        if (result.IsSuccess)
+        {
+            return ServiceResult<LoginResponseDto>.Success(new LoginResponseDto
+            {
+                AccessToken = result.Data.Token,
+                RefreshToken = result.Data.RefreshToken
+            });
+        }
+
+        // Convert nullable strings to non-nullable and filter out any null values.
+        var nonNullableMessages = result.Messages.Where(m => m != null).Select(m => m!);
+
+        return ServiceResult<LoginResponseDto?>.Failure(nonNullableMessages, result.ErrorType);
     }
 }
