@@ -20,6 +20,7 @@ namespace Application.Controllers.Webhooks;
 [Authorize]
 public class UserAuthWebhooks : BaseWebhookController
 {
+    // Needs to be updated before deployment
     private const string UserService = "Auth-service"; 
     private readonly IUserService _userService;
     private readonly IEventHandler _eventHandler;

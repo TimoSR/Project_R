@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
 
-namespace Headless_client.Application;
+namespace Application;
 
 enum MenuOption
 {
@@ -15,7 +15,8 @@ enum MenuOption
 public class Program 
 {
     static HttpClient httpClient = new HttpClient();
-    static string apiBaseAddress = "https://localhost:7077/api/v1";
+    static string userManagerBaseAddress = "https://user-management-service-s4qgcf5egq-ew.a.run.app/api/v1";
+    static string authBaseAddress = "https://authentication-service-s4qgcf5egq-ew.a.run.app/api/v1";
     static string accessToken = string.Empty;
     static string refreshToken = string.Empty;
 
