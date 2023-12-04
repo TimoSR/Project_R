@@ -75,7 +75,7 @@ public class UserAuthService : IAuthAppServiceV1
         return ServiceResult<(string, string)>.Success((newToken, newRefreshToken), "Token refreshed successfully");
     }
     
-    public async Task<ServiceResult<(string Token, string RefreshToken)>> LoginAsync(string email, string password)
+    public async Task<ServiceResult<(string Token, string? RefreshToken)>> LoginAsync(string email, string password)
     {
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
@@ -83,6 +83,7 @@ public class UserAuthService : IAuthAppServiceV1
         }
         
         var user = await _authRepository.FindByEmailAsync(email);
+        
         if (user == null)
         {
             return ServiceResult<(string, string)>.Failure("User not found", ServiceErrorType.NotFound);

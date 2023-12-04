@@ -2,6 +2,10 @@
 
 Requires .Net 7 and .Net 8 SDK's
 
+Micro Service Frame (With Examples):
+
+* x_service
+
 Deployed Services
 * https://authentication-service-s4qgcf5egq-ew.a.run.app/
 * https://user-management-service-s4qgcf5egq-ew.a.run.app/
