@@ -10,6 +10,8 @@ variable "env_vars" {
     "SERVICE_NAME"                = "Auth-service"
     "ENVIRONMENT"                 = "Production"
     "GOOGLE_CLOUD_PROJECT"        = "project-r-393911"
+    "JWT_KEY"                     = "NzQ5OTU4YzEtNmFhZi00YmFkLWIxNWMtYjY4YzQwN2I3ZDA5"
+    "JWT_AUDIENCE"                = "Riftgate-Customer"
 
     ########################################################################################
     
