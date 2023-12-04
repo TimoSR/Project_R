@@ -53,17 +53,21 @@ public class Program
         Console.Write("Enter your email: ");
         var email = Console.ReadLine();
         
+        Console.Write("Enter your username: ");
+        var userName = Console.ReadLine();
+        
         Console.Write("Enter your password: ");
         var password = Console.ReadLine();
         
         var userDto = new
         {
             Email = email,
+            UserName = userName,
             Password = password
         };
-
+        
         var content = new StringContent(JsonConvert.SerializeObject(userDto), Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync($"{apiBaseAddress}/auth/register", content);
+        var response = await httpClient.PostAsync($"{userManagerBaseAddress}/UserManagement/RegisterUser\n", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -90,7 +94,7 @@ public class Program
 
     static async Task LoginAsync()
     {
-        Console.Write("Username: ");
+        Console.Write("Email: ");
         var username = Console.ReadLine();
 
         Console.Write("Password: ");
@@ -121,7 +125,7 @@ public class Program
         };
 
         var content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync($"{apiBaseAddress}/auth/login", content);
+        var response = await httpClient.PostAsync($"{authBaseAddress}/auth/login", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -140,7 +144,7 @@ public class Program
         };
 
         var content = new StringContent(JsonConvert.SerializeObject(refreshRequestDto), Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync($"{apiBaseAddress}/auth/refresh-token", content);
+        var response = await httpClient.PostAsync($"{authBaseAddress}/auth/refresh-token", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -158,7 +162,7 @@ public class Program
 
     static async Task<bool> IsTokenValidAsync()
     {
-        var response = await httpClient.GetAsync($"{apiBaseAddress}/auth/check-token");
+        var response = await httpClient.GetAsync($"{authBaseAddress}/auth/check-token");
         return response.IsSuccessStatusCode;
     }
 
